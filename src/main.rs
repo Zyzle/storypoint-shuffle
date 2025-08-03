@@ -320,28 +320,32 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     io.ns("/", on_connect);
 
     // Create a service to serve the index.html file directly from the 'dist' directory.
-    let index_service =
-        get_service(ServeFile::new("dist/index.html")).handle_error(|error| async move {
-            error!("Error serving index.html: {}", error);
-            (
-                axum::http::StatusCode::INTERNAL_SERVER_ERROR,
-                "Index file error",
-            )
-        });
+    // let index_service =
+    //     get_service(ServeFile::new("dist/index.html")).handle_error(|error| async move {
+    //         error!("Error serving index.html: {}", error);
+    //         (
+    //             axum::http::StatusCode::INTERNAL_SERVER_ERROR,
+    //             "Index file error",
+    //         )
+    //     });
 
     // Create a new router to serve the static files from the 'dist' folder.
-    let static_files_service =
-        get_service(ServeDir::new("dist")).handle_error(|error| async move {
-            error!("Error serving static files: {}", error);
-            (
-                axum::http::StatusCode::INTERNAL_SERVER_ERROR,
-                "Static file error",
-            )
-        });
+    // let static_files_service =
+    //     get_service(ServeDir::new("dist")).handle_error(|error| async move {
+    //         error!("Error serving static files: {}", error);
+    //         (
+    //             axum::http::StatusCode::INTERNAL_SERVER_ERROR,
+    //             "Static file error",
+    //         )
+    //     });
+
+    let static_service = get_service(ServeDir::new("dist/assets"));
 
     let app = Router::new()
-        .fallback_service(index_service)
-        .route("/", static_files_service)
+        // .fallback_service(index_service)
+        .route("/", get_service(ServeFile::new("dist/index.html")))
+        .nest_service("/assets", static_service.clone())
+        // .fallback(get_service(ServeFile::new("dist/index.html")))
         .layer(
             ServiceBuilder::new()
                 .layer(CorsLayer::permissive())
