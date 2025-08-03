@@ -12,6 +12,7 @@ RUN cargo chef cook --release --recipe-path recipe.json
 
 WORKDIR /app/frontend
 RUN curl -fsSL https://bun.sh/install | bash
+ENV PATH="/root/.bun/bin:$PATH"
 RUN bun install
 RUN bun run build
 
