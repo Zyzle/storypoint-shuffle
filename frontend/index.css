@@ -2,6 +2,8 @@
 
 @import '@skeletonlabs/skeleton';
 @import '@skeletonlabs/skeleton/optional/presets';
-@import '@skeletonlabs/skeleton/themes/cerberus';
+@import '@skeletonlabs/skeleton/themes/rocket';
 
 @source '../node_modules/@skeletonlabs/skeleton-react/dist';
+
+@custom-variant dark (&:where(.dark, .dark *));
