@@ -28,7 +28,8 @@ RUN cargo build --release --bin storypoint-shuffle
 # We do not need the Rust toolchain to run the binary!
 FROM debian:bookworm-slim AS runtime
 WORKDIR /app
-COPY --from=builder /app/target/release/storypoint-shuffle /usr/local/bin
-COPY --from=planner /app/dist /usr/local/bin/dist
-ENTRYPOINT ["/usr/local/bin/storypoint-shuffle"]
+COPY --from=builder /app/target/release/storypoint-shuffle /app
+COPY --from=planner /app/dist /app/dist
+RUN chmod -R 755 /app/dist
+ENTRYPOINT ["/app/storypoint-shuffle"]
 EXPOSE 3333
