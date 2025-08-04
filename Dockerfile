@@ -31,3 +31,4 @@ WORKDIR /app
 COPY --from=builder /app/target/release/storypoint-shuffle /usr/local/bin
 COPY --from=planner /app/dist /usr/local/bin/dist
 ENTRYPOINT ["/usr/local/bin/storypoint-shuffle"]
+EXPOSE 3333
