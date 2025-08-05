@@ -44,8 +44,8 @@ const App: React.FC = () => {
   // Effect hook to set up the Socket.IO connection and event listeners
   useEffect(() => {
     // Connect to the Socket.IO server running on the same host
-    // const newSocket = io('https://storypoint-shuffle.fly.dev');
-    const newSocket = io('http://localhost:3333');
+    const newSocket = io('https://storypoint-shuffle.fly.dev');
+    // const newSocket = io('http://localhost:3333');
     socketRef.current = newSocket;
 
     newSocket.on('connect', () => {
