@@ -1,4 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { Tabs } from '@skeletonlabs/skeleton-react';
+import {
+  ArrowRight,
+  Check,
+  ClipboardCopy,
+  MessageCircleMore,
+} from 'lucide-react';
 import { io, Socket } from 'socket.io-client';
 
 // Define the shape of our data based on the Rust structs
@@ -29,6 +36,7 @@ const App: React.FC = () => {
   const [myVote, setMyVote] = useState<number | null>(null);
   // State to determine if the current user is the room host
   const [isHost, setIsHost] = useState(false);
+  const [createJoin, setCreateJoin] = useState('join');
 
   // Ref to hold the socket instance across re-renders
   const socketRef = useRef<Socket | null>(null);
@@ -36,7 +44,8 @@ const App: React.FC = () => {
   // Effect hook to set up the Socket.IO connection and event listeners
   useEffect(() => {
     // Connect to the Socket.IO server running on the same host
-    const newSocket = io('https://storypoint-shuffle.fly.dev');
+    // const newSocket = io('https://storypoint-shuffle.fly.dev');
+    const newSocket = io('http://localhost:3333');
     socketRef.current = newSocket;
 
     newSocket.on('connect', () => {
@@ -140,43 +149,76 @@ const App: React.FC = () => {
   // Render the home screen with options to create or join a room
   const renderHome = () => (
     <div className="flex flex-col items-center justify-center p-8 space-y-4">
-      <h1 className="text-4xl font-bold">Planning Poker</h1>
-      <p className="text-lg text-slate-500">
-        Create a new room or join an existing one.
-      </p>
-      {error && <div className="text-red-500">{error}</div>}
+      <h1 className="h1">Stroypoint Shuffle</h1>
+      <p className="">Create a new room or join an existing one.</p>
+      {error && <div className="text-error-500">{error}</div>}
 
-      <div className="card w-full max-w-sm p-6 space-y-4 shadow-lg rounded-xl">
-        <h2 className="text-2xl font-semibold">Create a Room</h2>
-        <input
-          type="text"
-          placeholder="Your Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
-        <button type="button" className="btn" onClick={handleCreateRoom}>
-          Create Room
-        </button>
-      </div>
+      <Tabs
+        value={createJoin}
+        onValueChange={(e) => setCreateJoin(e.value)}
+        fluid
+      >
+        <Tabs.List>
+          <Tabs.Control value="join">Join Room</Tabs.Control>
+          <Tabs.Control value="create">Create Room</Tabs.Control>
+        </Tabs.List>
+        <Tabs.Content>
+          <Tabs.Panel value="join">
+            <div className="card w-full max-w-sm p-6 space-y-4 shadow-lg bg-surface-500">
+              <h2 className="h3">Join a Room</h2>
+              <label className="label">
+                <span className="label-text">Room ID</span>
+                <input
+                  className="input"
+                  type="text"
+                  value={roomIdInput}
+                  onChange={(e) => setRoomIdInput(e.target.value)}
+                />
+              </label>
+              <label className="label">
+                <span className="label-text">Name</span>
+                <input
+                  type="text"
+                  className="input"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                />
+              </label>
+              <button
+                type="button"
+                className="btn preset-filled-primary-500"
+                onClick={handleJoinRoom}
+              >
+                <span>Join Room</span>
+                <ArrowRight size={18} />
+              </button>
+            </div>
+          </Tabs.Panel>
 
-      <div className="card w-full max-w-sm p-6 space-y-4 shadow-lg rounded-xl">
-        <h2 className="text-2xl font-semibold">Join a Room</h2>
-        <input
-          type="text"
-          placeholder="Room ID"
-          value={roomIdInput}
-          onChange={(e) => setRoomIdInput(e.target.value)}
-        />
-        <input
-          type="text"
-          placeholder="Your Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
-        <button type="button" className="btn" onClick={handleJoinRoom}>
-          Join Room
-        </button>
-      </div>
+          <Tabs.Panel value="create">
+            <div className="card w-full max-w-sm p-6 space-y-4 shadow-lg bg-surface-500">
+              <h2 className="h3">Create a Room</h2>
+              <label className="label">
+                <span className="label-text">Name</span>
+                <input
+                  type="text"
+                  className="input"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                />
+              </label>
+              <button
+                type="button"
+                className="btn preset-filled-primary-500"
+                onClick={handleCreateRoom}
+              >
+                <span>Create Room</span>
+                <ArrowRight size={18} />
+              </button>
+            </div>
+          </Tabs.Panel>
+        </Tabs.Content>
+      </Tabs>
     </div>
   );
 
@@ -184,7 +226,8 @@ const App: React.FC = () => {
   const renderRoom = () => {
     if (!room) return null;
 
-    // const myId = socketRef.current?.id;
+    const players = Object.values(room.players);
+    const numPlayers = players.length;
     const votes = room.cards_revealed
       ? Object.values(room.players).map((p) => p.vote)
       : [];
@@ -192,32 +235,120 @@ const App: React.FC = () => {
       votes.filter((v) => v !== null).reduce((sum, v) => sum + v, 0) /
         votes.length || 0;
 
+    const radius = 250;
+    const centerOffset = 250;
+
     return (
-      <div className="flex flex-col items-center justify-center p-8 space-y-8">
-        <h1 className="text-4xl font-bold">Room: {room.id}</h1>
+      <div className="flex flex-col items-center justify-between p-8 space-y-8 min-h-screen">
+        <div className="flex flex-row items-baseline">
+          <h1 className="h1">Room: {room.id.slice(0, 8)}...</h1>
+          <button
+            className="btn"
+            onClick={() => navigator.clipboard.writeText(room.id)}
+          >
+            <ClipboardCopy size={32} className="text-success-200-800" />
+          </button>
+        </div>
+
         <p>
           You are logged in as <span className="font-semibold">{name}</span>.
+          {isHost && (
+            <span className="text-tertiary-400 font-bold">
+              You are the host.
+            </span>
+          )}
         </p>
-        {isHost && (
-          <p className="text-green-500 font-bold">You are the host.</p>
-        )}
 
-        {room.cards_revealed && (
-          <div className="text-2xl font-bold">
-            Average Vote: {averageVote.toFixed(2)}
+        {/* Circular Player Card Layout */}
+        <div className="relative w-[500px] h-[500px] flex items-center justify-center">
+          {/* Central Card for Average Vote */}
+          <div className="absolute card bg-primary-200 text-primary-contrast-200">
+            <div className="flex flex-col items-center justify-center p-6 gap-4">
+              <span className="text-xl font-bold">Average Vote</span>
+              {room.cards_revealed && (
+                <span className="text-2xl">{averageVote.toFixed(2)}</span>
+              )}
+              {!room.cards_revealed && (
+                <span className="text-2xl">Waiting...</span>
+              )}
+            </div>
+            {/* Host Controls */}
+            {isHost && (
+              <footer className="flex space-x-4 p-2">
+                <button
+                  onClick={handleRevealCards}
+                  className="btn preset-filled-secondary-400-600"
+                >
+                  Reveal Cards
+                </button>
+                <button
+                  onClick={handleResetVotes}
+                  className="btn preset-filled-error-500"
+                >
+                  Reset Round
+                </button>
+              </footer>
+            )}
           </div>
-        )}
+          {/* Player Cards positioned in a circle */}
+          {players.map((player, index) => {
+            // Calculate angle for each player card
+            const angle = ((2 * Math.PI) / numPlayers) * index;
+            // Calculate x and y coordinates
+            const x = radius * Math.cos(angle);
+            const y = radius * Math.sin(angle);
 
-        {/* Voting Cards */}
+            return (
+              <div
+                key={player.id}
+                className={`absolute w-32 h-20 card flex flex-col items-center justify-center text-center p-2 transform -translate-x-1/2 -translate-y-1/2 transition-all duration-300
+                                    ${
+                                      player.id === room.host_id
+                                        ? 'border-2 border-success-500'
+                                        : ''
+                                    }
+                                    ${
+                                      room.cards_revealed
+                                        ? 'bg-tertiary-200'
+                                        : player.has_voted
+                                        ? 'bg-primary-300'
+                                        : 'bg-secondary-200'
+                                    }
+                                `}
+                style={{
+                  left: `${centerOffset + x}px`,
+                  top: `${centerOffset + y}px`,
+                }}
+              >
+                <span className="font-bold text-base text-zinc-600">
+                  {player.name}
+                </span>
+                {room.cards_revealed && (
+                  <span className="text-2xl font-bold mt-1 text-zinc-600">
+                    {player.vote ?? '?'}
+                  </span>
+                )}
+                {!room.cards_revealed && player.has_voted && (
+                  <Check size={24} />
+                )}
+                {!room.cards_revealed && !player.has_voted && (
+                  <MessageCircleMore size={24} />
+                )}
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Voting Cards (below the circular layout) */}
         <div className="flex justify-center flex-wrap gap-4 max-w-4xl">
-          {[1, 2, 3, 5, 8, 13].map((voteValue) => (
+          {[1, 2, 3, 5, 8, 13, 21].map((voteValue) => (
             <button
               key={voteValue}
               className={`card flex justify-center items-center w-20 h-28 rounded-xl cursor-pointer transition-all duration-200
                                 ${
                                   myVote === voteValue
-                                    ? 'bg-primary-500 text-white shadow-xl scale-110'
-                                    : 'bg-white shadow-md hover:bg-slate-100'
+                                    ? 'bg-success-100 shadow-xl scale-110'
+                                    : 'bg-surface-50 shadow-md hover:bg-surface-100'
                                 }
                                 `}
               onClick={() => handleVote(voteValue)}
@@ -228,54 +359,6 @@ const App: React.FC = () => {
             </button>
           ))}
         </div>
-
-        {/* Player List */}
-        <div className="w-full max-w-4xl space-y-4">
-          <h2 className="text-2xl font-semibold">Players</h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-            {Object.values(room.players).map((player) => (
-              <div
-                key={player.id}
-                className={`card p-4 rounded-xl shadow-lg flex flex-col items-center text-center transition-all duration-200
-                                    ${
-                                      player.id === room.host_id
-                                        ? 'border-2 border-green-500'
-                                        : ''
-                                    }
-                                `}
-              >
-                <span className="font-bold text-xl">{player.name}</span>
-                {player.has_voted ? (
-                  room.cards_revealed ? (
-                    <span className="text-2xl font-bold mt-2">
-                      {player.vote}
-                    </span>
-                  ) : (
-                    <span className="text-green-500 mt-2">✅ Voted</span>
-                  )
-                ) : (
-                  <span className="text-red-500 mt-2">Waiting...</span>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Host Controls */}
-        {isHost && (
-          <div className="flex space-x-4">
-            <button type="button" className="btn" onClick={handleRevealCards}>
-              Reveal Cards
-            </button>
-            <button
-              type="button"
-              className="btn btn-danger"
-              onClick={handleResetVotes}
-            >
-              Reset Round
-            </button>
-          </div>
-        )}
       </div>
     );
   };
