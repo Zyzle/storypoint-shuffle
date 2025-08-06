@@ -132,11 +132,7 @@ pub async fn handle_vote(
                 // broadcast to room without revealing vote
                 // should probably remove the vote values from the object to stop them
                 // being seen by the client
-                if let Err(err) = socket
-                    .within(room_id_str)
-                    .emit("playerVoted", &room.clone())
-                    .await
-                {
+                if let Err(err) = socket.within(room_id_str).emit("playerVoted", &room).await {
                     error!("Failed to notify player voted: {}", err);
                 }
             }
@@ -164,7 +160,7 @@ pub async fn handle_reveal_cards(
 
                 if let Err(err) = socket
                     .within(room_id_str)
-                    .emit("cardsRevealed", &room.clone())
+                    .emit("cardsRevealed", &room)
                     .await
                 {
                     error!("Failed to notify cards revealed: {}", err);
@@ -203,11 +199,7 @@ pub async fn handle_reset_votes(
                 }
                 info!("Votes reset in room {}", room_id_str);
 
-                if let Err(err) = socket
-                    .within(room_id_str)
-                    .emit("votesReset", &room.clone())
-                    .await
-                {
+                if let Err(err) = socket.within(room_id_str).emit("votesReset", &room).await {
                     error!("Failed to notify votes reset: {}", err);
                 }
             } else {
@@ -237,7 +229,7 @@ pub async fn handle_disconnect(socket: SocketRef, app_state: SocketState<Arc<typ
             // Optionally, you can emit an event to notify other clients
             if let Err(err) = socket
                 .to(room.id.to_string())
-                .emit("playerDisconnected", &socket.id)
+                .emit("playerDisconnected", &room)
                 .await
             {
                 error!("Failed to notify player disconnected: {}", err);
