@@ -1,0 +1,17 @@
+name: PR Lints
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "src/**"
+    types: [opened, synchronize, reopened]
+jobs:
+  lint:
+    env:
+      RUSTFLAGS: "-Dwarnings"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run Clippy
+        run: cargo clippy

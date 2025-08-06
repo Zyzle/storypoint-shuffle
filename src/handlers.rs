@@ -1,9 +1,7 @@
-#![warn(
-    clippy::all,
-    clippy::restriction,
-    clippy::pedantic,
-    clippy::nursery,
-    clippy::cargo
+#![warn(clippy::all, clippy::pedantic, clippy::nursery)]
+#![allow(
+    clippy::cognitive_complexity,
+    reason = "not a fan of this rule, plus threshold seems low"
 )]
 use std::{
     collections::{HashMap, hash_map::Entry},
@@ -16,7 +14,10 @@ use uuid::Uuid;
 
 use crate::types;
 
-#[expect(clippy::single_call_fn)]
+/// Handles the creation of a new room.
+/// - Generates a new room ID and host player.
+/// - Adds the room to the shared state.
+/// - Joins the socket to the room and emits a "roomCreated" event.
 pub async fn handle_create_room(
     socket: SocketRef,
     Data(payload): Data<types::CreateRoomEvent>,
@@ -30,7 +31,6 @@ pub async fn handle_create_room(
         has_voted: false,
     };
 
-    let mut rooms = app_state.rooms.lock().await;
     let mut players = HashMap::new();
     players.insert(socket.id.to_string(), player.clone());
 
@@ -40,15 +40,22 @@ pub async fn handle_create_room(
         players,
         cards_revealed: false,
     };
-    rooms.insert(room_id, room.clone());
+
+    app_state.rooms.lock().await.insert(room_id, room.clone());
 
     socket.join(room_id.to_string());
     info!("Room created: {}, host: {}", room_id, player.name);
 
-    socket.emit("roomCreated", &(room, true)).ok();
+    if let Err(err) = socket.emit("roomCreated", &(room, true)) {
+        error!("Failed to emit roomCreated event: {}", err);
+    }
 }
 
-#[expect(clippy::single_call_fn)]
+/// Handles a player joining a room.
+/// - Validates the room ID.
+/// - Adds the player to the room if not already present.
+/// - Emits "playerJoined" and "roomState" events.
+/// - Emits "roomNotFound" if the room does not exist or the ID is invalid.
 pub async fn handle_join_room(
     socket: SocketRef,
     Data(payload): Data<types::JoinRoomEvent>,
@@ -78,23 +85,32 @@ pub async fn handle_join_room(
             }
 
             // emit the updated room state to all players in the room
-            // should probably handle the error rather than ignoring it
-            let _ = socket.to(payload.room_id).emit("playerJoined", &room).await;
+            if let Err(err) = socket.to(payload.room_id).emit("playerJoined", &room).await {
+                error!("Failed to notify player joined: {}", err);
+            }
             // send room state to the newly joined player
             let is_host = room.host_id == socket.id.to_string();
-            socket.emit("roomState", &(room, is_host)).ok();
+            if let Err(err) = socket.emit("roomState", &(room, is_host)) {
+                error!("Failed to send room state: {}", err);
+            }
         } else {
             error!("Room not found: {}", payload.room_id);
             // why do i need to borrow the unit struct here?
-            socket.emit("roomNotFound", &()).ok();
+            if let Err(err) = socket.emit("roomNotFound", &()) {
+                error!("Failed to notify room not found: {}", err);
+            }
         }
     } else {
         error!("Invalid room ID format: {}", payload.room_id);
-        socket.emit("roomNotFound", &()).ok();
+        if let Err(err) = socket.emit("roomNotFound", &()) {
+            error!("Failed to notify room not found: {}", err);
+        }
     }
 }
 
-#[expect(clippy::single_call_fn)]
+/// Handles a player voting in a room.
+/// - Updates the player's vote and voting status.
+/// - Emits "playerVoted" event to the room and the player.
 pub async fn handle_vote(
     socket: SocketRef,
     Data(payload): Data<types::VoteEvent>,
@@ -116,17 +132,21 @@ pub async fn handle_vote(
                 // broadcast to room without revealing vote
                 // should probably remove the vote values from the object to stop them
                 // being seen by the client
-                let _ = socket
-                    .to(room_id_str)
+                if let Err(err) = socket
+                    .within(room_id_str)
                     .emit("playerVoted", &room.clone())
-                    .await;
-                socket.emit("playerVoted", &room.clone()).ok();
+                    .await
+                {
+                    error!("Failed to notify player voted: {}", err);
+                }
             }
         }
     }
 }
 
-#[expect(clippy::single_call_fn)]
+/// Handles revealing cards in a room.
+/// - Only the host can reveal cards.
+/// - Updates the room state and emits "cardsRevealed" event.
 pub async fn handle_reveal_cards(
     socket: SocketRef,
     Data(payload): Data<types::RevealCardsEvent>,
@@ -142,11 +162,13 @@ pub async fn handle_reveal_cards(
                 room.cards_revealed = true;
                 info!("Cards revealed in room {}", room_id_str);
 
-                let _ = socket
-                    .to(room_id_str)
+                if let Err(err) = socket
+                    .within(room_id_str)
                     .emit("cardsRevealed", &room.clone())
-                    .await;
-                socket.emit("cardsRevealed", &room.clone()).ok();
+                    .await
+                {
+                    error!("Failed to notify cards revealed: {}", err);
+                }
             } else {
                 error!(
                     "Player {} is not the host of room {}",
@@ -157,7 +179,10 @@ pub async fn handle_reveal_cards(
     }
 }
 
-#[expect(clippy::single_call_fn)]
+/// Handles resetting votes in a room.
+/// - Only the host can reset votes.
+/// - Clears all player votes and voting status.
+/// - Emits "votesReset" event.
 pub async fn handle_reset_votes(
     socket: SocketRef,
     Data(payload): Data<types::ResetVotesEvent>,
@@ -178,11 +203,13 @@ pub async fn handle_reset_votes(
                 }
                 info!("Votes reset in room {}", room_id_str);
 
-                let _ = socket
-                    .to(room_id_str)
+                if let Err(err) = socket
+                    .within(room_id_str)
                     .emit("votesReset", &room.clone())
-                    .await;
-                socket.emit("votesReset", &room.clone()).ok();
+                    .await
+                {
+                    error!("Failed to notify votes reset: {}", err);
+                }
             } else {
                 error!(
                     "Player {} is not the host of room {}",
@@ -193,7 +220,10 @@ pub async fn handle_reset_votes(
     }
 }
 
-#[expect(clippy::single_call_fn)]
+/// Handles player disconnects.
+/// - Removes the player from all rooms.
+/// - Emits "playerDisconnected" event.
+/// - Elects a new host if the disconnected player was the host and notifies the room.
 pub async fn handle_disconnect(socket: SocketRef, app_state: SocketState<Arc<types::AppState>>) {
     info!("Client disconnected: {}", socket.id);
 
@@ -205,10 +235,13 @@ pub async fn handle_disconnect(socket: SocketRef, app_state: SocketState<Arc<typ
             info!("Player {} removed from room {}", socket.id, room.id);
 
             // Optionally, you can emit an event to notify other clients
-            let _ = socket
+            if let Err(err) = socket
                 .to(room.id.to_string())
                 .emit("playerDisconnected", &socket.id)
-                .await;
+                .await
+            {
+                error!("Failed to notify player disconnected: {}", err);
+            }
 
             // should elect a new host if the disconnected player was the host
             if room.host_id == socket.id.to_string() {
@@ -216,10 +249,13 @@ pub async fn handle_disconnect(socket: SocketRef, app_state: SocketState<Arc<typ
                     room.host_id.clone_from(&new_host.id);
                     info!("New host elected: {} for room {}", new_host.id, room.id);
                     // Notify all players in the room about the new host
-                    let _ = socket
+                    if let Err(err) = socket
                         .to(room.id.to_string())
                         .emit("newHostElected", &new_host.id)
-                        .await;
+                        .await
+                    {
+                        error!("Failed to notify new host: {}", err);
+                    }
                 }
             }
         }

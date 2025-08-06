@@ -1,12 +1,5 @@
-#![warn(
-    clippy::all,
-    clippy::restriction,
-    clippy::pedantic,
-    clippy::nursery,
-    clippy::cargo
-)]
-use core::error::Error;
-use std::sync::Arc;
+#![warn(clippy::all, clippy::pedantic, clippy::nursery)]
+use std::{error::Error, sync::Arc};
 
 use axum::{
     Router,
@@ -29,9 +22,13 @@ use tower_http::{
 use tracing::{error, info, subscriber::set_global_default};
 use tracing_subscriber::FmtSubscriber;
 
+/// Handlers module containing the logic for handling socket events.
 mod handlers;
+/// Types module containing the application state and data structures.
 mod types;
 
+/// Middleware to log 404 Not Found responses.
+/// - Logs the request URI when a 404 response is encountered.
 async fn log_404(req: Request<Body>, next: Next) -> Response {
     let response = next.run(req).await;
     if response.status() == StatusCode::NOT_FOUND {
@@ -40,14 +37,15 @@ async fn log_404(req: Request<Body>, next: Next) -> Response {
             response
                 .extensions()
                 .get::<OriginalUri>()
-                .map(|uri| uri.to_string())
-                .unwrap_or_else(|| "<unknown>".to_owned())
+                .map_or_else(|| "<unknown>".to_owned(), |uri| uri.to_string())
         );
     }
     response
 }
 
-#[expect(clippy::single_call_fn)]
+/// Called when a new client connects.
+/// - Initializes the connection handlers for the socket.
+/// - Logs the connection event.
 async fn on_connect(socket: SocketRef) {
     info!("Client connected: {}", socket.id);
 
