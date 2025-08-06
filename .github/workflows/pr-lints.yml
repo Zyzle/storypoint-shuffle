@@ -2,7 +2,7 @@ name: PR Lints
 on:
   pull_request:
     branches:
-      - main
+      - master
     paths:
       - "src/**"
     types: [opened, synchronize, reopened]
