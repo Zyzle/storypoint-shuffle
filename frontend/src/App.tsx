@@ -104,6 +104,10 @@ const App: React.FC = () => {
       setError('Room not found or invalid ID.');
     });
 
+    newSocket.on('playerDisconnected', (newRoom: Room) => {
+      setRoom(newRoom);
+    });
+
     // Cleanup function to disconnect the socket when the component unmounts
     return () => {
       newSocket.disconnect();
