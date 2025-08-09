@@ -13,7 +13,7 @@ export const Route = createFileRoute('/')({
 function Index() {
   const { error, joinRoom, createRoom } = useSocket();
 
-  const [createJoin, setCreateJoin] = useState('join');
+  const [createJoin, setCreateJoin] = useState('create');
   const [roomIdInput, setRoomIdInput] = useState('');
   const [nameInput, setNameInput] = useState('');
 
@@ -29,8 +29,8 @@ function Index() {
         fluid
       >
         <Tabs.List>
-          <Tabs.Control value="join">Join Room</Tabs.Control>
           <Tabs.Control value="create">Create Room</Tabs.Control>
+          <Tabs.Control value="join">Join Room</Tabs.Control>
         </Tabs.List>
         <Tabs.Content>
           <Tabs.Panel value="join">

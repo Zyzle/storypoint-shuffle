@@ -16,13 +16,15 @@
   "dependencies": {
     "@floating-ui/react": "^0.27.15",
     "@tailwindcss/vite": "^4.1.11",
+    "@tanstack/react-form": "^1.19.0",
     "@tanstack/react-router": "^1.130.12",
     "@tanstack/react-router-devtools": "^1.130.13",
     "lucide-react": "^0.536.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "socket.io-client": "^4.8.1",
-    "tailwindcss": "^4.1.11"
+    "tailwindcss": "^4.1.11",
+    "zod": "^4.0.16"
   },
   "devDependencies": {
     "@chromatic-com/storybook": "^4.1.0",
