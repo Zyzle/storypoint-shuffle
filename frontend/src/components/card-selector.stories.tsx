@@ -29,7 +29,7 @@ export const VoteSelected: Story = {
 
 export const ControlledComponent: Story = {
   decorators: [
-    (Story, args) => {
+    (Story) => {
       const [selectedVote, setSelectedVote] = useState(1);
       return <Story args={{ selectedVote, onVoteChange: setSelectedVote }} />;
     },
