@@ -1,34 +1,18 @@
-import React, {
-  createContext,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
-import { io, Socket } from 'socket.io-client';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+
+import { useNavigate } from '@tanstack/react-router';
+import { io, type Socket } from 'socket.io-client';
 
 import type {
   ClientToServerEvents,
-  ServerToClientEvents,
-  Room,
   Player,
-} from './types';
-
-interface State {
-  room?: Room;
-  me?: Player;
-  setMe: React.Dispatch<React.SetStateAction<Player | undefined>>;
-  error?: string;
-  joinRoom: (roomId: string, name: string) => void;
-  createRoom: (name: string) => void;
-  revealCards: (roomId: string) => void;
-  resetVotes: (roomId: string) => void;
-  vote: (roomId: string, vote: number) => void;
-}
-
-const SocketContext = createContext<State | undefined>(undefined);
+  Room,
+  ServerToClientEvents,
+} from '../types';
+import { SocketContext } from '../contexts/socket.context';
 
 function SocketProvider({ children }: Readonly<{ children: React.ReactNode }>) {
+  const navigate = useNavigate();
   const [socket, setSocket] = useState<Socket<
     ServerToClientEvents,
     ClientToServerEvents
@@ -44,7 +28,7 @@ function SocketProvider({ children }: Readonly<{ children: React.ReactNode }>) {
         socket.emit('joinRoom', { room_id: roomId, name });
       }
     },
-    [socket]
+    [socket],
   );
   const createRoom = useCallback(
     (name: string) => {
@@ -53,7 +37,7 @@ function SocketProvider({ children }: Readonly<{ children: React.ReactNode }>) {
         socket.emit('createRoom', { name });
       }
     },
-    [socket]
+    [socket],
   );
   const revealCards = useCallback(
     (roomId: string) => {
@@ -61,7 +45,7 @@ function SocketProvider({ children }: Readonly<{ children: React.ReactNode }>) {
         socket.emit('revealCards', { room_id: roomId });
       }
     },
-    [socket]
+    [socket],
   );
   const resetVotes = useCallback(
     (roomId: string) => {
@@ -69,7 +53,7 @@ function SocketProvider({ children }: Readonly<{ children: React.ReactNode }>) {
         socket.emit('resetVotes', { room_id: roomId });
       }
     },
-    [socket]
+    [socket],
   );
   const vote = useCallback(
     (roomId: string, vote: number) => {
@@ -77,7 +61,7 @@ function SocketProvider({ children }: Readonly<{ children: React.ReactNode }>) {
         socket.emit('vote', { room_id: roomId, vote });
       }
     },
-    [socket]
+    [socket],
   );
 
   const value = useMemo(
@@ -102,13 +86,12 @@ function SocketProvider({ children }: Readonly<{ children: React.ReactNode }>) {
       revealCards,
       resetVotes,
       vote,
-    ]
+    ],
   );
 
   useEffect(() => {
     const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(
-      // 'http://localhost:3333'
-      'https://storypoint-shuffle.fly.dev'
+      import.meta.env.VITE_SOCKET_URL,
     );
     setSocket(socket);
 
@@ -118,6 +101,10 @@ function SocketProvider({ children }: Readonly<{ children: React.ReactNode }>) {
 
     socket.on('roomCreated', (room) => {
       setRoom(room);
+      navigate({
+        to: '/room/$roomId',
+        params: { roomId: room.id },
+      });
     });
 
     socket.on('playerJoined', (room) => {
@@ -166,11 +153,11 @@ function SocketProvider({ children }: Readonly<{ children: React.ReactNode }>) {
     return () => {
       socket?.disconnect();
     };
-  }, []);
+  }, [navigate]);
 
   return (
     <SocketContext.Provider value={value}>{children}</SocketContext.Provider>
   );
 }
 
-export { SocketProvider, SocketContext };
+export { SocketProvider };

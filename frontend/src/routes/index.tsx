@@ -1,9 +1,16 @@
-import React, { useState } from 'react';
-import { Tabs } from '@skeletonlabs/skeleton-react';
-import { ArrowRight } from 'lucide-react';
-import { useSocket } from './useSocket';
+import { useState } from 'react';
 
-export const Home: React.FC = () => {
+import { Tabs } from '@skeletonlabs/skeleton-react';
+import { createFileRoute } from '@tanstack/react-router';
+import { ArrowRight } from 'lucide-react';
+
+import { useSocket } from '../hooks/socket.hook';
+
+export const Route = createFileRoute('/')({
+  component: Index,
+});
+
+function Index() {
   const { error, joinRoom, createRoom } = useSocket();
 
   const [createJoin, setCreateJoin] = useState('join');
@@ -84,4 +91,4 @@ export const Home: React.FC = () => {
       </Tabs>
     </div>
   );
-};
+}

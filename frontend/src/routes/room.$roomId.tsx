@@ -1,12 +1,20 @@
-import React from 'react';
+import { createFileRoute } from '@tanstack/react-router';
 import { Check, ClipboardCopy, MessageCircleMore } from 'lucide-react';
 
-import { useSocket } from './useSocket';
+import { useSocket } from '../hooks/socket.hook';
 
-export const Room: React.FC = () => {
+export const Route = createFileRoute('/room/$roomId')({
+  component: Room,
+});
+
+function Room() {
   const { room, me, setMe, revealCards, resetVotes, vote } = useSocket();
+  const { roomId } = Route.useParams();
 
-  if (!room) return null;
+  console.log('Room component rendered with roomId:', roomId);
+  console.log('Current room state:', room);
+
+  if (!room || !roomId) return null;
 
   const players = Object.values(room.players);
   const numPlayers = players.length;
@@ -27,7 +35,11 @@ export const Room: React.FC = () => {
         <h1 className="h1">Room: {room.id.slice(0, 8)}...</h1>
         <button
           className="btn"
-          onClick={() => navigator.clipboard.writeText(room.id)}
+          onClick={() =>
+            navigator.clipboard.writeText(
+              `${import.meta.env.VITE_SITE_URL}/room/${room.id}`,
+            )
+          }
         >
           <ClipboardCopy size={32} className="text-success-200-800" />
         </button>
@@ -157,4 +169,4 @@ export const Room: React.FC = () => {
       </div>
     </div>
   );
-};
+}

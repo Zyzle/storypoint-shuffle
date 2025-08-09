@@ -1,3 +1,11 @@
+import { type Dispatch, type SetStateAction } from 'react';
+
+export interface DialogOptions {
+  initialOpen?: boolean;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+}
+
 export interface Player {
   id: string;
   name: string;
@@ -33,4 +41,16 @@ export interface ClientToServerEvents {
   vote: ({ room_id, vote }: { room_id: string; vote: number }) => void;
   revealCards: ({ room_id }: { room_id: string }) => void;
   resetVotes: ({ room_id }: { room_id: string }) => void;
+}
+
+export interface AppState {
+  room?: Room;
+  me?: Player;
+  setMe: Dispatch<SetStateAction<Player | undefined>>;
+  error?: string;
+  joinRoom: (roomId: string, name: string) => void;
+  createRoom: (name: string) => void;
+  revealCards: (roomId: string) => void;
+  resetVotes: (roomId: string) => void;
+  vote: (roomId: string, vote: number) => void;
 }
