@@ -8,3 +8,12 @@
 @source './node_modules/@skeletonlabs/skeleton-react/dist';
 
 @custom-variant dark (&:where(.dark, .dark *));
+
+.Dialog-overlay {
+  background: rgba(0, 0, 0, 0.5);
+  display: grid;
+  place-items: center;
+}
+
+.Dialog {
+}
