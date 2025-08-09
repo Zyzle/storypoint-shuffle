@@ -113,6 +113,10 @@ function SocketProvider({ children }: Readonly<{ children: React.ReactNode }>) {
 
     socket.on('roomState', (room) => {
       setRoom(room);
+      navigate({
+        to: '/room/$roomId',
+        params: { roomId: room.id },
+      });
     });
 
     socket.on('playerVoted', (room) => {

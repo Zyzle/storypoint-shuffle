@@ -6,7 +6,7 @@ function CardSelector({
   onVoteChange: (vote: number) => void;
 }) {
   return (
-    <div className="flex justify-center flex-wrap gap-4 max-w-4xl">
+    <div className="flex justify-center flex-wrap gap-4 max-w-4xl pb-4">
       {[1, 2, 3, 5, 8, 13, 21].map((voteValue) => (
         <button
           key={voteValue}

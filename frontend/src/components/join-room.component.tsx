@@ -3,7 +3,13 @@ import { ArrowRight } from 'lucide-react';
 
 import { Dialog, DialogContent, DialogHeading } from './dialog.component';
 
-function JoinRoom({ submit }: { submit: (name: string) => void }) {
+function JoinRoom({
+  open,
+  submit,
+}: {
+  open: boolean;
+  submit: (name: string) => void;
+}) {
   const form = useForm({
     defaultValues: {
       name: '',
@@ -14,7 +20,7 @@ function JoinRoom({ submit }: { submit: (name: string) => void }) {
   });
 
   return (
-    <Dialog open={true}>
+    <Dialog open={open}>
       <DialogContent className="Dialog">
         <DialogHeading>Join room</DialogHeading>
         <form
