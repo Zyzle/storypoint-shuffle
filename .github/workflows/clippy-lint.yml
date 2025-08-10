@@ -1,4 +1,4 @@
-name: PR Lints
+name: Clippy Lint
 on:
   pull_request:
     branches:

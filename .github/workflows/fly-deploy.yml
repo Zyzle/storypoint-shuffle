@@ -5,6 +5,12 @@ on:
   push:
     branches:
       - master
+    # There's no need to redeploy when stories or markdown files change
+    paths-ignore:
+      - "**/*.md"
+      - "**/*.stories.ts"
+      - "**/*.stories.tsx"
+      - "frontend/.storybook/**"
 jobs:
   deploy:
     name: Deploy app
