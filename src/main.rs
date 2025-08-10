@@ -76,6 +76,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
     let static_service = get_service(ServeDir::new("dist/assets"));
 
     let app = Router::new()
+        .fallback_service(get_service(ServeFile::new("dist/index.html")))
         .route("/", get_service(ServeFile::new("dist/index.html")))
         .nest_service("/assets", static_service.clone())
         .layer(
