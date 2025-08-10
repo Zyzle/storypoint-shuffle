@@ -253,3 +253,67 @@ pub async fn handle_disconnect(socket: SocketRef, app_state: SocketState<Arc<typ
         }
     }
 }
+
+pub async fn handle_player_exit(
+    socket: SocketRef,
+    Data(payload): Data<types::PlayerExitEvent>,
+    app_state: SocketState<Arc<types::AppState>>,
+) {
+    info!(
+        "Player {} is exiting room {}",
+        payload.player_id, payload.room_id
+    );
+
+    let room_id_str = payload.room_id.clone();
+
+    if let Ok(room_id) = Uuid::parse_str(&payload.room_id) {
+        let mut rooms = app_state.rooms.lock().await;
+
+        if let Some(room) = rooms.get_mut(&room_id) {
+            if let Some(player) = room.players.get_mut(&socket.id.to_string()) {
+                if player.id == payload.player_id {
+                    room.players.remove(&socket.id.to_string());
+                    info!("Player {} exited room {}", payload.player_id, &room_id_str);
+
+                    if let Err(err) = socket
+                        .to(room.id.to_string())
+                        .emit("playerDisconnected", &room)
+                        .await
+                    {
+                        error!("Failed to notify player disconnected: {}", err);
+                    }
+
+                    // If the exiting player was the host, elect a new host
+                    if room.host_id == socket.id.to_string() {
+                        if let Some(new_host) = room.players.values().next() {
+                            room.host_id.clone_from(&new_host.id);
+                            info!("New host elected: {} for room {}", new_host.id, room.id);
+                            // Notify all players in the room about the new host
+                            if let Err(err) = socket
+                                .to(room.id.to_string())
+                                .emit("newHostElected", &new_host.id)
+                                .await
+                            {
+                                error!("Failed to notify new host: {}", err);
+                            }
+                        } else {
+                            info!("Room {} is now empty, removing it", room_id_str);
+                            rooms.remove(&room_id);
+                            drop(rooms);
+                        }
+                    }
+                } else {
+                    error!(
+                        "Player {} tried to exit as player {}, but they are not the same",
+                        socket.id, payload.player_id
+                    );
+                }
+            } else {
+                error!(
+                    "Player {} not found in room {}",
+                    payload.player_id, room_id_str
+                );
+            }
+        }
+    }
+}

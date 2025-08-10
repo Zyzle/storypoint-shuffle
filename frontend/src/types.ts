@@ -37,7 +37,13 @@ export interface ServerToClientEvents {
 export interface ClientToServerEvents {
   createRoom: ({ name }: { name: string }) => void;
   joinRoom: ({ room_id, name }: { room_id: string; name: string }) => void;
-  // leaveRoom: () => void;
+  exitRoom: ({
+    room_id,
+    player_id,
+  }: {
+    room_id: string;
+    player_id: string;
+  }) => void;
   vote: ({ room_id, vote }: { room_id: string; vote: number }) => void;
   revealCards: ({ room_id }: { room_id: string }) => void;
   resetVotes: ({ room_id }: { room_id: string }) => void;
@@ -49,6 +55,7 @@ export interface AppState {
   setMe: Dispatch<SetStateAction<Player | undefined>>;
   error?: string;
   joinRoom: (roomId: string, name: string) => void;
+  exitRoom: (roomId: string, playerId: string) => void;
   createRoom: (name: string) => void;
   revealCards: (roomId: string) => void;
   resetVotes: (roomId: string) => void;
