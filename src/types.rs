@@ -83,3 +83,12 @@ pub struct ResetVotesEvent {
     /// The ID of the room where the votes are reset
     pub room_id: String,
 }
+
+/// Player exits a room
+#[derive(Debug, Deserialize)]
+pub struct PlayerExitEvent {
+    /// The ID of the room the player is exiting
+    pub room_id: String,
+    /// The ID of the player exiting the room
+    pub player_id: String,
+}

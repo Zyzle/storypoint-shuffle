@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, useNavigate } from '@tanstack/react-router';
 
 import { useSocket } from '../hooks/socket.hook';
 import { CentralCard } from '../components/central-card.component';
@@ -6,15 +6,18 @@ import { PlayerCard } from '../components/player-card.component';
 import { CardSelector } from '../components/card-selector.component';
 import { RoomHeadline } from '../components/room-headline.component';
 import { JoinRoom } from '../components/join-room.component';
+import { useMemo } from 'react';
 
 export const Route = createFileRoute('/room/$roomId')({
   component: Room,
 });
 
 function Room() {
-  const { room, me, setMe, revealCards, resetVotes, vote, joinRoom } =
+  const { room, me, setMe, revealCards, resetVotes, vote, joinRoom, exitRoom } =
     useSocket();
   const { roomId } = Route.useParams();
+  const navigate = useNavigate();
+  const isHost = useMemo(() => me?.id === room?.host_id, [me, room]);
 
   const players = room ? Object.values(room.players) : [];
   const numPlayers = players.length;
@@ -24,7 +27,6 @@ function Room() {
   const averageVote =
     votes.filter((v) => v !== null).reduce((sum, v) => sum + v, 0) /
       votes.length || 0;
-  const isHost = me?.id === room?.host_id;
 
   const radius = 250;
   const centerOffset = 250;
@@ -44,6 +46,12 @@ function Room() {
           playerName={me?.name}
           roomId={room?.id ?? ''}
           isHost={isHost}
+          exitRoom={() => {
+            if (room && me) {
+              exitRoom(room.id, me.id);
+              navigate({ to: '/' });
+            }
+          }}
         />
 
         {/* Circular Player Card Layout */}

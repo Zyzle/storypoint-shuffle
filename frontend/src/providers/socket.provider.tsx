@@ -63,6 +63,14 @@ function SocketProvider({ children }: Readonly<{ children: React.ReactNode }>) {
     },
     [socket],
   );
+  const exitRoom = useCallback(
+    (roomId: string, playerId: string) => {
+      if (socket) {
+        socket.emit('exitRoom', { room_id: roomId, player_id: playerId });
+      }
+    },
+    [socket],
+  );
 
   const value = useMemo(
     () => ({
@@ -71,6 +79,7 @@ function SocketProvider({ children }: Readonly<{ children: React.ReactNode }>) {
       setMe,
       error,
       joinRoom,
+      exitRoom,
       createRoom,
       revealCards,
       resetVotes,
@@ -82,6 +91,7 @@ function SocketProvider({ children }: Readonly<{ children: React.ReactNode }>) {
       setMe,
       error,
       joinRoom,
+      exitRoom,
       createRoom,
       revealCards,
       resetVotes,
@@ -143,6 +153,12 @@ function SocketProvider({ children }: Readonly<{ children: React.ReactNode }>) {
           return { ...prevMe, isHost: true };
         }
         return prevMe;
+      });
+      setRoom((prevRoom) => {
+        if (prevRoom) {
+          return { ...prevRoom, host_id: newHostId };
+        }
+        return prevRoom;
       });
     });
 

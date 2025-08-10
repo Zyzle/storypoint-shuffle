@@ -7,16 +7,20 @@ function RoomHeadline({
   roomId,
   playerName,
   isHost,
+  exitRoom,
 }: {
   roomId: string;
   playerName?: string;
   isHost: boolean;
+  exitRoom: () => void;
 }) {
   return (
     <AppBar>
       <AppBar.Toolbar>
         <AppBar.ToolbarLead>
-          <ArrowLeft size={24} />
+          <button className="btn" onClick={exitRoom}>
+            <ArrowLeft size={24} />
+          </button>
         </AppBar.ToolbarLead>
         <AppBar.ToolbarTrail>
           <button

@@ -59,6 +59,8 @@ async fn on_connect(socket: SocketRef) {
 
     socket.on("resetVotes", handlers::handle_reset_votes);
 
+    socket.on("exitRoom", handlers::handle_player_exit);
+
     socket.on_disconnect(handlers::handle_disconnect);
 }
 
