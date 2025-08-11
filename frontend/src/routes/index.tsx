@@ -5,6 +5,7 @@ import { createFileRoute } from '@tanstack/react-router';
 import { ArrowRight } from 'lucide-react';
 
 import { useSocket } from '../hooks/socket.hook';
+import { Logo } from '../components/logo.component';
 
 export const Route = createFileRoute('/')({
   component: Index,
@@ -19,7 +20,10 @@ function Index() {
 
   return (
     <div className="flex flex-col items-center justify-center p-8 space-y-4">
-      <h1 className="h1">Stroypoint Shuffle</h1>
+      <div className="flex flex-row items-center relative h-[200px]">
+        <Logo width={200} height={200} className="absolute -left-24 -z-10" />
+        <h1 className="h1">Storypoint Shuffle</h1>
+      </div>
       <p className="">Create a new room or join an existing one.</p>
       {error && <div className="text-error-500">{error}</div>}
 
@@ -32,9 +36,9 @@ function Index() {
           <Tabs.Control value="create">Create Room</Tabs.Control>
           <Tabs.Control value="join">Join Room</Tabs.Control>
         </Tabs.List>
-        <Tabs.Content>
+        <Tabs.Content classes="flex justify-center">
           <Tabs.Panel value="join">
-            <div className="card w-full max-w-sm p-6 space-y-4 shadow-lg bg-surface-500">
+            <div className="card w-lg p-6 space-y-4 shadow-lg bg-surface-500">
               <h2 className="h3">Join a Room</h2>
               <label className="label">
                 <span className="label-text">Room ID</span>
@@ -66,7 +70,7 @@ function Index() {
           </Tabs.Panel>
 
           <Tabs.Panel value="create">
-            <div className="card w-full max-w-sm p-6 space-y-4 shadow-lg bg-surface-500">
+            <div className="card w-lg p-6 space-y-4 shadow-lg bg-surface-500">
               <h2 className="h3">Create a Room</h2>
               <label className="label">
                 <span className="label-text">Name</span>
