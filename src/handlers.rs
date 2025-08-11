@@ -132,8 +132,26 @@ pub async fn handle_vote(
                 // broadcast to room without revealing vote
                 // should probably remove the vote values from the object to stop them
                 // being seen by the client
-                if let Err(err) = socket.within(room_id_str).emit("playerVoted", &room).await {
+                if let Err(err) = socket
+                    .within(room_id_str.clone())
+                    .emit("playerVoted", &room)
+                    .await
+                {
                     error!("Failed to notify player voted: {}", err);
+                }
+
+                // if all players have voted emit "cardsRevealed" event
+                if room.players.values().all(|p| p.has_voted) {
+                    room.cards_revealed = true;
+                    info!("All players voted in room {}", room_id_str);
+
+                    if let Err(err) = socket
+                        .within(room_id_str)
+                        .emit("cardsRevealed", &room)
+                        .await
+                    {
+                        error!("Failed to notify cards revealed: {}", err);
+                    }
                 }
             }
         }
