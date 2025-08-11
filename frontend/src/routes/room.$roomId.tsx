@@ -22,11 +22,10 @@ function Room() {
   const players = room ? Object.values(room.players) : [];
   const numPlayers = players.length;
   const votes = room?.cards_revealed
-    ? Object.values(room.players).map((p) => p.vote)
+    ? Object.values(room.players)
+        .map((p) => p.vote)
+        .filter((x) => x !== null)
     : [];
-  const averageVote =
-    votes.filter((v) => v !== null).reduce((sum, v) => sum + v, 0) /
-      votes.length || 0;
 
   const radius = 250;
   const centerOffset = 250;
@@ -60,7 +59,7 @@ function Room() {
           <CentralCard
             isRevealed={room?.cards_revealed ?? false}
             showHostControls={isHost}
-            averageVote={averageVote}
+            votes={votes}
             onVotesRevealed={() => revealCards(room?.id ?? '')}
             onVotesReset={() => resetVotes(room?.id ?? '')}
           />
