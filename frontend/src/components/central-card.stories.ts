@@ -15,7 +15,7 @@ export const VotesHidden: Story = {
   args: {
     isRevealed: false,
     showHostControls: false,
-    averageVote: 0,
+    votes: [],
     onVotesRevealed: () => {},
     onVotesReset: () => {},
   },
@@ -25,7 +25,7 @@ export const HiddenWithHostControls: Story = {
   args: {
     isRevealed: false,
     showHostControls: true,
-    averageVote: 0,
+    votes: [],
     onVotesRevealed: () => {},
     onVotesReset: () => {},
   },
@@ -35,7 +35,7 @@ export const VotesRevealed: Story = {
   args: {
     isRevealed: true,
     showHostControls: false,
-    averageVote: 5,
+    votes: [5, 3, 5, 5, 1, 5],
     onVotesRevealed: () => {},
     onVotesReset: () => {},
   },
@@ -45,7 +45,7 @@ export const RevealedWithHostControls: Story = {
   args: {
     isRevealed: true,
     showHostControls: true,
-    averageVote: 5,
+    votes: [5, 3, 5, 5, 1, 5],
     onVotesRevealed: () => {},
     onVotesReset: () => {},
   },
