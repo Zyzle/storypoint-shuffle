@@ -18,7 +18,7 @@
     "@floating-ui/react": "^0.27.15",
     "@tailwindcss/vite": "^4.1.11",
     "@tanstack/react-form": "^1.19.0",
-    "@tanstack/react-router": "^1.130.12",
+    "@tanstack/react-router": "^1.131.4",
     "@tanstack/react-router-devtools": "^1.130.13",
     "lucide-react": "^0.536.0",
     "react": "^19.1.0",
