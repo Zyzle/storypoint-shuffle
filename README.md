@@ -1,4 +1,4 @@
-# Storypoint Shuffle
+![Storypoint Shuffle logo](logo.png)
 
 A collaborative story point voting app built with Rust (Axum, Socketioxide) and React.
 
@@ -7,52 +7,30 @@ A collaborative story point voting app built with Rust (Axum, Socketioxide) and 
 - Real-time story point voting using WebSockets
 - Room and player management
 - Frontend built with React and Tailwind CSS
-- Backend API and static file serving with Axum
-
-## Project Structure
-
-```
-storypoint-shuffle/
-├── Cargo.toml         # Rust backend config
-├── src/               # Rust backend source
-├── dist/              # Compiled frontend assets (served by Axum)
-├── frontend/          # React frontend source
-│   ├── package.json
-│   ├── vite.config.ts
-│   └── src/
-```
+- Backend API and static file serving with Axum and websockets using Socketioxide
 
 ## Getting Started
 
-### Backend
+### Setup
 
 1. Install Rust: https://rustup.rs
-2. Run the backend server:
-   ```sh
-   cargo run
-   ```
-
-### Frontend
-
-1. Install Bun: https://bun.sh
-2. Install dependencies:
+2. Install Bun: https://bun.sh
+3. Install frontend dependencies:
    ```sh
    cd frontend
    bun install
    ```
-3. Build the frontend:
-   ```sh
-   bun run build
+4. Create a `.env` file in the `frontend` directory with the following content (change as needed for your setup)
    ```
-   This outputs static files to `../dist`.
+   VITE_SITE_URL=http://localhost:5173
+   VITE_SOCKET_URL=http://localhost:3333
+   ```
 
 ## Development
 
 - Start the backend: `cargo run`
-- Start the frontend dev server: `bun run dev` (for hot reload, not for production)
-
-## Serving
-
-- The backend serves static files from the `dist` directory and handles WebSocket connections for real-time features.
+- Start the frontend (from the `frontend` directory): `bun run dev`
 
 ## License
+
+Made available under the MIT license see the LICENSE file for full details.

@@ -5,6 +5,21 @@ import { PlayerCard } from './player-card.component';
 const meta: Meta<typeof PlayerCard> = {
   title: 'Components/PlayerCard',
   component: PlayerCard,
+  argTypes: {
+    color: {
+      control: {
+        type: 'select',
+      },
+      options: [
+        'player-gradient-1',
+        'player-gradient-2',
+        'player-gradient-3',
+        'player-gradient-4',
+        'player-gradient-5',
+        'player-gradient-6',
+      ],
+    },
+  },
 };
 
 export default meta;
@@ -18,6 +33,7 @@ export const NoVote: Story = {
     hasVoted: false,
     isRevealed: false,
     style: { top: '50px', left: '100px' },
+    color: 'player-gradient-1',
   },
 };
 
@@ -27,7 +43,7 @@ export const Host: Story = {
     isHost: true,
     hasVoted: false,
     isRevealed: false,
-
+    color: 'player-gradient-1',
     style: {
       top: '50px',
       left: '100px',
@@ -41,7 +57,7 @@ export const HasVoted: Story = {
     isHost: false,
     hasVoted: true,
     isRevealed: false,
-
+    color: 'player-gradient-1',
     style: {
       top: '50px',
       left: '100px',
@@ -55,7 +71,7 @@ export const Revealed: Story = {
     isHost: false,
     hasVoted: false,
     isRevealed: true,
-
+    color: 'player-gradient-1',
     style: {
       top: '50px',
       left: '100px',
