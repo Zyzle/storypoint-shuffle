@@ -1,4 +1,6 @@
+import { useEffect, useMemo, useState } from 'react';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
+import Confetti from 'react-confetti';
 
 import { useSocket } from '../hooks/socket.hook';
 import { CentralCard } from '../components/central-card.component';
@@ -6,7 +8,6 @@ import { PlayerCard } from '../components/player-card.component';
 import { CardSelector } from '../components/card-selector.component';
 import { RoomHeadline } from '../components/room-headline.component';
 import { JoinRoomDialog } from '../components/join-room-dialog.component';
-import { useMemo } from 'react';
 
 const COLORS = [
   'player-gradient-1',
@@ -36,6 +37,17 @@ function Room() {
   const { roomId } = Route.useParams();
   const navigate = useNavigate();
   const isHost = useMemo(() => me?.id === room?.host_id, [me, room]);
+  const [showConfetti, setShowConfetti] = useState(false);
+
+  useEffect(() => {
+    const agreement =
+      room?.cards_revealed && room
+        ? Object.values(room.players).every(
+            (p) => p.vote === Object.values(room.players)[0].vote,
+          )
+        : false;
+    setShowConfetti(agreement);
+  }, [room, setShowConfetti, room?.cards_revealed]);
 
   const players = room ? Object.values(room.players) : [];
   const numPlayers = players.length;
@@ -114,6 +126,15 @@ function Room() {
           }}
         />
       </div>
+      <Confetti
+        numberOfPieces={showConfetti ? 500 : 0}
+        recycle={false}
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        onConfettiComplete={(confetti: any) => {
+          setShowConfetti(false);
+          confetti.reset();
+        }}
+      />
     </>
   );
 }
