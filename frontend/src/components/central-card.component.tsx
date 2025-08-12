@@ -30,7 +30,7 @@ function CentralCard({
   const modePercentage = Math.round((modeVote.count / votes.length) * 100);
 
   return (
-    <div className="absolute card preset-gradient-pt text-primary-contrast-500 min-w-xs">
+    <div className="absolute card preset-gradient-pt text-primary-contrast-500 min-w-xs shadow-xl">
       <div className="flex flex-col items-center justify-center p-6 gap-4">
         <span className="text-xl font-bold">Results</span>
         {isRevealed ? (
@@ -49,13 +49,13 @@ function CentralCard({
         <footer className="flex space-x-4 p-2 justify-around">
           <button
             onClick={onVotesRevealed}
-            className="btn preset-filled-secondary-400-600"
+            className="btn preset-filled-secondary-400-600 shadow-md"
           >
             Reveal Cards
           </button>
           <button
             onClick={onVotesReset}
-            className="btn preset-filled-error-500"
+            className="btn preset-filled-error-500 shadow-md"
           >
             Reset Round
           </button>

@@ -8,6 +8,24 @@ import { RoomHeadline } from '../components/room-headline.component';
 import { JoinRoom } from '../components/join-room.component';
 import { useMemo } from 'react';
 
+const COLORS = [
+  'player-gradient-1',
+  'player-gradient-2',
+  'player-gradient-3',
+  'player-gradient-4',
+  'player-gradient-5',
+  'player-gradient-6',
+];
+
+function hash(str: string): number {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = (hash << 5) - hash + str.charCodeAt(i);
+    hash |= 0; // Convert to 32bit integer
+  }
+  return hash;
+}
+
 export const Route = createFileRoute('/room/$roomId')({
   component: Room,
 });
@@ -83,6 +101,7 @@ function Room() {
                   top: `${centerOffset + y}px`,
                 }}
                 vote={player.vote}
+                color={COLORS[Math.abs(hash(player.id)) % COLORS.length]}
               />
             );
           })}
