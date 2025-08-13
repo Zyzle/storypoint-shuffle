@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { fn } from 'storybook/test';
 
 import { CentralCard } from './central-card.component';
 
@@ -16,8 +17,8 @@ export const VotesHidden: Story = {
     isRevealed: false,
     showHostControls: false,
     votes: [],
-    onVotesRevealed: () => {},
-    onVotesReset: () => {},
+    onVotesRevealed: fn(),
+    onVotesReset: fn(),
   },
 };
 
@@ -26,8 +27,8 @@ export const HiddenWithHostControls: Story = {
     isRevealed: false,
     showHostControls: true,
     votes: [],
-    onVotesRevealed: () => {},
-    onVotesReset: () => {},
+    onVotesRevealed: fn(),
+    onVotesReset: fn(),
   },
 };
 
@@ -36,8 +37,8 @@ export const VotesRevealed: Story = {
     isRevealed: true,
     showHostControls: false,
     votes: [5, 3, 5, 5, 1, 5],
-    onVotesRevealed: () => {},
-    onVotesReset: () => {},
+    onVotesRevealed: fn(),
+    onVotesReset: fn(),
   },
 };
 
@@ -46,7 +47,7 @@ export const RevealedWithHostControls: Story = {
     isRevealed: true,
     showHostControls: true,
     votes: [5, 3, 5, 5, 1, 5],
-    onVotesRevealed: () => {},
-    onVotesReset: () => {},
+    onVotesRevealed: fn(),
+    onVotesReset: fn(),
   },
 };

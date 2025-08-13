@@ -5,7 +5,7 @@ import { CentralCard } from '../components/central-card.component';
 import { PlayerCard } from '../components/player-card.component';
 import { CardSelector } from '../components/card-selector.component';
 import { RoomHeadline } from '../components/room-headline.component';
-import { JoinRoom } from '../components/join-room.component';
+import { JoinRoomDialog } from '../components/join-room-dialog.component';
 import { useMemo } from 'react';
 
 const COLORS = [
@@ -50,14 +50,7 @@ function Room() {
 
   return (
     <>
-      <JoinRoom
-        open={!room}
-        submit={(name) => {
-          if (roomId) {
-            joinRoom(roomId, name);
-          }
-        }}
-      />
+      <JoinRoomDialog open={!room} roomId={roomId} onJoin={joinRoom} />
       <div className="flex flex-col items-center justify-between min-h-screen w-full">
         <RoomHeadline
           playerName={me?.name}

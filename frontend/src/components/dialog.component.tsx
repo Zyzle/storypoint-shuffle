@@ -84,7 +84,6 @@ const DialogContent = forwardRef<HTMLDivElement, HTMLProps<HTMLDivElement>>(
               aria-labelledby={context.labelId}
               aria-describedby={context.descriptionId}
               {...context.getFloatingProps(props)}
-              className="card bg-surface-100-900 p-4 space-y-4 shadow-xl max-w-screen-md"
             >
               {props.children}
             </div>

@@ -21,6 +21,12 @@ const preview: Preview = {
       // 'off' - skip a11y checks entirely
       test: 'todo',
     },
+    options: {
+      storySort: (a, b) =>
+        a.id === b.id
+          ? 0
+          : a.id.localeCompare(b.id, undefined, { numeric: true }),
+    },
   },
 };
 
