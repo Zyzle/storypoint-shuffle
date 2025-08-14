@@ -1,5 +1,6 @@
 import { Toaster } from '@skeletonlabs/skeleton-react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { fn } from 'storybook/test';
 
 import { RoomHeadline } from './room-headline.component';
 import { toaster } from '../contexts/toaster.context';
@@ -26,7 +27,7 @@ export const NotHost: Story = {
     roomId: '07fcd101-ffbc-41b6-8284-20e5a1a3cacb',
     isHost: false,
     playerName: 'Bob',
-    exitRoom: () => console.log('Exit room clicked'),
+    exitRoom: fn(),
   },
 };
 
@@ -35,6 +36,6 @@ export const IsHost: Story = {
     roomId: '07fcd101-ffbc-41b6-8284-20e5a1a3cacb',
     isHost: true,
     playerName: 'Alice',
-    exitRoom: () => console.log('Exit room clicked'),
+    exitRoom: fn(),
   },
 };

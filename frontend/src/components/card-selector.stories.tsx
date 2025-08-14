@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { fn } from 'storybook/test';
 
 import { CardSelector } from './card-selector.component';
 
@@ -15,15 +16,14 @@ type Story = StoryObj<typeof CardSelector>;
 export const NoVote: Story = {
   args: {
     selectedVote: null,
-    onVoteChange: (vote) => {
-      console.log('Vote changed to:', vote);
-    },
+    onVoteChange: fn(),
   },
 };
 
 export const VoteSelected: Story = {
   args: {
     selectedVote: 1,
+    onVoteChange: fn(),
   },
 };
 

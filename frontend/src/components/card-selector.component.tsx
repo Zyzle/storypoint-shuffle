@@ -13,8 +13,8 @@ function CardSelector({
           className={`card flex justify-center items-center w-20 h-28 rounded-xl cursor-pointer transition-all duration-200
                                 ${
                                   selectedVote === voteValue
-                                    ? 'bg-success-100 shadow-xl scale-110'
-                                    : 'bg-surface-50 shadow-md hover:bg-surface-100'
+                                    ? 'card-gradient-selected shadow-xl scale-110'
+                                    : 'card-gradient-unselected shadow-md hover:bg-surface-100'
                                 }
                                 `}
           onClick={() => {
