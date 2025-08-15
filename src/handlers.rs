@@ -172,7 +172,9 @@ pub async fn handle_reveal_cards(
     if let Ok(room_id) = Uuid::parse_str(&payload.room_id) {
         let mut rooms = app_state.rooms.lock().await;
         if let Some(room) = rooms.get_mut(&room_id) {
-            if room.host_id == socket.id.to_string() {
+            let all_voted = room.players.values().any(|p| p.has_voted);
+
+            if room.host_id == socket.id.to_string() && all_voted {
                 room.cards_revealed = true;
                 info!("Cards revealed in room {}", room_id_str);
 
@@ -184,10 +186,7 @@ pub async fn handle_reveal_cards(
                     error!("Failed to notify cards revealed: {}", err);
                 }
             } else {
-                error!(
-                    "Player {} is not the host of room {}",
-                    socket.id, room_id_str
-                );
+                error!("Cannot reveal cards for room {}", room_id_str);
             }
         }
     }
