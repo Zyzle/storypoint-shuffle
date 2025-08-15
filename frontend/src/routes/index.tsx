@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { Tabs } from '@skeletonlabs/skeleton-react';
 import { createFileRoute } from '@tanstack/react-router';
@@ -7,15 +7,25 @@ import { useSocket } from '../hooks/socket.hook';
 import { Logo } from '../components/logo.component';
 import { JoinRoomForm } from '../components/join-room-form.component';
 import { CreateRoomForm } from '../components/create-room-form.component';
+import { toaster } from '../contexts/toaster.context';
 
 export const Route = createFileRoute('/')({
   component: Index,
 });
 
 function Index() {
-  const { error, joinRoom, createRoom } = useSocket();
+  const { error, joinRoom, createRoom, setError } = useSocket();
 
   const [createJoin, setCreateJoin] = useState('create');
+
+  useEffect(() => {
+    if (error) {
+      setTimeout(() => {
+        toaster.error({ title: 'Error', description: error });
+        setError('');
+      }, 0);
+    }
+  }, [error, setError]);
 
   return (
     <div className="flex flex-col items-center justify-center p-8 space-y-4">
@@ -24,7 +34,6 @@ function Index() {
         <h1 className="h1">Storypoint Shuffle</h1>
       </div>
       <p className="">Create a new room or join an existing one.</p>
-      {error && <div className="text-error-500">{error}</div>}
 
       <Tabs
         value={createJoin}

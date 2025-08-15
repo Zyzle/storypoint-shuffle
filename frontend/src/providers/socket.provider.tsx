@@ -78,6 +78,7 @@ function SocketProvider({ children }: Readonly<{ children: React.ReactNode }>) {
       me,
       setMe,
       error,
+      setError,
       joinRoom,
       exitRoom,
       createRoom,
@@ -90,6 +91,7 @@ function SocketProvider({ children }: Readonly<{ children: React.ReactNode }>) {
       me,
       setMe,
       error,
+      setError,
       joinRoom,
       exitRoom,
       createRoom,
@@ -163,7 +165,8 @@ function SocketProvider({ children }: Readonly<{ children: React.ReactNode }>) {
     });
 
     socket.on('roomNotFound', () => {
-      setError('Room not found or invalid ID.');
+      setError('Sorry, that room does not exist');
+      navigate({ to: '/' });
     });
 
     socket.on('playerDisconnected', (room) => {

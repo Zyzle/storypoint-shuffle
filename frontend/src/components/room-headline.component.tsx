@@ -37,7 +37,12 @@ function RoomHeadline({
         </AppBar.ToolbarTrail>
       </AppBar.Toolbar>
       <AppBar.Headline>
-        <h2 className="h2">Room: {roomId}</h2>
+        <h2 className="h2">
+          Room:{' '}
+          <span>
+            {roomId === '' ? 'XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX' : roomId}
+          </span>
+        </h2>
         <p>
           You are logged in as{' '}
           <span className="font-semibold">{playerName}</span>&nbsp;(

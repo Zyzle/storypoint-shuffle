@@ -54,6 +54,7 @@ export interface AppState {
   me?: Player;
   setMe: Dispatch<SetStateAction<Player | undefined>>;
   error?: string;
+  setError: Dispatch<SetStateAction<string | undefined>>;
   joinRoom: (roomId: string, name: string) => void;
   exitRoom: (roomId: string, playerId: string) => void;
   createRoom: (name: string) => void;
