@@ -39,3 +39,11 @@ export const IsHost: Story = {
     exitRoom: fn(),
   },
 };
+
+export const EmptyRoomId: Story = {
+  args: {
+    roomId: '',
+    isHost: true,
+    playerName: 'Alice',
+  },
+};
