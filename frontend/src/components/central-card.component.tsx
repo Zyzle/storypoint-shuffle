@@ -13,6 +13,8 @@ function CentralCard({
   onVotesRevealed: () => void;
   onVotesReset: () => void;
 }) {
+  const hasSomeVoted = votes.length > 0;
+
   const voteCounts = votes.reduce(
     (acc, vote) => {
       acc[vote] = (acc[vote] || 0) + 1;
@@ -50,6 +52,7 @@ function CentralCard({
           <button
             onClick={onVotesRevealed}
             className="btn preset-filled-secondary-400-600 shadow-md"
+            disabled={!hasSomeVoted || isRevealed}
           >
             Reveal Cards
           </button>

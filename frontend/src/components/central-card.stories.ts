@@ -32,6 +32,16 @@ export const HiddenWithHostControls: Story = {
   },
 };
 
+export const HostControlsSomeVoted: Story = {
+  args: {
+    isRevealed: false,
+    showHostControls: true,
+    votes: [5],
+    onVotesRevealed: fn(),
+    onVotesReset: fn(),
+  },
+};
+
 export const VotesRevealed: Story = {
   args: {
     isRevealed: true,

@@ -38,24 +38,30 @@ function Room() {
   const navigate = useNavigate();
   const isHost = useMemo(() => me?.id === room?.host_id, [me, room]);
   const [showConfetti, setShowConfetti] = useState(false);
+  const votes = useMemo(() => {
+    return room?.players
+      ? Object.values(room.players)
+          .map((p) => p.vote)
+          .filter((x) => x !== null)
+      : [];
+  }, [room]);
+  const isRevealed = useMemo(
+    () => room?.cards_revealed ?? false,
+    [room?.cards_revealed],
+  );
 
   useEffect(() => {
     const agreement =
-      room?.cards_revealed && room
+      isRevealed && room
         ? Object.values(room.players).every(
             (p) => p.vote === Object.values(room.players)[0].vote,
           )
         : false;
     setShowConfetti(agreement);
-  }, [room, setShowConfetti, room?.cards_revealed]);
+  }, [room, setShowConfetti, isRevealed]);
 
   const players = room ? Object.values(room.players) : [];
   const numPlayers = players.length;
-  const votes = room?.cards_revealed
-    ? Object.values(room.players)
-        .map((p) => p.vote)
-        .filter((x) => x !== null)
-    : [];
 
   const radius = 250;
   const centerOffset = 250;
@@ -80,7 +86,7 @@ function Room() {
         <div className="relative w-[500px] h-[500px] flex items-center justify-center">
           {/* Central Card for Average Vote */}
           <CentralCard
-            isRevealed={room?.cards_revealed ?? false}
+            isRevealed={isRevealed}
             showHostControls={isHost}
             votes={votes}
             onVotesRevealed={() => revealCards(room?.id ?? '')}

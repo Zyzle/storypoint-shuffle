@@ -5,6 +5,13 @@ on:
     paths:
       - "frontend/**"
       - "!**/*.md"
+  pull_request:
+    branches:
+      - master
+    paths:
+      - "frontend/**"
+      - "!**/*.md"
+    types: [opened, synchronize, reopened]
 
 jobs:
   chromatic:
