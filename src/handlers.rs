@@ -123,35 +123,35 @@ pub async fn handle_vote(
     if let Ok(room_id) = Uuid::parse_str(&payload.room_id) {
         let mut rooms = app_state.rooms.lock().await;
 
-        if let Some(room) = rooms.get_mut(&room_id) {
-            if let Some(player) = room.players.get_mut(&socket.id.to_string()) {
-                player.vote = Some(payload.vote);
-                player.has_voted = true;
-                info!("Player {} voted in room {}", socket.id, room_id_str);
+        if let Some(room) = rooms.get_mut(&room_id)
+            && let Some(player) = room.players.get_mut(&socket.id.to_string())
+        {
+            player.vote = Some(payload.vote);
+            player.has_voted = true;
+            info!("Player {} voted in room {}", socket.id, room_id_str);
 
-                // broadcast to room without revealing vote
-                // should probably remove the vote values from the object to stop them
-                // being seen by the client
+            // broadcast to room without revealing vote
+            // should probably remove the vote values from the object to stop them
+            // being seen by the client
+            if let Err(err) = socket
+                .within(room_id_str.clone())
+                .emit("playerVoted", &room)
+                .await
+            {
+                error!("Failed to notify player voted: {}", err);
+            }
+
+            // if all players have voted emit "cardsRevealed" event
+            if room.players.values().all(|p| p.has_voted) {
+                room.cards_revealed = true;
+                info!("All players voted in room {}", room_id_str);
+
                 if let Err(err) = socket
-                    .within(room_id_str.clone())
-                    .emit("playerVoted", &room)
+                    .within(room_id_str)
+                    .emit("cardsRevealed", &room)
                     .await
                 {
-                    error!("Failed to notify player voted: {}", err);
-                }
-
-                // if all players have voted emit "cardsRevealed" event
-                if room.players.values().all(|p| p.has_voted) {
-                    room.cards_revealed = true;
-                    info!("All players voted in room {}", room_id_str);
-
-                    if let Err(err) = socket
-                        .within(room_id_str)
-                        .emit("cardsRevealed", &room)
-                        .await
-                    {
-                        error!("Failed to notify cards revealed: {}", err);
-                    }
+                    error!("Failed to notify cards revealed: {}", err);
                 }
             }
         }
@@ -253,18 +253,18 @@ pub async fn handle_disconnect(socket: SocketRef, app_state: SocketState<Arc<typ
             }
 
             // should elect a new host if the disconnected player was the host
-            if room.host_id == socket.id.to_string() {
-                if let Some(new_host) = room.players.values().next() {
-                    room.host_id.clone_from(&new_host.id);
-                    info!("New host elected: {} for room {}", new_host.id, room.id);
-                    // Notify all players in the room about the new host
-                    if let Err(err) = socket
-                        .to(room.id.to_string())
-                        .emit("newHostElected", &new_host.id)
-                        .await
-                    {
-                        error!("Failed to notify new host: {}", err);
-                    }
+            if room.host_id == socket.id.to_string()
+                && let Some(new_host) = room.players.values().next()
+            {
+                room.host_id.clone_from(&new_host.id);
+                info!("New host elected: {} for room {}", new_host.id, room.id);
+                // Notify all players in the room about the new host
+                if let Err(err) = socket
+                    .to(room.id.to_string())
+                    .emit("newHostElected", &new_host.id)
+                    .await
+                {
+                    error!("Failed to notify new host: {}", err);
                 }
             }
         }
