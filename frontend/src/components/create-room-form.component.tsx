@@ -1,6 +1,6 @@
 import { useForm } from '@tanstack/react-form';
 import { ArrowRight } from 'lucide-react';
-import z from 'zod';
+import { z } from 'zod';
 
 const createRoomSchema = z.object({
   name: z.string().min(3).max(100).trim().nonempty(),

@@ -40,14 +40,19 @@ function Room() {
   const [showConfetti, setShowConfetti] = useState(false);
   const votes = useMemo(() => {
     return room?.players
-      ? Object.values(room.players)
-          .map((p) => p.vote)
-          .filter((x) => x !== null)
+      ? Object.values(room.players).map((p) => p.vote ?? 0)
       : [];
   }, [room]);
   const isRevealed = useMemo(
     () => room?.cards_revealed ?? false,
     [room?.cards_revealed],
+  );
+  const hasSomeVoted = useMemo(
+    () =>
+      room?.players
+        ? Object.values(room.players).some((p) => p.has_voted)
+        : false,
+    [room?.players],
   );
 
   useEffect(() => {
@@ -89,6 +94,7 @@ function Room() {
             isRevealed={isRevealed}
             showHostControls={isHost}
             votes={votes}
+            hasSomeVoted={hasSomeVoted}
             onVotesRevealed={() => revealCards(room?.id ?? '')}
             onVotesReset={() => resetVotes(room?.id ?? '')}
           />

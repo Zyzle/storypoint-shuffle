@@ -79,3 +79,18 @@ export const Revealed: Story = {
     vote: 5,
   },
 };
+
+export const PlayerWithLongName: Story = {
+  args: {
+    name: 'Player with a really long name',
+    isHost: false,
+    hasVoted: true,
+    isRevealed: false,
+    color: 'player-gradient-1',
+
+    style: {
+      top: '50px',
+      left: '100px',
+    },
+  },
+};

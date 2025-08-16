@@ -3,6 +3,7 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react-swc';
 import tailwindcss from '@tailwindcss/vite';
 import { tanstackRouter } from '@tanstack/router-plugin/vite';
+import { analyzer } from 'vite-bundle-analyzer';
 
 // https://vite.dev/config/
 import path from 'node:path';
@@ -22,9 +23,15 @@ export default defineConfig({
       autoCodeSplitting: true,
     }),
     react(),
+    analyzer({
+      analyzerMode: 'server',
+      analyzerPort: 'auto',
+      enabled: false,
+    }),
   ],
   build: {
     outDir: '../dist',
+    emptyOutDir: true,
   },
   test: {
     projects: [
