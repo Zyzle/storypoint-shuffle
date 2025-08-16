@@ -7,6 +7,8 @@
 
 @source './node_modules/@skeletonlabs/skeleton-react/dist';
 
+@import './storypoint-shuffle.css';
+
 @custom-variant dark (&:where([data-mode="dark"], [data-mode="dark"] *));
 
 .Dialog-overlay {

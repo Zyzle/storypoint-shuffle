@@ -1,10 +1,20 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
+import { allModes } from '../../.storybook/modes';
+
 import { PlayerCard } from './player-card.component';
 
 const meta: Meta<typeof PlayerCard> = {
   title: 'Components/PlayerCard',
   component: PlayerCard,
+  parameters: {
+    chromatic: {
+      modes: {
+        light: allModes.light,
+        dark: allModes.dark,
+      },
+    },
+  },
   argTypes: {
     color: {
       control: {
