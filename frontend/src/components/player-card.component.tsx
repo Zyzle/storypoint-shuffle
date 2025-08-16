@@ -28,7 +28,7 @@ function PlayerCard({
           <Sparkles size={16} />
         </span>
       )}
-      <span className="font-bold text-base">{name}</span>
+      <span className="font-bold text-base truncate max-w-28">{name}</span>
       {isRevealed && <span className="text-2xl font-bold">{vote ?? '?'}</span>}
       {!isRevealed && <>{icon}</>}
     </div>
