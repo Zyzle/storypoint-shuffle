@@ -1,10 +1,35 @@
 import type { Preview } from '@storybook/react-vite';
-import {
-  withThemeByClassName,
-  withThemeByDataAttribute,
-} from '@storybook/addon-themes';
+import { DecoratorHelpers } from '@storybook/addon-themes';
+import { useEffect as usePreviewEffect } from 'storybook/preview-api';
+
+const { initializeThemeState, pluckThemeFromContext, useThemeParameters } =
+  DecoratorHelpers;
 
 import '../index.css';
+
+// Based on a snippet provided by JonJamesDesign here https://github.com/storybookjs/storybook/discussions/25944#discussioncomment-10458288
+const withThemeByDualDataAttributes = ({ themes, defaultTheme }) => {
+  initializeThemeState(Object.keys(themes), defaultTheme);
+
+  return (storyFn, context) => {
+    const { themeOverride } = useThemeParameters() ?? {};
+    const selectedTheme = pluckThemeFromContext(context);
+
+    usePreviewEffect(() => {
+      const parentElement = document.querySelector('html');
+      const themeKey = themeOverride || selectedTheme || defaultTheme;
+
+      const [theme, mode] = themes[themeKey];
+
+      if (parentElement) {
+        parentElement.setAttribute('data-theme', theme);
+        parentElement.setAttribute('data-mode', mode);
+      }
+    }, [themeOverride, selectedTheme]);
+
+    return storyFn();
+  };
+};
 
 const preview: Preview = {
   parameters: {
@@ -31,20 +56,12 @@ const preview: Preview = {
 };
 
 export const decorators = [
-  withThemeByClassName({
+  withThemeByDualDataAttributes({
     themes: {
-      light: 'light',
-      dark: 'dark',
+      'rocket (light)': ['rocket', 'light'],
+      'rocket (dark)': ['rocket', 'dark'],
     },
-    defaultTheme: 'dark',
-  }),
-  withThemeByDataAttribute({
-    themes: {
-      rocket: 'rocket',
-    },
-    defaultTheme: 'rocket',
-    parentSelector: 'html',
-    attributeName: 'data-theme',
+    defaultTheme: 'rocket (dark)',
   }),
 ];
 
