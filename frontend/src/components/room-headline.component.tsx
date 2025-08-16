@@ -16,13 +16,33 @@ function RoomHeadline({
   exitRoom: () => void;
 }) {
   return (
-    <AppBar>
+    <AppBar classes="preset-glass-neutral">
       <AppBar.Toolbar>
         <AppBar.ToolbarLead>
           <button className="btn" onClick={exitRoom}>
             <ArrowLeft size={24} />
           </button>
         </AppBar.ToolbarLead>
+        <AppBar.ToolbarCenter>
+          <h2 className="h4">
+            Room:{' '}
+            <span>
+              {roomId === '' ? 'XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX' : roomId}
+            </span>
+          </h2>
+          <p>
+            You are logged in as{' '}
+            <span className="font-semibold">{playerName}</span>&nbsp;(
+            <span
+              className={
+                isHost ? 'text-success-700-300' : 'text-primary-800-200'
+              }
+            >
+              {isHost ? 'host' : 'participant'}
+            </span>
+            )
+          </p>
+        </AppBar.ToolbarCenter>
         <AppBar.ToolbarTrail>
           <Lightswitch />
           <button
@@ -38,24 +58,6 @@ function RoomHeadline({
           </button>
         </AppBar.ToolbarTrail>
       </AppBar.Toolbar>
-      <AppBar.Headline>
-        <h2 className="h2">
-          Room:{' '}
-          <span>
-            {roomId === '' ? 'XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX' : roomId}
-          </span>
-        </h2>
-        <p>
-          You are logged in as{' '}
-          <span className="font-semibold">{playerName}</span>&nbsp;(
-          <span
-            className={isHost ? 'text-success-700-300' : 'text-primary-800-200'}
-          >
-            {isHost ? 'host' : 'participant'}
-          </span>
-          )
-        </p>
-      </AppBar.Headline>
     </AppBar>
   );
 }

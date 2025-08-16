@@ -29,7 +29,9 @@ function PlayerCard({
         </span>
       )}
       <span className="font-bold text-base truncate max-w-28">{name}</span>
-      {isRevealed && <span className="text-2xl font-bold">{vote ?? '?'}</span>}
+      {isRevealed && (
+        <span className="text-2xl font-bold line-clamp-1">{vote ?? '?'}</span>
+      )}
       {!isRevealed && <>{icon}</>}
     </div>
   );

@@ -68,7 +68,8 @@ function Room() {
   const players = room ? Object.values(room.players) : [];
   const numPlayers = players.length;
 
-  const radius = 250;
+  const semiMinorAxis = 250;
+  const semiMajorAxis = 350;
   const centerOffset = 250;
 
   return (
@@ -103,8 +104,8 @@ function Room() {
             // Calculate angle for each player card
             const angle = ((2 * Math.PI) / numPlayers) * index;
             // Calculate x and y coordinates
-            const x = radius * Math.cos(angle);
-            const y = radius * Math.sin(angle);
+            const x = semiMajorAxis * Math.cos(angle);
+            const y = semiMinorAxis * Math.sin(angle);
 
             return (
               <PlayerCard
