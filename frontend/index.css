@@ -3,11 +3,41 @@
 
 @import '@skeletonlabs/skeleton';
 @import '@skeletonlabs/skeleton/optional/presets';
-@import '@skeletonlabs/skeleton/themes/rocket';
+/* @import '@skeletonlabs/skeleton/themes/rocket'; */
 
 @source './node_modules/@skeletonlabs/skeleton-react/dist';
 
+@import './storypoint-shuffle.css';
+
 @custom-variant dark (&:where([data-mode="dark"], [data-mode="dark"] *));
+
+[data-theme='storypointshuffle'][data-mode='light'] body {
+  background-image:
+    radial-gradient(at 4% 5%, var(--color-primary-100) 0px, transparent 50%),
+    radial-gradient(at 95% 7%, var(--color-secondary-100) 0px, transparent 50%),
+    radial-gradient(at 4% 92%, var(--color-tertiary-100) 0px, transparent 50%),
+    radial-gradient(at 94% 90%, var(--color-error-100) 0px, transparent 50%),
+    radial-gradient(at 37% 33%, var(--color-success-100) 0px, transparent 50%),
+    radial-gradient(at 63% 61%, var(--color-warning-100) 0px, transparent 50%);
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+[data-theme='storypointshuffle'][data-mode='dark'] body {
+  background-image:
+    radial-gradient(at 4% 5%, var(--color-primary-950) 0px, transparent 50%),
+    radial-gradient(at 95% 7%, var(--color-secondary-950) 0px, transparent 50%),
+    radial-gradient(at 4% 92%, var(--color-tertiary-950) 0px, transparent 50%),
+    radial-gradient(at 94% 90%, var(--color-error-950) 0px, transparent 50%),
+    radial-gradient(at 37% 33%, var(--color-success-950) 0px, transparent 50%),
+    radial-gradient(at 63% 61%, var(--color-warning-950) 0px, transparent 50%);
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
 
 .Dialog-overlay {
   background: rgba(0, 0, 0, 0.5);
@@ -17,6 +47,13 @@
 }
 
 .Dialog {
+}
+
+.preset-glass-neutral {
+  background: color-mix(in oklab, var(--color-surface-50-950) 30%, transparent);
+  box-shadow: 0 0px 30px
+    color-mix(in oklab, var(--color-surface-50-950) 30%, transparent) inset;
+  backdrop-filter: blur(16px);
 }
 
 .preset-gradient-pt {

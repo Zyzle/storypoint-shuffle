@@ -41,7 +41,7 @@ function CentralCard({
           <div className="grid grid-cols-2 gap-x-8 gap-y-2 place-items-center">
             <span className="text-xl">Mode Vote:</span>
             <span className="text-xl">Agreement:</span>
-            <span className="text-2xl">{modeVote.vote}</span>
+            <span className="text-4xl font-bold">{modeVote.vote}</span>
             <Agreement modeVotePct={modePercentage} />
           </div>
         ) : (
@@ -53,7 +53,7 @@ function CentralCard({
         <footer className="flex space-x-4 p-2 justify-around">
           <button
             onClick={onVotesRevealed}
-            className="btn preset-filled-secondary-400-600 shadow-md"
+            className="btn preset-filled-secondary-500 shadow-md"
             disabled={!hasSomeVoted || isRevealed}
           >
             Reveal Cards

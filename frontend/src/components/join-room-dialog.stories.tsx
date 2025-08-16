@@ -1,11 +1,21 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { fn } from 'storybook/test';
 
+import { allModes } from '../../.storybook/modes';
+
 import { JoinRoomDialog as JoinRoomDialogComponent } from './join-room-dialog.component';
 
 const meta = {
   title: 'Components/Dialogs/JoinRoomDialog',
   component: JoinRoomDialogComponent,
+  parameters: {
+    chromatic: {
+      modes: {
+        light: allModes.light,
+        dark: allModes.dark,
+      },
+    },
+  },
 } satisfies Meta<typeof JoinRoomDialogComponent>;
 
 export default meta;

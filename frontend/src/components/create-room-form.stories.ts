@@ -1,11 +1,21 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, fn } from 'storybook/test';
 
+import { allModes } from '../../.storybook/modes';
+
 import { CreateRoomForm as CreateRoomFormComponent } from './create-room-form.component';
 
 const meta = {
   title: 'Components/Forms/CreateRoomForm',
   component: CreateRoomFormComponent,
+  parameters: {
+    chromatic: {
+      modes: {
+        light: allModes.light,
+        dark: allModes.dark,
+      },
+    },
+  },
   async afterEach(context) {
     context.userEvent.clear(context.canvas.getByLabelText('Name'));
   },

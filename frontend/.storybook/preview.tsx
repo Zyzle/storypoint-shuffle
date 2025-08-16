@@ -58,10 +58,10 @@ const preview: Preview = {
 export const decorators = [
   withThemeByDualDataAttributes({
     themes: {
-      'rocket (light)': ['rocket', 'light'],
-      'rocket (dark)': ['rocket', 'dark'],
+      'storypoint-shuffle (light)': ['storypointshuffle', 'light'],
+      'storypoint-shuffle (dark)': ['storypointshuffle', 'dark'],
     },
-    defaultTheme: 'rocket (dark)',
+    defaultTheme: 'storypoint-shuffle (dark)',
   }),
 ];
 

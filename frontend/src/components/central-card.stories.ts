@@ -1,11 +1,21 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { fn } from 'storybook/test';
 
+import { allModes } from '../../.storybook/modes';
+
 import { CentralCard } from './central-card.component';
 
 const meta: Meta<typeof CentralCard> = {
   title: 'Components/CentralCard',
   component: CentralCard,
+  parameters: {
+    chromatic: {
+      modes: {
+        light: allModes.light,
+        dark: allModes.dark,
+      },
+    },
+  },
 };
 
 export default meta;

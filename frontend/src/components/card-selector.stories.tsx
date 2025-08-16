@@ -2,11 +2,21 @@ import { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { fn } from 'storybook/test';
 
+import { allModes } from '../../.storybook/modes';
+
 import { CardSelector } from './card-selector.component';
 
 const meta: Meta<typeof CardSelector> = {
   title: 'Components/CardSelector',
   component: CardSelector,
+  parameters: {
+    chromatic: {
+      modes: {
+        light: allModes.light,
+        dark: allModes.dark,
+      },
+    },
+  },
 };
 
 export default meta;
