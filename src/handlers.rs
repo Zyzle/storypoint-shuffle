@@ -14,6 +14,17 @@ use uuid::Uuid;
 
 use crate::types;
 
+/// Cleans the votes from the room by setting each player's vote to None.
+/// prevents exposing of vote values to clients until the room votes
+/// are revealed
+fn clean_votes(room: &types::Room) -> types::Room {
+    let mut cloned_room = room.clone();
+    for player in cloned_room.players.values_mut() {
+        player.vote = None;
+    }
+    cloned_room
+}
+
 /// Handles the creation of a new room.
 /// - Generates a new room ID and host player.
 /// - Adds the room to the shared state.
@@ -85,12 +96,16 @@ pub async fn handle_join_room(
             }
 
             // emit the updated room state to all players in the room
-            if let Err(err) = socket.to(payload.room_id).emit("playerJoined", &room).await {
+            if let Err(err) = socket
+                .to(payload.room_id)
+                .emit("playerJoined", &clean_votes(room))
+                .await
+            {
                 error!("Failed to notify player joined: {}", err);
             }
             // send room state to the newly joined player
             let is_host = room.host_id == socket.id.to_string();
-            if let Err(err) = socket.emit("roomState", &(room, is_host)) {
+            if let Err(err) = socket.emit("roomState", &(clean_votes(room), is_host)) {
                 error!("Failed to send room state: {}", err);
             }
         } else {
@@ -135,7 +150,7 @@ pub async fn handle_vote(
             // being seen by the client
             if let Err(err) = socket
                 .within(room_id_str.clone())
-                .emit("playerVoted", &room)
+                .emit("playerVoted", &clean_votes(room))
                 .await
             {
                 error!("Failed to notify player voted: {}", err);
@@ -246,7 +261,7 @@ pub async fn handle_disconnect(socket: SocketRef, app_state: SocketState<Arc<typ
             // Optionally, you can emit an event to notify other clients
             if let Err(err) = socket
                 .to(room.id.to_string())
-                .emit("playerDisconnected", &room)
+                .emit("playerDisconnected", &clean_votes(room))
                 .await
             {
                 error!("Failed to notify player disconnected: {}", err);
@@ -294,7 +309,7 @@ pub async fn handle_player_exit(
 
                     if let Err(err) = socket
                         .to(room.id.to_string())
-                        .emit("playerDisconnected", &room)
+                        .emit("playerDisconnected", &clean_votes(room))
                         .await
                     {
                         error!("Failed to notify player disconnected: {}", err);

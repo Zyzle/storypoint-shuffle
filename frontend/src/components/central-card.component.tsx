@@ -4,17 +4,17 @@ function CentralCard({
   isRevealed,
   showHostControls,
   votes,
+  hasSomeVoted,
   onVotesRevealed,
   onVotesReset,
 }: {
   isRevealed: boolean;
   showHostControls: boolean;
   votes: number[];
+  hasSomeVoted: boolean;
   onVotesRevealed: () => void;
   onVotesReset: () => void;
 }) {
-  const hasSomeVoted = votes.length > 0;
-
   const voteCounts = votes.reduce(
     (acc, vote) => {
       acc[vote] = (acc[vote] || 0) + 1;
@@ -24,8 +24,10 @@ function CentralCard({
   );
 
   const modeVote = Object.entries(voteCounts).reduce(
-    (acc, [vote, count]) =>
-      count > acc.count ? { vote: Number(vote), count } : acc,
+    (acc, [vote, count]) => {
+      if (Number(vote) === 0) return acc;
+      return count > acc.count ? { vote: Number(vote), count } : acc;
+    },
     { vote: -1, count: 0 },
   );
 
