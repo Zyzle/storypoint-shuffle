@@ -7,7 +7,7 @@
 
 @source './node_modules/@skeletonlabs/skeleton-react/dist';
 
-@custom-variant dark (&:where(.dark, .dark *));
+@custom-variant dark (&:where([data-mode="dark"], [data-mode="dark"] *));
 
 .Dialog-overlay {
   background: rgba(0, 0, 0, 0.5);

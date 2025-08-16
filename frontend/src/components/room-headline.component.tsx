@@ -2,6 +2,7 @@ import { AppBar } from '@skeletonlabs/skeleton-react';
 import { ArrowLeft, ClipboardCopy } from 'lucide-react';
 
 import { toaster } from '../contexts/toaster.context';
+import { Lightswitch } from './lightswitch.component';
 
 function RoomHeadline({
   roomId,
@@ -23,6 +24,7 @@ function RoomHeadline({
           </button>
         </AppBar.ToolbarLead>
         <AppBar.ToolbarTrail>
+          <Lightswitch />
           <button
             className="btn"
             onClick={() => {
@@ -46,7 +48,9 @@ function RoomHeadline({
         <p>
           You are logged in as{' '}
           <span className="font-semibold">{playerName}</span>&nbsp;(
-          <span className={isHost ? 'text-success-300' : 'text-primary-200'}>
+          <span
+            className={isHost ? 'text-success-700-300' : 'text-primary-800-200'}
+          >
             {isHost ? 'host' : 'participant'}
           </span>
           )
