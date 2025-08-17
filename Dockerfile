@@ -8,8 +8,8 @@ WORKDIR /app/frontend
 RUN curl -fsSL https://bun.sh/install | bash
 ENV PATH="/root/.bun/bin:$PATH"
 # should probably get these from the workflow or something
-ENV VITE_SITE_URL="https://storypoint-shuffle.fly.dev"
-ENV VITE_SOCKET_URL="https://storypoint-shuffle.fly.dev"
+ENV VITE_SITE_URL="https://storypoint-shuffle.zyzle.dev"
+ENV VITE_SOCKET_URL="https://storypoint-shuffle.zyzle.dev"
 RUN bun install
 RUN bun run build
 
