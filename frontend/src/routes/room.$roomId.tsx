@@ -82,7 +82,7 @@ function Room() {
           isHost={isHost}
           exitRoom={() => {
             if (room && me) {
-              exitRoom(room.id, me.id);
+              exitRoom(room.id);
               navigate({ to: '/' });
             }
           }}

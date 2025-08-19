@@ -12,17 +12,72 @@ use socketioxide::extract::{Data, SocketRef, State as SocketState};
 use tracing::{error, info};
 use uuid::Uuid;
 
-use crate::types;
+use crate::types::{
+    AppState, CardsRevealedEvent, CreateRoomEvent, JoinRoomEvent, NewHostElectedEvent, Player,
+    PlayerDisconnectedEvent, PlayerExitEvent, PlayerJoinedEvent, PlayerVotedEvent, ResetVotesEvent,
+    RevealCardsEvent, Room, RoomCreatedEvent, RoomEmptyError, RoomNotFoundError, SocketEvent,
+    VoteEvent, VotesResetEvent,
+};
 
 /// Cleans the votes from the room by setting each player's vote to None.
 /// prevents exposing of vote values to clients until the room votes
 /// are revealed
-fn clean_votes(room: &types::Room) -> types::Room {
+fn clean_votes(room: &Room) -> Room {
     let mut cloned_room = room.clone();
     for player in cloned_room.players.values_mut() {
         player.vote = None;
     }
     cloned_room
+}
+
+/// Emits an event directly to a single socket.
+/// Enforces type safety for event data and name
+fn emit_event_direct<E: SocketEvent>(socket: &SocketRef, data: &E::Data) {
+    if let Err(err) = socket.emit(E::EVENT, data) {
+        error!("Failed to emit {}: {}", E::EVENT, err);
+    }
+}
+
+/// Emits an event to all sockets in a room.
+/// Enforces type safety for event data and name
+async fn emit_event_broadcast<E: SocketEvent>(socket: &SocketRef, room: String, data: &E::Data)
+where
+    E::Data: Sync + Send,
+{
+    if let Err(err) = socket.within(room).emit(E::EVENT, data).await {
+        error!("Failed to emit {}: {}", E::EVENT, err);
+    }
+}
+
+/// Get a mutable reference to a room from it's ID return an error if
+/// the ID cannot be parsed or the room does not exist in the `HashMap`
+fn get_room_mut<'a>(
+    room_id: &str,
+    rooms: &'a mut HashMap<Uuid, Room>,
+) -> Result<&'a mut Room, RoomNotFoundError> {
+    if let Ok(uuid) = Uuid::parse_str(room_id)
+        && let Some(room) = rooms.get_mut(&uuid)
+    {
+        Ok(room)
+    } else {
+        Err(RoomNotFoundError {
+            room_id: room_id.to_string(),
+        })
+    }
+}
+
+async fn elect_new_host(room: &mut Room, socket: &SocketRef) -> Result<(), RoomEmptyError> {
+    if let Some(new_host) = room.players.values().next() {
+        room.host_id.clone_from(&new_host.id);
+        info!("New host elected: {} for room {}", new_host.id, room.id);
+        // Notify all players in the room about the new host
+        let () =
+            emit_event_broadcast::<NewHostElectedEvent>(socket, room.id.to_string(), &new_host.id)
+                .await;
+        Ok(())
+    } else {
+        Err(RoomEmptyError)
+    }
 }
 
 /// Handles the creation of a new room.
@@ -31,11 +86,11 @@ fn clean_votes(room: &types::Room) -> types::Room {
 /// - Joins the socket to the room and emits a "roomCreated" event.
 pub async fn handle_create_room(
     socket: SocketRef,
-    Data(payload): Data<types::CreateRoomEvent>,
-    app_state: SocketState<Arc<types::AppState>>,
+    Data(payload): Data<CreateRoomEvent>,
+    app_state: SocketState<Arc<AppState>>,
 ) {
     let room_id = Uuid::new_v4();
-    let player = types::Player {
+    let player = Player {
         id: socket.id.to_string(),
         name: payload.name.clone(),
         vote: None,
@@ -45,7 +100,7 @@ pub async fn handle_create_room(
     let mut players = HashMap::new();
     players.insert(socket.id.to_string(), player.clone());
 
-    let room = types::Room {
+    let room = Room {
         id: room_id,
         host_id: socket.id.to_string(),
         players,
@@ -57,9 +112,7 @@ pub async fn handle_create_room(
     socket.join(room_id.to_string());
     info!("Room created: {}, host: {}", room_id, player.name);
 
-    if let Err(err) = socket.emit("roomCreated", &(room, true)) {
-        error!("Failed to emit roomCreated event: {}", err);
-    }
+    emit_event_direct::<RoomCreatedEvent>(&socket, &room);
 }
 
 /// Handles a player joining a room.
@@ -69,56 +122,36 @@ pub async fn handle_create_room(
 /// - Emits "roomNotFound" if the room does not exist or the ID is invalid.
 pub async fn handle_join_room(
     socket: SocketRef,
-    Data(payload): Data<types::JoinRoomEvent>,
-    app_state: SocketState<Arc<types::AppState>>,
+    Data(payload): Data<JoinRoomEvent>,
+    app_state: SocketState<Arc<AppState>>,
 ) {
     info!("Recieved join room from {}", socket.id);
 
-    if let Ok(room_id) = Uuid::parse_str(&payload.room_id) {
-        let mut rooms = app_state.rooms.lock().await;
+    let mut rooms = app_state.rooms.lock().await;
 
-        if let Some(room) = rooms.get_mut(&room_id) {
-            // check if player is in room, if not add them
+    match get_room_mut(&payload.room_id, &mut rooms) {
+        Ok(room) => {
             match room.players.entry(socket.id.to_string()) {
                 Entry::Occupied(_) => {
-                    info!("Player {} already in room {}", socket.id, room_id);
+                    info!("Player {} already in room {}", socket.id, room.id);
                 }
                 Entry::Vacant(vacant) => {
-                    vacant.insert(types::Player {
+                    vacant.insert(Player {
                         id: socket.id.to_string(),
                         name: payload.name.clone(),
                         vote: None,
                         has_voted: false,
                     });
-                    info!("Player {} joined room {}", socket.id, room_id);
-                    socket.join(room_id.to_string());
+                    info!("Player {} joined room {}", socket.id, room.id);
+                    socket.join(room.id.to_string());
                 }
             }
 
             // emit the updated room state to all players in the room
-            if let Err(err) = socket
-                .to(payload.room_id)
-                .emit("playerJoined", &clean_votes(room))
-                .await
-            {
-                error!("Failed to notify player joined: {}", err);
-            }
-            // send room state to the newly joined player
-            let is_host = room.host_id == socket.id.to_string();
-            if let Err(err) = socket.emit("roomState", &(clean_votes(room), is_host)) {
-                error!("Failed to send room state: {}", err);
-            }
-        } else {
-            error!("Room not found: {}", payload.room_id);
-            // why do i need to borrow the unit struct here?
-            if let Err(err) = socket.emit("roomNotFound", &()) {
-                error!("Failed to notify room not found: {}", err);
-            }
+            emit_event_broadcast::<PlayerJoinedEvent>(&socket, room.id.to_string(), room).await;
         }
-    } else {
-        error!("Invalid room ID format: {}", payload.room_id);
-        if let Err(err) = socket.emit("roomNotFound", &()) {
-            error!("Failed to notify room not found: {}", err);
+        Err(_) => {
+            emit_event_direct::<RoomNotFoundError>(&socket, &());
         }
     }
 }
@@ -128,47 +161,41 @@ pub async fn handle_join_room(
 /// - Emits "playerVoted" event to the room and the player.
 pub async fn handle_vote(
     socket: SocketRef,
-    Data(payload): Data<types::VoteEvent>,
-    app_state: SocketState<Arc<types::AppState>>,
+    Data(payload): Data<VoteEvent>,
+    app_state: SocketState<Arc<AppState>>,
 ) {
     info!("Recieved vote from {}", socket.id);
 
-    let room_id_str = payload.room_id.clone();
+    let mut rooms = app_state.rooms.lock().await;
 
-    if let Ok(room_id) = Uuid::parse_str(&payload.room_id) {
-        let mut rooms = app_state.rooms.lock().await;
-
-        if let Some(room) = rooms.get_mut(&room_id)
-            && let Some(player) = room.players.get_mut(&socket.id.to_string())
-        {
+    match get_room_mut(&payload.room_id, &mut rooms) {
+        Ok(room) => {
+            let Some(player) = room.players.get_mut(&socket.id.to_string()) else {
+                return;
+            };
             player.vote = Some(payload.vote);
             player.has_voted = true;
-            info!("Player {} voted in room {}", socket.id, room_id_str);
+            info!("Player {} voted in room {}", socket.id, room.id);
 
-            // broadcast to room without revealing vote
-            // should probably remove the vote values from the object to stop them
-            // being seen by the client
-            if let Err(err) = socket
-                .within(room_id_str.clone())
-                .emit("playerVoted", &clean_votes(room))
-                .await
-            {
-                error!("Failed to notify player voted: {}", err);
-            }
+            emit_event_broadcast::<PlayerVotedEvent>(
+                &socket,
+                room.id.to_string(),
+                &clean_votes(room),
+            )
+            .await;
 
             // if all players have voted emit "cardsRevealed" event
             if room.players.values().all(|p| p.has_voted) {
                 room.cards_revealed = true;
-                info!("All players voted in room {}", room_id_str);
+                info!("All players voted in room {}", room.id);
 
-                if let Err(err) = socket
-                    .within(room_id_str)
-                    .emit("cardsRevealed", &room)
-                    .await
-                {
-                    error!("Failed to notify cards revealed: {}", err);
-                }
+                emit_event_broadcast::<CardsRevealedEvent>(&socket, room.id.to_string(), room)
+                    .await;
             }
+        }
+
+        Err(_) => {
+            emit_event_direct::<RoomNotFoundError>(&socket, &());
         }
     }
 }
@@ -178,31 +205,29 @@ pub async fn handle_vote(
 /// - Updates the room state and emits "cardsRevealed" event.
 pub async fn handle_reveal_cards(
     socket: SocketRef,
-    Data(payload): Data<types::RevealCardsEvent>,
-    app_state: SocketState<Arc<types::AppState>>,
+    Data(payload): Data<RevealCardsEvent>,
+    app_state: SocketState<Arc<AppState>>,
 ) {
     info!("Recieved reveal cards from {}", socket.id);
-    let room_id_str = payload.room_id.clone();
 
-    if let Ok(room_id) = Uuid::parse_str(&payload.room_id) {
-        let mut rooms = app_state.rooms.lock().await;
-        if let Some(room) = rooms.get_mut(&room_id) {
+    let mut rooms = app_state.rooms.lock().await;
+
+    match get_room_mut(&payload.room_id, &mut rooms) {
+        Ok(room) => {
             let all_voted = room.players.values().any(|p| p.has_voted);
 
             if room.host_id == socket.id.to_string() && all_voted {
                 room.cards_revealed = true;
-                info!("Cards revealed in room {}", room_id_str);
+                info!("Cards revealed in room {}", room.id);
 
-                if let Err(err) = socket
-                    .within(room_id_str)
-                    .emit("cardsRevealed", &room)
-                    .await
-                {
-                    error!("Failed to notify cards revealed: {}", err);
-                }
+                emit_event_broadcast::<CardsRevealedEvent>(&socket, room.id.to_string(), room)
+                    .await;
             } else {
-                error!("Cannot reveal cards for room {}", room_id_str);
+                error!("Cannot reveal cards for room {}", room.id);
             }
+        }
+        Err(_) => {
+            emit_event_direct::<RoomNotFoundError>(&socket, &());
         }
     }
 }
@@ -213,33 +238,30 @@ pub async fn handle_reveal_cards(
 /// - Emits "votesReset" event.
 pub async fn handle_reset_votes(
     socket: SocketRef,
-    Data(payload): Data<types::ResetVotesEvent>,
-    app_state: SocketState<Arc<types::AppState>>,
+    Data(payload): Data<ResetVotesEvent>,
+    app_state: SocketState<Arc<AppState>>,
 ) {
     info!("Recieved reset votes from {}", socket.id);
-    let room_id_str = payload.room_id.clone();
 
-    if let Ok(room_id) = Uuid::parse_str(&payload.room_id) {
-        let mut rooms = app_state.rooms.lock().await;
+    let mut rooms = app_state.rooms.lock().await;
 
-        if let Some(room) = rooms.get_mut(&room_id) {
+    match get_room_mut(&payload.room_id, &mut rooms) {
+        Ok(room) => {
             if room.host_id == socket.id.to_string() {
                 room.cards_revealed = false;
                 for player in room.players.values_mut() {
                     player.vote = None;
                     player.has_voted = false;
                 }
-                info!("Votes reset in room {}", room_id_str);
+                info!("Votes reset in room {}", room.id);
 
-                if let Err(err) = socket.within(room_id_str).emit("votesReset", &room).await {
-                    error!("Failed to notify votes reset: {}", err);
-                }
+                emit_event_broadcast::<VotesResetEvent>(&socket, room.id.to_string(), room).await;
             } else {
-                error!(
-                    "Player {} is not the host of room {}",
-                    socket.id, room_id_str
-                );
+                error!("Player {} is not the host of room {}", socket.id, room.id);
             }
+        }
+        Err(_) => {
+            emit_event_direct::<RoomNotFoundError>(&socket, &());
         }
     }
 }
@@ -248,104 +270,73 @@ pub async fn handle_reset_votes(
 /// - Removes the player from all rooms.
 /// - Emits "playerDisconnected" event.
 /// - Elects a new host if the disconnected player was the host and notifies the room.
-pub async fn handle_disconnect(socket: SocketRef, app_state: SocketState<Arc<types::AppState>>) {
+pub async fn handle_disconnect(socket: SocketRef, app_state: SocketState<Arc<AppState>>) {
     info!("Client disconnected: {}", socket.id);
 
     // Remove the player from all rooms they are in
     let mut rooms = app_state.rooms.lock().await;
+    let mut empty_room_id: Option<Uuid> = None;
 
     for room in rooms.values_mut() {
         if room.players.remove(&socket.id.to_string()).is_some() {
             info!("Player {} removed from room {}", socket.id, room.id);
 
-            // Optionally, you can emit an event to notify other clients
-            if let Err(err) = socket
-                .to(room.id.to_string())
-                .emit("playerDisconnected", &clean_votes(room))
-                .await
-            {
-                error!("Failed to notify player disconnected: {}", err);
-            }
+            emit_event_broadcast::<PlayerDisconnectedEvent>(&socket, room.id.to_string(), room)
+                .await;
 
             // should elect a new host if the disconnected player was the host
             if room.host_id == socket.id.to_string()
-                && let Some(new_host) = room.players.values().next()
+                && matches!(elect_new_host(room, &socket).await, Err(RoomEmptyError))
             {
-                room.host_id.clone_from(&new_host.id);
-                info!("New host elected: {} for room {}", new_host.id, room.id);
-                // Notify all players in the room about the new host
-                if let Err(err) = socket
-                    .to(room.id.to_string())
-                    .emit("newHostElected", &new_host.id)
-                    .await
-                {
-                    error!("Failed to notify new host: {}", err);
-                }
+                empty_room_id = Some(room.id);
             }
         }
+    }
+
+    if let Some(room_id) = empty_room_id {
+        info!("Room {} is now empty, removing it", room_id);
+        rooms.remove(&room_id);
     }
 }
 
 pub async fn handle_player_exit(
     socket: SocketRef,
-    Data(payload): Data<types::PlayerExitEvent>,
-    app_state: SocketState<Arc<types::AppState>>,
+    Data(payload): Data<PlayerExitEvent>,
+    app_state: SocketState<Arc<AppState>>,
 ) {
-    info!(
-        "Player {} is exiting room {}",
-        payload.player_id, payload.room_id
-    );
+    info!("Player {} is exiting room {}", socket.id, payload.room_id);
 
-    let room_id_str = payload.room_id.clone();
+    let mut rooms = app_state.rooms.lock().await;
+    let mut empty_room_id: Option<Uuid> = None;
 
-    if let Ok(room_id) = Uuid::parse_str(&payload.room_id) {
-        let mut rooms = app_state.rooms.lock().await;
+    match get_room_mut(&payload.room_id, &mut rooms) {
+        Ok(room) => {
+            let Some(_) = room.players.get_mut(&socket.id.to_string()) else {
+                return;
+            };
 
-        if let Some(room) = rooms.get_mut(&room_id) {
-            if let Some(player) = room.players.get_mut(&socket.id.to_string()) {
-                if player.id == payload.player_id {
-                    room.players.remove(&socket.id.to_string());
-                    info!("Player {} exited room {}", payload.player_id, &room_id_str);
+            room.players.remove(&socket.id.to_string());
+            info!("Player {} exited room {}", socket.id, &room.id);
 
-                    if let Err(err) = socket
-                        .to(room.id.to_string())
-                        .emit("playerDisconnected", &clean_votes(room))
-                        .await
-                    {
-                        error!("Failed to notify player disconnected: {}", err);
-                    }
+            socket.leave(room.id.to_string());
 
-                    // If the exiting player was the host, elect a new host
-                    if room.host_id == socket.id.to_string() {
-                        if let Some(new_host) = room.players.values().next() {
-                            room.host_id.clone_from(&new_host.id);
-                            info!("New host elected: {} for room {}", new_host.id, room.id);
-                            // Notify all players in the room about the new host
-                            if let Err(err) = socket
-                                .to(room.id.to_string())
-                                .emit("newHostElected", &new_host.id)
-                                .await
-                            {
-                                error!("Failed to notify new host: {}", err);
-                            }
-                        } else {
-                            info!("Room {} is now empty, removing it", room_id_str);
-                            rooms.remove(&room_id);
-                            drop(rooms);
-                        }
-                    }
-                } else {
-                    error!(
-                        "Player {} tried to exit as player {}, but they are not the same",
-                        socket.id, payload.player_id
-                    );
-                }
-            } else {
-                error!(
-                    "Player {} not found in room {}",
-                    payload.player_id, room_id_str
-                );
+            emit_event_broadcast::<PlayerDisconnectedEvent>(&socket, room.id.to_string(), room)
+                .await;
+
+            // If the exiting player was the host, elect a new host
+            if room.host_id == socket.id.to_string()
+                && matches!(elect_new_host(room, &socket).await, Err(RoomEmptyError))
+            {
+                empty_room_id = Some(room.id);
             }
         }
+        Err(_) => {
+            emit_event_direct::<RoomNotFoundError>(&socket, &());
+        }
+    }
+
+    if let Some(room_id) = empty_room_id {
+        info!("Room {} is now empty, removing it", room_id);
+        rooms.remove(&room_id);
     }
 }
