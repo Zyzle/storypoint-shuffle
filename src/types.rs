@@ -1,6 +1,6 @@
 #![warn(clippy::all, clippy::pedantic, clippy::nursery)]
 
-use std::collections::HashMap;
+use std::{collections::HashMap, error::Error, fmt};
 
 use serde::{Deserialize, Serialize};
 use tokio::sync::Mutex;
@@ -89,6 +89,81 @@ pub struct ResetVotesEvent {
 pub struct PlayerExitEvent {
     /// The ID of the room the player is exiting
     pub room_id: String,
-    /// The ID of the player exiting the room
-    pub player_id: String,
+}
+
+pub trait SocketEvent {
+    const EVENT: &'static str;
+    type Data: serde::Serialize;
+}
+
+pub struct RoomCreatedEvent;
+impl SocketEvent for RoomCreatedEvent {
+    const EVENT: &'static str = "roomCreated";
+    type Data = Room;
+}
+
+pub struct PlayerJoinedEvent;
+impl SocketEvent for PlayerJoinedEvent {
+    const EVENT: &'static str = "playerJoined";
+    type Data = Room;
+}
+
+pub struct PlayerVotedEvent;
+impl SocketEvent for PlayerVotedEvent {
+    const EVENT: &'static str = "playerVoted";
+    type Data = Room;
+}
+
+pub struct CardsRevealedEvent;
+impl SocketEvent for CardsRevealedEvent {
+    const EVENT: &'static str = "cardsRevealed";
+    type Data = Room;
+}
+
+pub struct VotesResetEvent;
+impl SocketEvent for VotesResetEvent {
+    const EVENT: &'static str = "votesReset";
+    type Data = Room;
+}
+
+pub struct PlayerDisconnectedEvent;
+impl SocketEvent for PlayerDisconnectedEvent {
+    const EVENT: &'static str = "playerDisconnected";
+    type Data = Room;
+}
+
+pub struct NewHostElectedEvent;
+impl SocketEvent for NewHostElectedEvent {
+    const EVENT: &'static str = "newHostElected";
+    type Data = String;
+}
+
+pub struct RoomNotFoundEvent;
+impl SocketEvent for RoomNotFoundEvent {
+    const EVENT: &'static str = "roomNotFound";
+    type Data = ();
+}
+
+#[derive(Debug)]
+pub struct RoomNotFoundError {
+    pub room_id: String,
+}
+
+impl Error for RoomNotFoundError {}
+
+impl fmt::Display for RoomNotFoundError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "Room does not exist: {}", self.room_id)
+    }
+}
+
+#[derive(Debug)]
+pub struct RoomEmptyError;
+
+impl Error for RoomEmptyError {}
+
+impl fmt::Display for RoomEmptyError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "Room is empty")
+    }
 }

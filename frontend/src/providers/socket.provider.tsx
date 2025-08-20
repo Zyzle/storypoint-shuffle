@@ -64,9 +64,9 @@ function SocketProvider({ children }: Readonly<{ children: React.ReactNode }>) {
     [socket],
   );
   const exitRoom = useCallback(
-    (roomId: string, playerId: string) => {
+    (roomId: string) => {
       if (socket) {
-        socket.emit('exitRoom', { room_id: roomId, player_id: playerId });
+        socket.emit('exitRoom', { room_id: roomId });
       }
     },
     [socket],
