@@ -138,6 +138,12 @@ impl SocketEvent for NewHostElectedEvent {
     type Data = String;
 }
 
+pub struct RoomNotFoundEvent;
+impl SocketEvent for RoomNotFoundEvent {
+    const EVENT: &'static str = "roomNotFound";
+    type Data = ();
+}
+
 #[derive(Debug)]
 pub struct RoomNotFoundError {
     pub room_id: String,
@@ -149,11 +155,6 @@ impl fmt::Display for RoomNotFoundError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "Room does not exist: {}", self.room_id)
     }
-}
-
-impl SocketEvent for RoomNotFoundError {
-    const EVENT: &'static str = "roomNotFound";
-    type Data = ();
 }
 
 #[derive(Debug)]

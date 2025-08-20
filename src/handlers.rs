@@ -15,8 +15,8 @@ use uuid::Uuid;
 use crate::types::{
     AppState, CardsRevealedEvent, CreateRoomEvent, JoinRoomEvent, NewHostElectedEvent, Player,
     PlayerDisconnectedEvent, PlayerExitEvent, PlayerJoinedEvent, PlayerVotedEvent, ResetVotesEvent,
-    RevealCardsEvent, Room, RoomCreatedEvent, RoomEmptyError, RoomNotFoundError, SocketEvent,
-    VoteEvent, VotesResetEvent,
+    RevealCardsEvent, Room, RoomCreatedEvent, RoomEmptyError, RoomNotFoundError, RoomNotFoundEvent,
+    SocketEvent, VoteEvent, VotesResetEvent,
 };
 
 /// Cleans the votes from the room by setting each player's vote to None.
@@ -71,9 +71,8 @@ async fn elect_new_host(room: &mut Room, socket: &SocketRef) -> Result<(), RoomE
         room.host_id.clone_from(&new_host.id);
         info!("New host elected: {} for room {}", new_host.id, room.id);
         // Notify all players in the room about the new host
-        let () =
-            emit_event_broadcast::<NewHostElectedEvent>(socket, room.id.to_string(), &new_host.id)
-                .await;
+        emit_event_broadcast::<NewHostElectedEvent>(socket, room.id.to_string(), &new_host.id)
+            .await;
         Ok(())
     } else {
         Err(RoomEmptyError)
@@ -151,7 +150,7 @@ pub async fn handle_join_room(
             emit_event_broadcast::<PlayerJoinedEvent>(&socket, room.id.to_string(), room).await;
         }
         Err(_) => {
-            emit_event_direct::<RoomNotFoundError>(&socket, &());
+            emit_event_direct::<RoomNotFoundEvent>(&socket, &());
         }
     }
 }
@@ -195,7 +194,7 @@ pub async fn handle_vote(
         }
 
         Err(_) => {
-            emit_event_direct::<RoomNotFoundError>(&socket, &());
+            emit_event_direct::<RoomNotFoundEvent>(&socket, &());
         }
     }
 }
@@ -227,7 +226,7 @@ pub async fn handle_reveal_cards(
             }
         }
         Err(_) => {
-            emit_event_direct::<RoomNotFoundError>(&socket, &());
+            emit_event_direct::<RoomNotFoundEvent>(&socket, &());
         }
     }
 }
@@ -261,7 +260,7 @@ pub async fn handle_reset_votes(
             }
         }
         Err(_) => {
-            emit_event_direct::<RoomNotFoundError>(&socket, &());
+            emit_event_direct::<RoomNotFoundEvent>(&socket, &());
         }
     }
 }
@@ -311,9 +310,9 @@ pub async fn handle_player_exit(
 
     match get_room_mut(&payload.room_id, &mut rooms) {
         Ok(room) => {
-            let Some(_) = room.players.get_mut(&socket.id.to_string()) else {
+            if !room.players.contains_key(&socket.id.to_string()) {
                 return;
-            };
+            }
 
             room.players.remove(&socket.id.to_string());
             info!("Player {} exited room {}", socket.id, &room.id);
@@ -331,7 +330,7 @@ pub async fn handle_player_exit(
             }
         }
         Err(_) => {
-            emit_event_direct::<RoomNotFoundError>(&socket, &());
+            emit_event_direct::<RoomNotFoundEvent>(&socket, &());
         }
     }
 
