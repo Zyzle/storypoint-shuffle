@@ -13,6 +13,8 @@ jobs:
       src_changed: ${{ steps.filter.outputs.src_changed }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - id: filter
         run: |
           echo "SRC_CHANGED=false" >> $GITHUB_ENV

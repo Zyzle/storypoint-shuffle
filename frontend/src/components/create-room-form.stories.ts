@@ -17,7 +17,7 @@ const meta = {
     },
   },
   async afterEach(context) {
-    context.userEvent.clear(context.canvas.getByLabelText('Name'));
+    context.userEvent.clear(context.canvas.getByLabelText('Player name'));
   },
 } satisfies Meta<typeof CreateRoomFormComponent>;
 
@@ -35,7 +35,7 @@ export const CreateRoomForm: Story = {
       ).toBeDisabled();
     });
     await step('Fill in the form', async () => {
-      await userEvent.type(canvas.getByLabelText('Name'), 'Bob');
+      await userEvent.type(canvas.getByLabelText('Player name'), 'Bob');
       await userEvent.click(canvas.getByText('Create Room'));
       await expect(args.onCreate).toHaveBeenCalledWith('Bob');
     });
