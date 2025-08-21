@@ -107,7 +107,7 @@ const DialogHeading = forwardRef<
   }, [id, setLabelId]);
 
   return (
-    <h2 {...props} ref={ref} id={id} className="h2">
+    <h2 {...props} ref={ref} id={id}>
       {children}
     </h2>
   );
