@@ -34,7 +34,7 @@ function Index() {
       <div className="flex flex-col items-center justify-center p-8 space-y-4">
         <div className="flex flex-row items-center relative h-[200px]">
           <Logo width={200} height={200} className="absolute -left-24 -z-10" />
-          <h1 className="h1">Storypoint Shuffle</h1>
+          <h1 className="h1 text-shadow-lg">Storypoint Shuffle</h1>
         </div>
         <p className="">Create a new room or join an existing one.</p>
 

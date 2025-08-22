@@ -18,7 +18,7 @@ const meta = {
   },
   async afterEach(context) {
     context.userEvent.clear(context.canvas.getByLabelText('Room ID'));
-    context.userEvent.clear(context.canvas.getByLabelText('Name'));
+    context.userEvent.clear(context.canvas.getByLabelText('Player name'));
   },
 } satisfies Meta<typeof JoinRoomForm>;
 
@@ -39,7 +39,7 @@ export const Default: Story = {
         canvas.getByLabelText('Room ID'),
         '07fcd101-ffbc-41b6-8284-20e5a1a3cacb',
       );
-      await userEvent.type(canvas.getByLabelText('Name'), 'Alice');
+      await userEvent.type(canvas.getByLabelText('Player name'), 'Alice');
       await userEvent.click(canvas.getByText('Join Room'));
       await expect(args.onJoin).toHaveBeenCalledWith(
         '07fcd101-ffbc-41b6-8284-20e5a1a3cacb',
@@ -63,7 +63,7 @@ export const RoomPrePopulated: Story = {
       expect(canvas.getByRole('button', { name: 'Join Room' })).toBeDisabled();
     });
     await step('Fill the form', async () => {
-      await userEvent.type(canvas.getByLabelText('Name'), 'Alice');
+      await userEvent.type(canvas.getByLabelText('Player name'), 'Alice');
       await userEvent.click(canvas.getByText('Join Room'));
       await expect(args.onJoin).toHaveBeenCalledWith(
         '07fcd101-ffbc-41b6-8284-20e5a1a3cacb',

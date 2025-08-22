@@ -4,6 +4,7 @@ import react from '@vitejs/plugin-react-swc';
 import tailwindcss from '@tailwindcss/vite';
 import { tanstackRouter } from '@tanstack/router-plugin/vite';
 import { analyzer } from 'vite-bundle-analyzer';
+import webfontDownload from 'vite-plugin-webfont-dl';
 
 // https://vite.dev/config/
 import path from 'node:path';
@@ -28,6 +29,7 @@ export default defineConfig({
       analyzerPort: 'auto',
       enabled: false,
     }),
+    webfontDownload(),
   ],
   build: {
     outDir: '../dist',

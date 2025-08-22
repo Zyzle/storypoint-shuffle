@@ -1,7 +1,16 @@
 import { type Dispatch, type SetStateAction } from 'react';
 
+import type { Placement } from '@floating-ui/react';
+
 export interface DialogOptions {
   initialOpen?: boolean;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+}
+
+export interface TooltipOptions {
+  initialOpen?: boolean;
+  placement?: Placement;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
 }

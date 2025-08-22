@@ -25,7 +25,9 @@ function Lightswitch(props: { className?: string }) {
       onCheckedChange={onCheckedChanged}
       inactiveChild={<Moon size="14" />}
       activeChild={<Sun size="14" />}
-    />
+    >
+      <span className="sr-only">Toggle light/dark mode</span>
+    </Switch>
   );
 }
 

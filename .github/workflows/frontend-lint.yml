@@ -7,7 +7,29 @@ on:
       - "frontend/**"
     types: [opened, synchronize, reopened]
 jobs:
+  detect_frontend_changes:
+    runs-on: ubuntu-latest
+    outputs:
+      src_changed: ${{ steps.filter.outputs.src_changed }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - id: filter
+        run: |
+          SRC_CHANGED=false
+          for file in $(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }}); do
+            if [[ "$file" == frontend/* ]]; then
+              SRC_CHANGED=true
+              break
+            fi
+          done
+          echo "src_changed=$SRC_CHANGED" >> $GITHUB_OUTPUT
+        shell: bash
+
   lint_frontend:
+    needs: detect_frontend_changes
+    if: needs.detect_frontend_changes.outputs.src_changed == 'true'
     name: Lint Frontend
     runs-on: ubuntu-latest
     steps:
