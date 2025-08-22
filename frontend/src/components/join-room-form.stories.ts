@@ -63,7 +63,7 @@ export const RoomPrePopulated: Story = {
       expect(canvas.getByRole('button', { name: 'Join Room' })).toBeDisabled();
     });
     await step('Fill the form', async () => {
-      await userEvent.type(canvas.getByLabelText('Name'), 'Alice');
+      await userEvent.type(canvas.getByLabelText('Player name'), 'Alice');
       await userEvent.click(canvas.getByText('Join Room'));
       await expect(args.onJoin).toHaveBeenCalledWith(
         '07fcd101-ffbc-41b6-8284-20e5a1a3cacb',

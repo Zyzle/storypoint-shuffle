@@ -17,10 +17,10 @@ jobs:
           fetch-depth: 0
       - id: filter
         run: |
-          echo "SRC_CHANGED=false" >> $GITHUB_ENV
+          SRC_CHANGED=false
           for file in $(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }}); do
             if [[ "$file" == frontend/* ]]; then
-              echo "SRC_CHANGED=true" >> $GITHUB_ENV
+              SRC_CHANGED=true
               break
             fi
           done
