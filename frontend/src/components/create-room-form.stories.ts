@@ -37,7 +37,7 @@ export const CreateRoomForm: Story = {
     await step('Fill in the form', async () => {
       await userEvent.type(canvas.getByLabelText('Player name'), 'Bob');
       await userEvent.click(canvas.getByText('Create Room'));
-      await expect(args.onCreate).toHaveBeenCalledWith('Bob');
+      await expect(args.onCreate).toHaveBeenCalledWith('Bob', false);
     });
   },
 };

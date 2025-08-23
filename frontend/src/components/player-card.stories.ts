@@ -42,6 +42,7 @@ export const NoVote: Story = {
     isHost: false,
     hasVoted: false,
     isRevealed: false,
+    isSpectator: false,
     style: { top: '50px', left: '100px' },
     color: 'player-gradient-1',
   },
@@ -53,6 +54,7 @@ export const Host: Story = {
     isHost: true,
     hasVoted: false,
     isRevealed: false,
+    isSpectator: false,
     color: 'player-gradient-1',
     style: {
       top: '50px',
@@ -67,6 +69,7 @@ export const HasVoted: Story = {
     isHost: false,
     hasVoted: true,
     isRevealed: false,
+    isSpectator: false,
     color: 'player-gradient-1',
     style: {
       top: '50px',
@@ -81,6 +84,7 @@ export const Revealed: Story = {
     isHost: false,
     hasVoted: false,
     isRevealed: true,
+    isSpectator: false,
     color: 'player-gradient-1',
     style: {
       top: '50px',
@@ -96,6 +100,23 @@ export const PlayerWithLongName: Story = {
     isHost: false,
     hasVoted: true,
     isRevealed: false,
+    isSpectator: false,
+    color: 'player-gradient-1',
+
+    style: {
+      top: '50px',
+      left: '100px',
+    },
+  },
+};
+
+export const IsSpectator: Story = {
+  args: {
+    name: 'Player 1',
+    isHost: false,
+    hasVoted: true,
+    isRevealed: false,
+    isSpectator: true,
     color: 'player-gradient-1',
 
     style: {

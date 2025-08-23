@@ -40,7 +40,9 @@ function Room() {
   const [showConfetti, setShowConfetti] = useState(false);
   const votes = useMemo(() => {
     return room?.players
-      ? Object.values(room.players).map((p) => p.vote ?? 0)
+      ? Object.values(room.players)
+          .filter((p) => !p.is_spectator)
+          .map((p) => p.vote ?? 0)
       : [];
   }, [room]);
   const isRevealed = useMemo(
@@ -50,7 +52,9 @@ function Room() {
   const hasSomeVoted = useMemo(
     () =>
       room?.players
-        ? Object.values(room.players).some((p) => p.has_voted)
+        ? Object.values(room.players)
+            .filter((p) => !p.is_spectator)
+            .some((p) => p.has_voted)
         : false,
     [room?.players],
   );
@@ -58,9 +62,9 @@ function Room() {
   useEffect(() => {
     const agreement =
       isRevealed && room
-        ? Object.values(room.players).every(
-            (p) => p.vote === Object.values(room.players)[0].vote,
-          )
+        ? Object.values(room.players)
+            .filter((p) => !p.is_spectator)
+            .every((p) => p.vote === Object.values(room.players)[0].vote)
         : false;
     setShowConfetti(agreement);
   }, [room, setShowConfetti, isRevealed]);
@@ -80,6 +84,7 @@ function Room() {
           playerName={me?.name}
           roomId={room?.id ?? ''}
           isHost={isHost}
+          isSpectator={me?.is_spectator ?? false}
           exitRoom={() => {
             if (room && me) {
               exitRoom(room.id);
@@ -120,24 +125,29 @@ function Room() {
                 }}
                 vote={player.vote}
                 color={COLORS[Math.abs(hash(player.id)) % COLORS.length]}
+                isSpectator={player.is_spectator}
               />
             );
           })}
         </div>
 
         {/* Voting Cards (below the circular layout) */}
-        <CardSelector
-          selectedVote={me?.vote}
-          onVoteChange={(selectedVote) => {
-            setMe((prevMe) => {
-              if (prevMe) {
-                return { ...prevMe, vote: selectedVote, has_voted: true };
-              }
-              return prevMe;
-            });
-            vote(room?.id ?? '', selectedVote);
-          }}
-        />
+        {!me?.is_spectator ? (
+          <CardSelector
+            selectedVote={me?.vote}
+            onVoteChange={(selectedVote) => {
+              setMe((prevMe) => {
+                if (prevMe) {
+                  return { ...prevMe, vote: selectedVote, has_voted: true };
+                }
+                return prevMe;
+              });
+              vote(room?.id ?? '', selectedVote);
+            }}
+          />
+        ) : (
+          <div className="h-24" />
+        )}
       </div>
       <Confetti
         numberOfPieces={showConfetti ? 500 : 0}

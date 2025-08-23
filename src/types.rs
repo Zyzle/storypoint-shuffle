@@ -18,6 +18,8 @@ pub struct Player {
     pub name: String,
     /// The player's vote, if any
     pub vote: Option<u8>,
+    /// Indicates if the player is a spectator
+    pub is_spectator: bool,
 }
 
 /// `Room` represents a game room
@@ -50,6 +52,8 @@ pub struct AppState {
 pub struct CreateRoomEvent {
     /// The name of the player creating the room
     pub name: String,
+    /// whether the player is a spectator
+    pub is_spectator: bool,
 }
 
 /// Join room event
@@ -59,6 +63,8 @@ pub struct JoinRoomEvent {
     pub name: String,
     /// The ID of the room to join
     pub room_id: String,
+    /// whether the player is a spectator
+    pub is_spectator: bool,
 }
 
 /// User voted in a room

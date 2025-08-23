@@ -44,6 +44,7 @@ export const Default: Story = {
       await expect(args.onJoin).toHaveBeenCalledWith(
         '07fcd101-ffbc-41b6-8284-20e5a1a3cacb',
         'Alice',
+        false,
       );
     });
   },
@@ -68,6 +69,7 @@ export const RoomPrePopulated: Story = {
       await expect(args.onJoin).toHaveBeenCalledWith(
         '07fcd101-ffbc-41b6-8284-20e5a1a3cacb',
         'Alice',
+        false,
       );
     });
   },

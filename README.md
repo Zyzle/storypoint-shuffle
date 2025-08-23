@@ -1,4 +1,6 @@
-![Storypoint Shuffle logo](logo.png)
+<img src="./logo.svg" width="300px" alt="Storypoint Shuffle logo" />
+
+# Storypoint Shuffle
 
 A collaborative story point voting app built with Rust (Axum, Socketioxide) and React.
 
