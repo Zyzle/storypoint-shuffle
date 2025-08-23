@@ -48,6 +48,7 @@
         "typescript-eslint": "^8.39.1",
         "vite": "^7.1.2",
         "vite-bundle-analyzer": "^1.2.1",
+        "vite-plugin-sitemap": "^0.8.2",
         "vite-plugin-webfont-dl": "^3.11.1",
         "vitest": "^3.2.4",
       },
@@ -1107,6 +1108,8 @@
     "vite-bundle-analyzer": ["vite-bundle-analyzer@1.2.1", "", { "bin": { "analyze": "dist/bin.js" } }, "sha512-dpJMQBnVjieMirpHILmgGsZAWU8fGyqK3ckj6O48wdy3fARlH7Mnz7BfYFUsd3ZdbuXjsYe7t5I/q2zsMOd5ig=="],
 
     "vite-node": ["vite-node@3.2.4", "", { "dependencies": { "cac": "^6.7.14", "debug": "^4.4.1", "es-module-lexer": "^1.7.0", "pathe": "^2.0.3", "vite": "^5.0.0 || ^6.0.0 || ^7.0.0-0" }, "bin": { "vite-node": "vite-node.mjs" } }, "sha512-EbKSKh+bh1E1IFxeO0pg1n4dvoOTt0UDiXMd/qn++r98+jPO1xtJilvXldeuQ8giIB5IkpjCgMleHMNEsGH6pg=="],
+
+    "vite-plugin-sitemap": ["vite-plugin-sitemap@0.8.2", "", {}, "sha512-bqIw6NVOXg6je81lzX8Lm0vjf8/QSAp8di8fYQzZ3ZdVicOm8+6idBGALJiy1R1FiXNIK8rgORO6HBqXyHW+iQ=="],
 
     "vite-plugin-webfont-dl": ["vite-plugin-webfont-dl@3.11.1", "", { "dependencies": { "axios": "^1", "clean-css": "^5", "flat-cache": "^6", "picocolors": "^1" }, "peerDependencies": { "vite": "^2 || ^3 || ^4 || ^5 || ^6 || ^7" } }, "sha512-5eQaMn3mJ0qNnL64R6wZouh0I4zkvK8aS+GsoCDLY4WYfWCYvNpf6TyauxEsMlbwwfznkKjXTd1DNBGs4fKAhQ=="],
 

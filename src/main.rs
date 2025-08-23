@@ -5,7 +5,7 @@ use axum::{
     Router,
     body::Body,
     extract::OriginalUri,
-    http::{Request, StatusCode},
+    http::{HeaderValue, Request, StatusCode, header},
     middleware::{Next, from_fn},
     response::Response,
     routing::get_service,
@@ -17,6 +17,7 @@ use tower::ServiceBuilder;
 use tower_http::{
     cors::CorsLayer,
     services::{ServeDir, ServeFile},
+    set_header::SetResponseHeaderLayer,
     trace::TraceLayer,
 };
 use tracing::{error, info, subscriber::set_global_default};
@@ -75,11 +76,23 @@ async fn main() -> Result<(), Box<dyn Error>> {
 
     io.ns("/", on_connect);
 
-    let static_service = get_service(ServeDir::new("dist/assets"));
+    let static_service =
+        get_service(ServeDir::new("dist/assets")).layer(SetResponseHeaderLayer::overriding(
+            header::CACHE_CONTROL,
+            HeaderValue::from_static("public, max-age=31536000, immutable"),
+        ));
 
     let app = Router::new()
         .fallback_service(get_service(ServeFile::new("dist/index.html")))
         .route("/", get_service(ServeFile::new("dist/index.html")))
+        .route(
+            "/robots.txt",
+            get_service(ServeFile::new("dist/robots.txt")),
+        )
+        .route(
+            "/sitemap.xml",
+            get_service(ServeFile::new("dist/sitemap.xml")),
+        )
         .nest_service("/assets", static_service.clone())
         .layer(
             ServiceBuilder::new()
