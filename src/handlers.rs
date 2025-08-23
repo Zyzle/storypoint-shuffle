@@ -105,6 +105,7 @@ pub async fn handle_create_room(
         host_id: socket.id.to_string(),
         players,
         cards_revealed: false,
+        card_set: payload.card_set.clone(),
     };
 
     app_state.rooms.lock().await.insert(room_id, room.clone());

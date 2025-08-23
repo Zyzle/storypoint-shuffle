@@ -35,6 +35,8 @@ pub struct Room {
     pub id: Uuid,
     /// A list of players in the room
     pub players: HashMap<String, Player>,
+    /// Which card set is being used in the frontend
+    pub card_set: String,
 }
 
 /// `AppState` holds the global application state
@@ -54,6 +56,8 @@ pub struct CreateRoomEvent {
     pub name: String,
     /// whether the player is a spectator
     pub is_spectator: bool,
+    // the cardset used in the room
+    pub card_set: String,
 }
 
 /// Join room event

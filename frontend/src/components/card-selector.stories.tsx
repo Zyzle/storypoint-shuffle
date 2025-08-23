@@ -5,6 +5,7 @@ import { fn } from 'storybook/test';
 import { allModes } from '../../.storybook/modes';
 
 import { CardSelector } from './card-selector.component';
+import { CardSet } from '../types';
 
 const meta: Meta<typeof CardSelector> = {
   title: 'Components/CardSelector',
@@ -26,6 +27,7 @@ type Story = StoryObj<typeof CardSelector>;
 export const NoVote: Story = {
   args: {
     selectedVote: null,
+    cardSet: CardSet.fibonacci,
     onVoteChange: fn(),
   },
 };
@@ -33,6 +35,7 @@ export const NoVote: Story = {
 export const VoteSelected: Story = {
   args: {
     selectedVote: 1,
+    cardSet: CardSet.fibonacci,
     onVoteChange: fn(),
   },
 };
@@ -41,7 +44,15 @@ export const ControlledComponent: Story = {
   decorators: [
     (Story) => {
       const [selectedVote, setSelectedVote] = useState(1);
-      return <Story args={{ selectedVote, onVoteChange: setSelectedVote }} />;
+      return (
+        <Story
+          args={{
+            selectedVote,
+            cardSet: CardSet.fibonacci,
+            onVoteChange: setSelectedVote,
+          }}
+        />
+      );
     },
   ],
 };

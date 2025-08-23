@@ -90,7 +90,7 @@ export const Revealed: Story = {
       top: '50px',
       left: '100px',
     },
-    vote: 5,
+    vote: '5',
   },
 };
 

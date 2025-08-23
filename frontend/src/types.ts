@@ -28,6 +28,7 @@ export interface Room {
   host_id: string;
   players: { [key: string]: Player };
   cards_revealed: boolean;
+  card_set: string;
 }
 
 export interface ServerToClientEvents {
@@ -48,9 +49,11 @@ export interface ClientToServerEvents {
   createRoom: ({
     name,
     is_spectator,
+    card_set,
   }: {
     name: string;
     is_spectator: boolean;
+    card_set: string;
   }) => void;
   joinRoom: ({
     room_id,
@@ -75,8 +78,13 @@ export interface AppState {
   setError: Dispatch<SetStateAction<string | undefined>>;
   joinRoom: (roomId: string, name: string, isSpectator: boolean) => void;
   exitRoom: (roomId: string) => void;
-  createRoom: (name: string, isSpectator: boolean) => void;
+  createRoom: (name: string, isSpectator: boolean, cardSet: string) => void;
   revealCards: (roomId: string) => void;
   resetVotes: (roomId: string) => void;
   vote: (roomId: string, vote: number) => void;
 }
+
+export const CardSet: Record<string, Record<string, number>> = {
+  fibonacci: { '?': 0, '1': 1, '2': 2, '3': 3, '5': 5, '8': 8, '13': 13 },
+  tshirt: { '?': 0, XS: 1, S: 2, M: 3, L: 4, XL: 5, '2XL': 6 },
+};
