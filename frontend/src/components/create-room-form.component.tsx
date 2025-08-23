@@ -6,20 +6,26 @@ import { z } from 'zod';
 const createRoomSchema = z.object({
   name: z.string().min(3).max(100).trim().nonempty(),
   playerType: z.enum(['player', 'spectator']),
+  cardSet: z.enum(['fibonacci', 'tshirt']),
 });
 
 function CreateRoomForm({
   onCreate,
 }: {
-  onCreate: (name: string, isSpectator: boolean) => void;
+  onCreate: (name: string, isSpectator: boolean, cardSet: string) => void;
 }) {
   const createForm = useForm({
     defaultValues: {
       name: '',
       playerType: 'player',
+      cardSet: 'fibonacci',
     },
     onSubmit: (values) => {
-      onCreate(values.value.name, values.value.playerType === 'spectator');
+      onCreate(
+        values.value.name,
+        values.value.playerType === 'spectator',
+        values.value.cardSet,
+      );
     },
     validators: {
       onChange: createRoomSchema,
@@ -64,12 +70,28 @@ function CreateRoomForm({
               >
                 <Segment.Item value="player">
                   <label className="sr-only">Player</label>
-                  <Gamepad2 />
+                  <Gamepad2 size={26} />
                 </Segment.Item>
                 <Segment.Item value="spectator">
                   <label className="sr-only">Spectator</label>
-                  <Binoculars />
+                  <Binoculars size={26} />
                 </Segment.Item>
+              </Segment>
+            </label>
+          )}
+        />
+        <createForm.Field
+          name="cardSet"
+          children={(field) => (
+            <label className="label">
+              <span className="label-text">Room card set</span>
+              <Segment
+                name={field.name}
+                value={field.state.value}
+                onValueChange={(e) => field.handleChange(e.value!)}
+              >
+                <Segment.Item value="fibonacci">Fibonacci</Segment.Item>
+                <Segment.Item value="tshirt">T-Shirt</Segment.Item>
               </Segment>
             </label>
           )}

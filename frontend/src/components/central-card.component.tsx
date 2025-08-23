@@ -5,6 +5,7 @@ function CentralCard({
   showHostControls,
   votes,
   hasSomeVoted,
+  cardSet,
   onVotesRevealed,
   onVotesReset,
 }: {
@@ -12,6 +13,7 @@ function CentralCard({
   showHostControls: boolean;
   votes: number[];
   hasSomeVoted: boolean;
+  cardSet: { [key: string]: number };
   onVotesRevealed: () => void;
   onVotesReset: () => void;
 }) {
@@ -31,7 +33,9 @@ function CentralCard({
     { vote: -1, count: 0 },
   );
 
-  const modePercentage = Math.round((modeVote.count / votes.length) * 100);
+  const modePercentage = Math.round(
+    (modeVote.count / votes.filter((v) => v !== 0).length) * 100,
+  );
 
   return (
     <div className="absolute card preset-gradient-pt text-primary-contrast-500 min-w-xs shadow-xl">
@@ -41,8 +45,18 @@ function CentralCard({
           <div className="grid grid-cols-2 gap-x-8 gap-y-2 place-items-center">
             <span className="text-xl">Mode Vote:</span>
             <span className="text-xl">Agreement:</span>
-            <span className="text-4xl font-bold">{modeVote.vote}</span>
-            <Agreement modeVotePct={modePercentage} />
+            <span className="text-4xl font-bold">
+              {modeVote.vote !== -1
+                ? Object.keys(cardSet).find(
+                    (key) => cardSet[key] === modeVote.vote,
+                  )
+                : '--'}
+            </span>
+            {modeVote.vote !== -1 ? (
+              <Agreement modeVotePct={modePercentage} />
+            ) : (
+              <span className="text-4xl font-bold">N/A</span>
+            )}
           </div>
         ) : (
           <span className="text-2xl">Waiting...</span>

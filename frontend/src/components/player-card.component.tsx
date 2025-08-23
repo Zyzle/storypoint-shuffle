@@ -12,7 +12,7 @@ function PlayerCard({
 }: {
   name: string;
   isHost: boolean;
-  vote?: number | null;
+  vote?: string;
   hasVoted: boolean;
   isRevealed: boolean;
   color: string;

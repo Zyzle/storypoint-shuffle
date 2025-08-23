@@ -41,7 +41,7 @@ function SocketProvider({ children }: Readonly<{ children: React.ReactNode }>) {
     [socket],
   );
   const createRoom = useCallback(
-    (name: string, isSpectator: boolean) => {
+    (name: string, isSpectator: boolean, cardSet: string) => {
       if (socket) {
         setMe({
           id: socket.id ?? '',
@@ -50,7 +50,11 @@ function SocketProvider({ children }: Readonly<{ children: React.ReactNode }>) {
           has_voted: false,
           is_spectator: isSpectator,
         });
-        socket.emit('createRoom', { name, is_spectator: isSpectator });
+        socket.emit('createRoom', {
+          name,
+          is_spectator: isSpectator,
+          card_set: cardSet,
+        });
       }
     },
     [socket],

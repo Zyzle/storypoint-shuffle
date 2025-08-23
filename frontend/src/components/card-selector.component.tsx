@@ -1,27 +1,29 @@
 function CardSelector({
   selectedVote,
+  cardSet,
   onVoteChange,
 }: {
   selectedVote?: number | null;
+  cardSet: { [key: string]: number };
   onVoteChange: (vote: number) => void;
 }) {
   return (
     <div className="flex justify-center flex-wrap gap-4 max-w-4xl pb-4">
-      {[1, 2, 3, 5, 8, 13, 21].map((voteValue) => (
+      {Object.entries(cardSet).map(([label, value]) => (
         <button
-          key={voteValue}
+          key={label}
           className={`card flex justify-center items-center w-20 h-28 rounded-xl cursor-pointer transition-all duration-200
                                 ${
-                                  selectedVote === voteValue
+                                  selectedVote === value
                                     ? 'card-gradient-selected shadow-xl scale-110'
                                     : 'card-gradient-unselected shadow-md hover:bg-surface-100'
                                 }
                                 `}
           onClick={() => {
-            onVoteChange(voteValue);
+            onVoteChange(value);
           }}
         >
-          <span className="text-3xl font-bold text-zinc-600">{voteValue}</span>
+          <span className="text-3xl font-bold text-zinc-600">{label}</span>
         </button>
       ))}
     </div>

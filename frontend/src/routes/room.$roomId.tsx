@@ -8,6 +8,7 @@ import { PlayerCard } from '../components/player-card.component';
 import { CardSelector } from '../components/card-selector.component';
 import { RoomHeadline } from '../components/room-headline.component';
 import { JoinRoomDialog } from '../components/join-room-dialog.component';
+import { CardSet } from '../types';
 
 const COLORS = [
   'player-gradient-1',
@@ -59,16 +60,25 @@ function Room() {
     [room?.players],
   );
 
+  const cardSet = useMemo(
+    () => (room?.card_set ? CardSet[room.card_set] : CardSet.fibonacci),
+    [room?.card_set],
+  );
+
   useEffect(() => {
+    const filteredPlayers = Object.values(room?.players ?? {}).filter(
+      (p) => !p.is_spectator && p.vote !== 0,
+    );
     const agreement =
       isRevealed && room
-        ? Object.values(room.players)
-            .filter((p) => !p.is_spectator)
-            .every(
-              (p) =>
-                p.vote ===
-                Object.values(room.players).find((p) => !p.is_spectator)?.vote,
-            )
+        ? filteredPlayers.length > 0 &&
+          filteredPlayers.every(
+            (p) =>
+              p.vote ===
+              Object.values(room.players).find(
+                (p) => !p.is_spectator && p.vote !== 0,
+              )?.vote,
+          )
         : false;
     setShowConfetti(agreement);
   }, [room, setShowConfetti, isRevealed]);
@@ -105,6 +115,7 @@ function Room() {
             showHostControls={isHost}
             votes={votes}
             hasSomeVoted={hasSomeVoted}
+            cardSet={cardSet}
             onVotesRevealed={() => revealCards(room?.id ?? '')}
             onVotesReset={() => resetVotes(room?.id ?? '')}
           />
@@ -127,7 +138,9 @@ function Room() {
                   left: `${centerOffset + x}px`,
                   top: `${centerOffset + y}px`,
                 }}
-                vote={player.vote}
+                vote={Object.keys(cardSet).find(
+                  (key) => cardSet[key] === player.vote,
+                )}
                 color={COLORS[Math.abs(hash(player.id)) % COLORS.length]}
                 isSpectator={player.is_spectator}
               />
@@ -139,6 +152,7 @@ function Room() {
         {!me?.is_spectator ? (
           <CardSelector
             selectedVote={me?.vote}
+            cardSet={cardSet}
             onVoteChange={(selectedVote) => {
               setMe((prevMe) => {
                 if (prevMe) {
