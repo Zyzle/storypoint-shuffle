@@ -20,6 +20,7 @@ export interface Player {
   name: string;
   vote: number | null;
   has_voted: boolean;
+  is_spectator: boolean;
 }
 
 export interface Room {
@@ -44,8 +45,22 @@ export interface ServerToClientEvents {
 }
 
 export interface ClientToServerEvents {
-  createRoom: ({ name }: { name: string }) => void;
-  joinRoom: ({ room_id, name }: { room_id: string; name: string }) => void;
+  createRoom: ({
+    name,
+    is_spectator,
+  }: {
+    name: string;
+    is_spectator: boolean;
+  }) => void;
+  joinRoom: ({
+    room_id,
+    name,
+    is_spectator,
+  }: {
+    room_id: string;
+    name: string;
+    is_spectator: boolean;
+  }) => void;
   exitRoom: ({ room_id }: { room_id: string }) => void;
   vote: ({ room_id, vote }: { room_id: string; vote: number }) => void;
   revealCards: ({ room_id }: { room_id: string }) => void;
@@ -58,9 +73,9 @@ export interface AppState {
   setMe: Dispatch<SetStateAction<Player | undefined>>;
   error?: string;
   setError: Dispatch<SetStateAction<string | undefined>>;
-  joinRoom: (roomId: string, name: string) => void;
+  joinRoom: (roomId: string, name: string, isSpectator: boolean) => void;
   exitRoom: (roomId: string) => void;
-  createRoom: (name: string) => void;
+  createRoom: (name: string, isSpectator: boolean) => void;
   revealCards: (roomId: string) => void;
   resetVotes: (roomId: string) => void;
   vote: (roomId: string, vote: number) => void;

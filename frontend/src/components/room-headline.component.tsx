@@ -9,11 +9,13 @@ function RoomHeadline({
   roomId,
   playerName,
   isHost,
+  isSpectator,
   exitRoom,
 }: {
   roomId: string;
   playerName?: string;
   isHost: boolean;
+  isSpectator: boolean;
   exitRoom: () => void;
 }) {
   return (
@@ -48,7 +50,7 @@ function RoomHeadline({
                 isHost ? 'text-success-700-300' : 'text-primary-800-200'
               }
             >
-              {isHost ? 'host' : 'participant'}
+              {isHost ? 'host' : isSpectator ? 'spectator' : 'player'}
             </span>
             )
           </p>

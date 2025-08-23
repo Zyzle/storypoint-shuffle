@@ -8,7 +8,7 @@ function JoinRoomDialog({
 }: {
   open: boolean;
   roomId: string;
-  onJoin: (roomId: string, name: string) => void;
+  onJoin: (roomId: string, name: string, isSpectator: boolean) => void;
 }) {
   return (
     <Dialog open={open}>

@@ -94,6 +94,7 @@ pub async fn handle_create_room(
         name: payload.name.clone(),
         vote: None,
         has_voted: false,
+        is_spectator: payload.is_spectator,
     };
 
     let mut players = HashMap::new();
@@ -140,6 +141,7 @@ pub async fn handle_join_room(
                         name: payload.name.clone(),
                         vote: None,
                         has_voted: false,
+                        is_spectator: payload.is_spectator,
                     });
                     info!("Player {} joined room {}", socket.id, room.id);
                     socket.join(room.id.to_string());
@@ -184,7 +186,12 @@ pub async fn handle_vote(
             .await;
 
             // if all players have voted emit "cardsRevealed" event
-            if room.players.values().all(|p| p.has_voted) {
+            if room
+                .players
+                .values()
+                .filter(|p| !p.is_spectator)
+                .all(|p| p.has_voted)
+            {
                 room.cards_revealed = true;
                 info!("All players voted in room {}", room.id);
 

@@ -22,19 +22,35 @@ function SocketProvider({ children }: Readonly<{ children: React.ReactNode }>) {
   const [me, setMe] = useState<Player | undefined>(undefined);
   const [error, setError] = useState<string | undefined>(undefined);
   const joinRoom = useCallback(
-    (roomId: string, name: string) => {
+    (roomId: string, name: string, isSpectator: boolean) => {
       if (socket) {
-        setMe({ id: socket.id ?? '', name, vote: null, has_voted: false });
-        socket.emit('joinRoom', { room_id: roomId, name });
+        setMe({
+          id: socket.id ?? '',
+          name,
+          vote: null,
+          has_voted: false,
+          is_spectator: isSpectator,
+        });
+        socket.emit('joinRoom', {
+          room_id: roomId,
+          name,
+          is_spectator: isSpectator,
+        });
       }
     },
     [socket],
   );
   const createRoom = useCallback(
-    (name: string) => {
+    (name: string, isSpectator: boolean) => {
       if (socket) {
-        setMe({ id: socket.id ?? '', name, vote: null, has_voted: false });
-        socket.emit('createRoom', { name });
+        setMe({
+          id: socket.id ?? '',
+          name,
+          vote: null,
+          has_voted: false,
+          is_spectator: isSpectator,
+        });
+        socket.emit('createRoom', { name, is_spectator: isSpectator });
       }
     },
     [socket],

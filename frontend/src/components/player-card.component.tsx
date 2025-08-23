@@ -1,4 +1,4 @@
-import { Check, MessageCircleMore, Sparkles } from 'lucide-react';
+import { Binoculars, Check, MessageCircleMore, Sparkles } from 'lucide-react';
 
 function PlayerCard({
   name,
@@ -7,6 +7,7 @@ function PlayerCard({
   hasVoted,
   isRevealed,
   color = 'preset-filled-primary-700-300',
+  isSpectator,
   style,
 }: {
   name: string;
@@ -15,9 +16,16 @@ function PlayerCard({
   hasVoted: boolean;
   isRevealed: boolean;
   color: string;
+  isSpectator: boolean;
   style?: React.CSSProperties;
 }) {
-  const icon = hasVoted ? <Check size={30} /> : <MessageCircleMore size={30} />;
+  const icon = isSpectator ? (
+    <Binoculars size={30} />
+  ) : hasVoted ? (
+    <Check size={30} />
+  ) : (
+    <MessageCircleMore size={30} />
+  );
   return (
     <div
       className={`${color} absolute w-32 h-20 card flex flex-col items-center justify-between text-center p-2 transform -translate-x-1/2 -translate-y-1/2 transition-all duration-300 ring-4`}
@@ -29,10 +37,10 @@ function PlayerCard({
         </span>
       )}
       <span className="font-bold text-base truncate max-w-28">{name}</span>
-      {isRevealed && (
+      {isRevealed && !isSpectator && (
         <span className="text-2xl font-bold line-clamp-1">{vote ?? '?'}</span>
       )}
-      {!isRevealed && <>{icon}</>}
+      {(!isRevealed || isSpectator) && <>{icon}</>}
     </div>
   );
 }
