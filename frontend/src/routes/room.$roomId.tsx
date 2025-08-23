@@ -64,7 +64,11 @@ function Room() {
       isRevealed && room
         ? Object.values(room.players)
             .filter((p) => !p.is_spectator)
-            .every((p) => p.vote === Object.values(room.players)[0].vote)
+            .every(
+              (p) =>
+                p.vote ===
+                Object.values(room.players).find((p) => !p.is_spectator)?.vote,
+            )
         : false;
     setShowConfetti(agreement);
   }, [room, setShowConfetti, isRevealed]);
