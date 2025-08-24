@@ -19,25 +19,33 @@ const dirname =
 // More info at: https://storybook.js.org/docs/next/writing-tests/integrations/vitest-addon
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd());
-  return {
-    plugins: [
-      tailwindcss(),
-      tanstackRouter({
-        target: 'react',
-        autoCodeSplitting: true,
-      }),
-      react(),
-      analyzer({
-        analyzerMode: 'server',
-        analyzerPort: 'auto',
-        enabled: false,
-      }),
-      webfontDownload(),
+
+  const plugins = [
+    tailwindcss(),
+    tanstackRouter({
+      target: 'react',
+      autoCodeSplitting: true,
+    }),
+    react(),
+    analyzer({
+      analyzerMode: 'server',
+      analyzerPort: 'auto',
+      enabled: false,
+    }),
+    webfontDownload(),
+  ];
+
+  if (env.VITE_DISABLE_SITEMAP !== 'true') {
+    plugins.push(
       Sitemap({
         hostname: env.VITE_SITE_URL,
         outDir: '../dist',
       }),
-    ],
+    );
+  }
+
+  return {
+    plugins,
     build: {
       outDir: '../dist',
       emptyOutDir: true,

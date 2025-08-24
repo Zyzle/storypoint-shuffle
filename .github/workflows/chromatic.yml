@@ -15,6 +15,7 @@ on:
 
 env:
   VITE_SITE_URL: "https://storypoint-shuffle.zyzle.dev"
+  VITE_DISABLE_SITEMAP: "true"
 
 jobs:
   chromatic:
