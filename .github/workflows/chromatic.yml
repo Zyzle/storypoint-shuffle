@@ -13,6 +13,9 @@ on:
       - "!**/*.md"
     types: [opened, synchronize, reopened]
 
+env:
+  VITE_SITE_URL: "https://storypoint-shuffle.zyzle.dev"
+
 jobs:
   chromatic:
     name: Run Chromatic
