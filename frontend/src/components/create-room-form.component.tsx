@@ -1,7 +1,9 @@
 import { Segment } from '@skeletonlabs/skeleton-react';
 import { useForm } from '@tanstack/react-form';
-import { ArrowRight, Binoculars, Gamepad2 } from 'lucide-react';
+import { ArrowRight, Binoculars, Gamepad2, Shirt } from 'lucide-react';
 import { z } from 'zod';
+
+import { Fibonacci } from './fibonacci.component';
 
 const createRoomSchema = z.object({
   name: z.string().min(3).max(100).trim().nonempty(),
@@ -58,44 +60,53 @@ function CreateRoomForm({
             </label>
           )}
         />
-        <createForm.Field
-          name="playerType"
-          children={(field) => (
-            <label className="label">
-              <span className="label-text">Join as player or spectator</span>
-              <Segment
-                name={field.name}
-                value={field.state.value}
-                onValueChange={(e) => field.handleChange(e.value!)}
-              >
-                <Segment.Item value="player">
-                  <label className="sr-only">Player</label>
-                  <Gamepad2 size={26} />
-                </Segment.Item>
-                <Segment.Item value="spectator">
-                  <label className="sr-only">Spectator</label>
-                  <Binoculars size={26} />
-                </Segment.Item>
-              </Segment>
-            </label>
-          )}
-        />
-        <createForm.Field
-          name="cardSet"
-          children={(field) => (
-            <label className="label">
-              <span className="label-text">Room card set</span>
-              <Segment
-                name={field.name}
-                value={field.state.value}
-                onValueChange={(e) => field.handleChange(e.value!)}
-              >
-                <Segment.Item value="fibonacci">Fibonacci</Segment.Item>
-                <Segment.Item value="tshirt">T-Shirt</Segment.Item>
-              </Segment>
-            </label>
-          )}
-        />
+        <div className="grid grid-cols-[1fr_auto_1fr] place-items-center">
+          <createForm.Field
+            name="playerType"
+            children={(field) => (
+              <label className="label">
+                <span className="label-text">Join as player or spectator</span>
+                <Segment
+                  name={field.name}
+                  value={field.state.value}
+                  onValueChange={(e) => field.handleChange(e.value!)}
+                >
+                  <Segment.Item value="player">
+                    <label className="sr-only">Player</label>
+                    <Gamepad2 />
+                  </Segment.Item>
+                  <Segment.Item value="spectator">
+                    <label className="sr-only">Spectator</label>
+                    <Binoculars />
+                  </Segment.Item>
+                </Segment>
+              </label>
+            )}
+          />
+          <span className="vr pr-12 border-l-2"></span>
+          <createForm.Field
+            name="cardSet"
+            children={(field) => (
+              <label className="label">
+                <span className="label-text">Room card set</span>
+                <Segment
+                  name={field.name}
+                  value={field.state.value}
+                  onValueChange={(e) => field.handleChange(e.value!)}
+                >
+                  <Segment.Item value="fibonacci">
+                    <label className="sr-only">Fibonacci</label>
+                    <Fibonacci />
+                  </Segment.Item>
+                  <Segment.Item value="tshirt">
+                    <label className="sr-only">T-Shirt</label>
+                    <Shirt />
+                  </Segment.Item>
+                </Segment>
+              </label>
+            )}
+          />
+        </div>
         <createForm.Subscribe
           selector={(state) => [state.canSubmit, state.isPristine]}
           children={([canSubmit, isPristine]) => (
