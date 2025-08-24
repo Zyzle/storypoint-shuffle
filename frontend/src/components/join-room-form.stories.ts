@@ -17,7 +17,6 @@ const meta = {
     },
   },
   async afterEach(context) {
-    context.userEvent.clear(context.canvas.getByLabelText('Room ID'));
     context.userEvent.clear(context.canvas.getByLabelText('Player name'));
   },
 } satisfies Meta<typeof JoinRoomForm>;
@@ -46,6 +45,7 @@ export const Default: Story = {
         'Alice',
         false,
       );
+      await userEvent.clear(canvas.getByLabelText('Room ID'));
     });
   },
 };
