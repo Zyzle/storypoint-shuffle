@@ -6,6 +6,7 @@ import { tanstackRouter } from '@tanstack/router-plugin/vite';
 import { analyzer } from 'vite-bundle-analyzer';
 import webfontDownload from 'vite-plugin-webfont-dl';
 import Sitemap from 'vite-plugin-sitemap';
+import svgr from 'vite-plugin-svgr';
 
 // https://vite.dev/config/
 import path from 'node:path';
@@ -27,6 +28,7 @@ export default defineConfig(({ mode }) => {
       autoCodeSplitting: true,
     }),
     react(),
+    svgr(),
     analyzer({
       analyzerMode: 'server',
       analyzerPort: 'auto',

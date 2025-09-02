@@ -10,6 +10,13 @@ import { CreateRoomForm } from '../components/create-room-form.component';
 import { toaster } from '../contexts/toaster.context';
 import { Lightswitch } from '../components/lightswitch.component';
 
+import Github from '../components/Github.svg?react';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '../components/tooltip.component';
+
 export const Route = createFileRoute('/')({
   component: Index,
 });
@@ -30,7 +37,20 @@ function Index() {
 
   return (
     <>
-      <Lightswitch className="absolute top-4 right-4" />
+      <div className="absolute w-full top-4 px-4 flex flex-row-reverse">
+        <Lightswitch />
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <a
+              href="https://github.com/Zyzle/storypoint-shuffle"
+              className="mr-4"
+            >
+              <Github height="24px" width="24px" />
+            </a>
+          </TooltipTrigger>
+          <TooltipContent>View the source code on GitHub</TooltipContent>
+        </Tooltip>
+      </div>
       <div className="flex flex-col items-center justify-center p-8 space-y-4">
         <div className="flex flex-row items-center relative h-[200px]">
           <Logo width={200} height={200} className="absolute -left-24 -z-10" />
