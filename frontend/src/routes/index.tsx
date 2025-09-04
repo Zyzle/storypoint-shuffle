@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 
 import { Tabs } from '@skeletonlabs/skeleton-react';
 import { createFileRoute } from '@tanstack/react-router';
+import { HandHeart } from 'lucide-react';
 
 import { useSocket } from '../hooks/socket.hook';
 import { Logo } from '../components/logo.component';
@@ -42,8 +43,23 @@ function Index() {
         <Tooltip>
           <TooltipTrigger asChild>
             <a
+              href="https://github.com/sponsors/Zyzle?frequency=one-time"
+              className="mr-4"
+              target="_blank"
+            >
+              <HandHeart />
+            </a>
+          </TooltipTrigger>
+          <TooltipContent>
+            If you like this project consider sponsoring me on GitHub
+          </TooltipContent>
+        </Tooltip>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <a
               href="https://github.com/Zyzle/storypoint-shuffle"
               className="mr-4"
+              target="_blank"
             >
               <Github height="24px" width="24px" />
             </a>

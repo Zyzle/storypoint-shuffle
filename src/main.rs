@@ -1,13 +1,16 @@
 #![warn(clippy::all, clippy::pedantic, clippy::nursery)]
-use std::{error::Error, sync::Arc};
+use std::{env::var, error::Error, sync::Arc};
 
 use axum::{
     Router,
     body::Body,
     extract::OriginalUri,
-    http::{HeaderValue, Request, StatusCode, header},
+    http::{
+        HeaderValue, Request, StatusCode,
+        header::{self, HOST},
+    },
     middleware::{Next, from_fn},
-    response::Response,
+    response::{IntoResponse, Redirect, Response},
     routing::get_service,
     serve,
 };
@@ -42,6 +45,25 @@ async fn log_404(req: Request<Body>, next: Next) -> Response {
         );
     }
     response
+}
+
+async fn enforce_host(req: Request<Body>, next: Next) -> Response {
+    if let Some(_) = var("SKIP_HOST_ENFORCEMENT").ok() {
+        return next.run(req).await;
+    }
+
+    let allowed_host = var("ALLOWED_HOST").expect("The ALLOWED_HOST environment variable must be set");
+    let host = req.headers().get(HOST).and_then(|h| h.to_str().ok());
+
+    if let Some(host) = host {
+        if host != allowed_host {
+            info!("Redirecting to allowed host: {}", allowed_host);
+            let uri = req.uri();
+            let location = format!("https://{host}{uri}", host = allowed_host, uri = uri);
+            return Redirect::permanent(&location).into_response();
+        }
+    }
+    next.run(req).await
 }
 
 /// Called when a new client connects.
@@ -102,7 +124,8 @@ async fn main() -> Result<(), Box<dyn Error>> {
                 .layer(from_fn(log_404)),
         )
         .layer(TraceLayer::new_for_http())
-        .layer(from_fn(log_404));
+        .layer(from_fn(log_404))
+        .layer(from_fn(enforce_host));
 
     info!("Starting server");
 

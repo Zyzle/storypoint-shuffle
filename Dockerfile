@@ -33,6 +33,7 @@ FROM debian:bookworm-slim AS runtime
 WORKDIR /app
 COPY --from=builder /app/target/release/storypoint-shuffle /app
 COPY --from=planner /app/dist /app/dist
+ENV ALLOWED_HOST="storypoint-shuffle.zyzle.dev"
 RUN chmod -R 755 /app/dist
 ENTRYPOINT ["/app/storypoint-shuffle"]
 EXPOSE 3333
