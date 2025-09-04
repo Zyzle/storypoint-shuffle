@@ -52,7 +52,7 @@ async fn enforce_host(req: Request<Body>, next: Next) -> Response {
         return next.run(req).await;
     }
 
-    let allowed_host = var("ALLOWED_HOST").unwrap();
+    let allowed_host = var("ALLOWED_HOST").expect("The ALLOWED_HOST environment variable must be set");
     let host = req.headers().get(HOST).and_then(|h| h.to_str().ok());
 
     if let Some(host) = host {
