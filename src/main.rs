@@ -14,6 +14,7 @@ use axum::{
     routing::get_service,
     serve,
 };
+use dotenv::dotenv;
 use socketioxide::{SocketIo, extract::SocketRef};
 use tokio::net::TcpListener;
 use tower::ServiceBuilder;
@@ -48,20 +49,21 @@ async fn log_404(req: Request<Body>, next: Next) -> Response {
 }
 
 async fn enforce_host(req: Request<Body>, next: Next) -> Response {
-    if let Some(_) = var("SKIP_HOST_ENFORCEMENT").ok() {
+    if var("SKIP_HOST_ENFORCEMENT").ok().is_some() {
         return next.run(req).await;
     }
 
-    let allowed_host = var("ALLOWED_HOST").expect("The ALLOWED_HOST environment variable must be set");
+    let allowed_host =
+        var("ALLOWED_HOST").expect("The ALLOWED_HOST environment variable must be set");
     let host = req.headers().get(HOST).and_then(|h| h.to_str().ok());
 
-    if let Some(host) = host {
-        if host != allowed_host {
-            info!("Redirecting to allowed host: {}", allowed_host);
-            let uri = req.uri();
-            let location = format!("https://{host}{uri}", host = allowed_host, uri = uri);
-            return Redirect::permanent(&location).into_response();
-        }
+    if let Some(host) = host
+        && host != allowed_host
+    {
+        info!("Redirecting to allowed host: {}", allowed_host);
+        let uri = req.uri();
+        let location = format!("https://{allowed_host}{uri}");
+        return Redirect::permanent(&location).into_response();
     }
     next.run(req).await
 }
@@ -89,6 +91,7 @@ async fn on_connect(socket: SocketRef) {
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
+    dotenv().ok();
     set_global_default(FmtSubscriber::default())?;
 
     let app_state = Arc::new(types::AppState::default());
