@@ -196,7 +196,7 @@ function SocketProvider({ children }: Readonly<{ children: React.ReactNode }>) {
     socket.on('moveToRoom', (roomId) => {
       navigate({
         to: '/room/$roomId',
-        params: { roomId: roomId },
+        params: { roomId },
       });
     });
 
