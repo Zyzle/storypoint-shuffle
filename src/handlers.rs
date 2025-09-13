@@ -13,10 +13,10 @@ use tracing::{error, info};
 use uuid::Uuid;
 
 use crate::types::{
-    AppState, CardsRevealedEvent, CreateRoomEvent, JoinRoomEvent, NewHostElectedEvent, Player,
-    PlayerDisconnectedEvent, PlayerExitEvent, PlayerJoinedEvent, PlayerVotedEvent, ResetVotesEvent,
-    RevealCardsEvent, Room, RoomCreatedEvent, RoomEmptyError, RoomNotFoundError, RoomNotFoundEvent,
-    SocketEvent, VoteEvent, VotesResetEvent,
+    AppState, CardsRevealedEvent, CreateRoomEvent, JoinRoomEvent, MoveToRoomEvent,
+    NewHostElectedEvent, Player, PlayerDisconnectedEvent, PlayerExitEvent, PlayerJoinedEvent,
+    PlayerVotedEvent, ResetVotesEvent, RevealCardsEvent, Room, RoomCreatedEvent, RoomEmptyError,
+    RoomNotFoundError, RoomNotFoundEvent, SocketEvent, VoteEvent, VotesResetEvent,
 };
 
 /// Cleans the votes from the room by setting each player's vote to None.
@@ -148,6 +148,9 @@ pub async fn handle_join_room(
                     socket.join(room.id.to_string());
                 }
             }
+
+            // emit the moveToRoomEvent to player joining
+            emit_event_direct::<MoveToRoomEvent>(&socket, &room.id.to_string());
 
             // emit the updated room state to all players in the room
             emit_event_broadcast::<PlayerJoinedEvent>(&socket, room.id.to_string(), room).await;

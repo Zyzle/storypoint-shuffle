@@ -43,6 +43,7 @@ export interface ServerToClientEvents {
   newHostElected: (newHostId: string) => void;
   roomNotFound: () => void;
   playerDisconnected: (room: Room) => void;
+  moveToRoom: (roomId: string) => void;
 }
 
 export interface ClientToServerEvents {
