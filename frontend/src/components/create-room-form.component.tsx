@@ -35,7 +35,7 @@ function CreateRoomForm({
   });
 
   return (
-    <div className="card w-lg p-6 space-y-4 shadow-lg bg-surface-100-900">
+    <div className="card w-sm md:w-lg p-6 space-y-4 shadow-lg bg-surface-100-900">
       <h2 className="h3 text-shadow-lg">Create a Room</h2>
       <form
         className="space-y-4"

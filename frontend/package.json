@@ -6,7 +6,7 @@
   "license": "MIT",
   "author": "Colin McCulloch <colin@zyzle.dev>",
   "scripts": {
-    "dev": "bunx --bun vite",
+    "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",

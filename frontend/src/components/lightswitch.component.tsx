@@ -20,7 +20,7 @@ function Lightswitch(props: { className?: string }) {
 
   return (
     <Switch
-      classes={props.className}
+      classes={`m-0 ${props.className}`}
       checked={checked}
       onCheckedChange={onCheckedChanged}
       inactiveChild={<Moon size="14" />}

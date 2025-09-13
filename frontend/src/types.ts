@@ -89,3 +89,12 @@ export const CardSet: Record<string, Record<string, number>> = {
   fibonacci: { '?': 0, '1': 1, '2': 2, '3': 3, '5': 5, '8': 8, '13': 13 },
   tshirt: { '?': 0, XS: 1, S: 2, M: 3, L: 4, XL: 5, '2XL': 6 },
 };
+
+export const Breakpoints = {
+  SM: 1,
+  MD: 2,
+  LG: 4,
+  XL: 8,
+} as const;
+
+export type Breakpoints = (typeof Breakpoints)[keyof typeof Breakpoints];
