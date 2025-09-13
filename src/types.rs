@@ -154,6 +154,12 @@ impl SocketEvent for RoomNotFoundEvent {
     type Data = ();
 }
 
+pub struct MoveToRoomEvent;
+impl SocketEvent for MoveToRoomEvent {
+    const EVENT: &'static str = "moveToRoom";
+    type Data = String;
+}
+
 #[derive(Debug)]
 pub struct RoomNotFoundError {
     pub room_id: String,
