@@ -12,6 +12,9 @@ const meta: Meta<typeof PlayerCard> = {
       modes: {
         light: allModes.light,
         dark: allModes.dark,
+        mobile: allModes.mobile,
+        tablet: allModes.tablet,
+        desktop: allModes.desktop,
       },
     },
   },
@@ -30,6 +33,13 @@ const meta: Meta<typeof PlayerCard> = {
       ],
     },
   },
+  decorators: [
+    (Story) => (
+      <div className="md:relative w-full h-full flex flex-col md:items-center md:justify-center gap-2">
+        <Story />
+      </div>
+    ),
+  ],
 };
 
 export default meta;
@@ -43,7 +53,11 @@ export const NoVote: Story = {
     hasVoted: false,
     isRevealed: false,
     isSpectator: false,
-    style: { top: '50px', left: '100px' },
+    classes: 'md:absolute',
+    style: {
+      top: '50px',
+      left: '70px',
+    },
     color: 'player-gradient-1',
   },
 };
@@ -56,9 +70,10 @@ export const Host: Story = {
     isRevealed: false,
     isSpectator: false,
     color: 'player-gradient-1',
+    classes: 'md:absolute',
     style: {
       top: '50px',
-      left: '100px',
+      left: '70px',
     },
   },
 };
@@ -71,9 +86,10 @@ export const HasVoted: Story = {
     isRevealed: false,
     isSpectator: false,
     color: 'player-gradient-1',
+    classes: 'md:absolute',
     style: {
       top: '50px',
-      left: '100px',
+      left: '70px',
     },
   },
 };
@@ -86,9 +102,10 @@ export const Revealed: Story = {
     isRevealed: true,
     isSpectator: false,
     color: 'player-gradient-1',
+    classes: 'md:absolute',
     style: {
       top: '50px',
-      left: '100px',
+      left: '70px',
     },
     vote: '5',
   },
@@ -102,10 +119,10 @@ export const PlayerWithLongName: Story = {
     isRevealed: false,
     isSpectator: false,
     color: 'player-gradient-1',
-
+    classes: 'md:absolute',
     style: {
       top: '50px',
-      left: '100px',
+      left: '70px',
     },
   },
 };
@@ -118,10 +135,10 @@ export const IsSpectator: Story = {
     isRevealed: false,
     isSpectator: true,
     color: 'player-gradient-1',
-
+    classes: 'md:absolute',
     style: {
       top: '50px',
-      left: '100px',
+      left: '70px',
     },
   },
 };
