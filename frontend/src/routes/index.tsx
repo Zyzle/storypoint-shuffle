@@ -39,7 +39,7 @@ function Index() {
   return (
     <>
       <div className="absolute w-full top-4 px-4 flex flex-row-reverse">
-        <Lightswitch />
+        <Lightswitch className="btn pl-2 pr-0 py-1 md:pl-4 md:py-2" />
         <Tooltip>
           <TooltipTrigger asChild>
             <a
@@ -69,7 +69,11 @@ function Index() {
       </div>
       <div className="flex flex-col items-center justify-center p-8 space-y-4">
         <div className="flex flex-row items-center relative h-[200px]">
-          <Logo width={200} height={200} className="absolute -left-24 -z-10" />
+          <Logo
+            width={200}
+            height={200}
+            className="absolute -left-16 md:-left-24 -z-10"
+          />
           <h1 className="h1 text-shadow-lg">Storypoint Shuffle</h1>
         </div>
         <p className="">Create a new room or join an existing one.</p>

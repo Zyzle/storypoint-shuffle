@@ -6,6 +6,7 @@ function CentralCard({
   votes,
   hasSomeVoted,
   cardSet,
+  classes,
   onVotesRevealed,
   onVotesReset,
 }: {
@@ -14,6 +15,7 @@ function CentralCard({
   votes: number[];
   hasSomeVoted: boolean;
   cardSet: { [key: string]: number };
+  classes?: string;
   onVotesRevealed: () => void;
   onVotesReset: () => void;
 }) {
@@ -38,11 +40,13 @@ function CentralCard({
   );
 
   return (
-    <div className="absolute card preset-gradient-pt text-primary-contrast-500 min-w-xs shadow-xl">
-      <div className="flex flex-col items-center justify-center p-6 gap-4">
+    <div
+      className={`card preset-gradient-pt text-primary-contrast-500 min-w-xs shadow-xl ${classes}`}
+    >
+      <div className="flex flex-col items-center justify-center p-3 lg:p-6 gap-2 lg:gap-4">
         <span className="text-xl font-bold">Results</span>
         {isRevealed ? (
-          <div className="grid grid-cols-2 gap-x-8 gap-y-2 place-items-center">
+          <div className="grid grid-cols-2 gap-x-4 lg:gap-x-8 gap-y-1 lg:gap-y-2 place-items-center">
             <span className="text-xl">Mode Vote:</span>
             <span className="text-xl">Agreement:</span>
             <span className="text-4xl font-bold">

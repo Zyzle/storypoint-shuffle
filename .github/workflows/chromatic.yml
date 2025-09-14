@@ -2,6 +2,8 @@ name: "Chromatic"
 
 on:
   push:
+    branches:
+      - master
     paths:
       - "frontend/**"
       - "!**/*.md"
@@ -48,3 +50,4 @@ jobs:
           projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
           autoAcceptChanges: "master"
           skip: "dependabot/**"
+          onlyChanged: true

@@ -19,13 +19,13 @@ function RoomHeadline({
   exitRoom: () => void;
 }) {
   return (
-    <AppBar classes="preset-glass-neutral">
-      <AppBar.Toolbar>
+    <AppBar classes="preset-glass-neutral !py-2 !px-1 md:!py-4 md:!px-2">
+      <AppBar.Toolbar classes="">
         <AppBar.ToolbarLead>
           <Tooltip>
             <TooltipTrigger asChild>
               <button
-                className="btn"
+                className="btn px-2 py-1 md:px-4 md:py-2"
                 onClick={exitRoom}
                 aria-label="Leave room"
               >
@@ -36,13 +36,13 @@ function RoomHeadline({
           </Tooltip>
         </AppBar.ToolbarLead>
         <AppBar.ToolbarCenter>
-          <h2 className="h4">
+          <h2 className="truncate h4 inline-block md:block max-w-[120px]  md:max-w-full">
             Room:{' '}
-            <span>
+            <span className="">
               {roomId === '' ? 'XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX' : roomId}
             </span>
           </h2>
-          <p>
+          <p className="text-xs md:text-base">
             You are logged in as{' '}
             <span className="font-semibold">{playerName}</span>&nbsp;(
             <span
@@ -56,12 +56,12 @@ function RoomHeadline({
           </p>
         </AppBar.ToolbarCenter>
         <AppBar.ToolbarTrail>
-          <Lightswitch />
+          <Lightswitch className="btn pl-2 pr-0 py-1 md:pl-4 md:py-2" />
           <Tooltip>
             <TooltipTrigger asChild>
               <button
                 aria-label="Copy room link"
-                className="btn"
+                className="btn px-2 py-1 md:px-4 md:py-2"
                 onClick={() => {
                   navigator.clipboard.writeText(
                     `${import.meta.env.VITE_SITE_URL}/room/${roomId}`,

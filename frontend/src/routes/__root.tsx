@@ -9,7 +9,7 @@ export const Route = createRootRoute({
   component: () => (
     <SocketProvider>
       <Toaster toaster={toaster} />
-      <div className="min-h-screen flex justify-center w-full">
+      <div className="h-screen flex justify-center w-full">
         <Outlet />
         <TanStackRouterDevtools position="bottom-right" />
       </div>

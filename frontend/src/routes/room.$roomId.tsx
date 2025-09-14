@@ -8,7 +8,9 @@ import { PlayerCard } from '../components/player-card.component';
 import { CardSelector } from '../components/card-selector.component';
 import { RoomHeadline } from '../components/room-headline.component';
 import { JoinRoomDialog } from '../components/join-room-dialog.component';
-import { CardSet } from '../types';
+import { Breakpoints, CardSet } from '../types';
+import { useBreakpoints } from '../hooks/breakpoints.hook';
+import { useElementCenter } from '../hooks/container.hook';
 
 const COLORS = [
   'player-gradient-1',
@@ -65,6 +67,10 @@ function Room() {
     [room?.card_set],
   );
 
+  const size = useBreakpoints();
+
+  const [containerRef, { x: xOffset, y: yOffset }] = useElementCenter();
+
   useEffect(() => {
     const filteredPlayers = Object.values(room?.players ?? {}).filter(
       (p) => !p.is_spectator && p.vote !== 0,
@@ -86,14 +92,13 @@ function Room() {
   const players = room ? Object.values(room.players) : [];
   const numPlayers = players.length;
 
-  const semiMinorAxis = 250;
-  const semiMajorAxis = 350;
-  const centerOffset = 250;
+  const semiMinorAxis = size > Breakpoints.MD ? 250 : 150;
+  const semiMajorAxis = size > Breakpoints.LG ? 350 : 250;
 
   return (
     <>
       <JoinRoomDialog open={!room} roomId={roomId} onJoin={joinRoom} />
-      <div className="flex flex-col items-center justify-between min-h-screen w-full">
+      <div className="flex flex-col items-center justify-between h-screen w-full gap-4">
         <RoomHeadline
           playerName={me?.name}
           roomId={room?.id ?? ''}
@@ -108,9 +113,13 @@ function Room() {
         />
 
         {/* Circular Player Card Layout */}
-        <div className="relative w-[500px] h-[500px] flex items-center justify-center">
+        <div
+          ref={containerRef}
+          className="md:relative w-full h-full flex flex-col md:items-center md:justify-center gap-2 overflow-y-scroll"
+        >
           {/* Central Card for Average Vote */}
           <CentralCard
+            classes="md:absolute"
             isRevealed={isRevealed}
             showHostControls={isHost}
             votes={votes}
@@ -129,14 +138,15 @@ function Room() {
 
             return (
               <PlayerCard
+                classes="md:absolute"
                 key={player.id}
                 name={player.name}
                 isHost={player.id === room?.host_id}
                 hasVoted={player.has_voted}
                 isRevealed={room?.cards_revealed ?? false}
                 style={{
-                  left: `${centerOffset + x}px`,
-                  top: `${centerOffset + y}px`,
+                  left: size > Breakpoints.MD ? `${xOffset + x}px` : undefined,
+                  top: size > Breakpoints.MD ? `${yOffset + y}px` : undefined,
                 }}
                 vote={Object.keys(cardSet).find(
                   (key) => cardSet[key] === player.vote,
@@ -164,7 +174,7 @@ function Room() {
             }}
           />
         ) : (
-          <div className="h-24" />
+          <div className="hidden md:block h-24" />
         )}
       </div>
       <Confetti

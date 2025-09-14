@@ -15,6 +15,9 @@ const meta: Meta<typeof RoomHeadline> = {
       modes: {
         light: allModes.light,
         dark: allModes.dark,
+        mobile: allModes.mobile,
+        tablet: allModes.tablet,
+        desktop: allModes.desktop,
       },
     },
   },

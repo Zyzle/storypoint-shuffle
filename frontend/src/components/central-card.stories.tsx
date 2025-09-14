@@ -14,9 +14,19 @@ const meta: Meta<typeof CentralCard> = {
       modes: {
         light: allModes.light,
         dark: allModes.dark,
+        mobile: allModes.mobile,
+        tablet: allModes.tablet,
+        desktop: allModes.desktop,
       },
     },
   },
+  decorators: [
+    (Story) => (
+      <div className="md:relative w-full h-full flex flex-col md:items-center md:justify-center gap-2 overflow-y-scroll">
+        <Story />
+      </div>
+    ),
+  ],
 };
 
 export default meta;
