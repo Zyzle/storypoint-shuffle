@@ -68,7 +68,7 @@ function Index() {
         </Tooltip>
       </div>
       <div className="flex flex-col items-center justify-center p-8 space-y-4">
-        <div className="flex flex-row items-center relative h-[200px]">
+        <div className="flex flex-row items-center relative h-50">
           <Logo
             width={200}
             height={200}
@@ -78,23 +78,21 @@ function Index() {
         </div>
         <p className="">Create a new room or join an existing one.</p>
 
-        <Tabs
-          value={createJoin}
-          onValueChange={(e) => setCreateJoin(e.value)}
-          fluid
-        >
+        <Tabs value={createJoin} onValueChange={(e) => setCreateJoin(e.value)}>
           <Tabs.List>
-            <Tabs.Control value="create">Create Room</Tabs.Control>
-            <Tabs.Control value="join">Join Room</Tabs.Control>
+            <Tabs.Trigger value="create" className="flex-1">
+              Create Room
+            </Tabs.Trigger>
+            <Tabs.Trigger value="join" className="flex-1">
+              Join Room
+            </Tabs.Trigger>
           </Tabs.List>
-          <Tabs.Content classes="flex justify-center">
-            <Tabs.Panel value="join">
-              <JoinRoomForm onJoin={joinRoom} />
-            </Tabs.Panel>
+          <Tabs.Content value="join" className="flex justify-center">
+            <JoinRoomForm onJoin={joinRoom} />
+          </Tabs.Content>
 
-            <Tabs.Panel value="create">
-              <CreateRoomForm onCreate={createRoom} />
-            </Tabs.Panel>
+          <Tabs.Content value="create" className="flex justify-center">
+            <CreateRoomForm onCreate={createRoom} />
           </Tabs.Content>
         </Tabs>
       </div>

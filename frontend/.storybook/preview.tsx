@@ -1,3 +1,4 @@
+/* eslint-disable */
 import type { Preview } from '@storybook/react-vite';
 import { DecoratorHelpers } from '@storybook/addon-themes';
 import { useEffect as usePreviewEffect } from 'storybook/preview-api';
@@ -8,7 +9,13 @@ const { initializeThemeState, pluckThemeFromContext, useThemeParameters } =
 import '../index.css';
 
 // Based on a snippet provided by JonJamesDesign here https://github.com/storybookjs/storybook/discussions/25944#discussioncomment-10458288
-const withThemeByDualDataAttributes = ({ themes, defaultTheme }) => {
+const withThemeByDualDataAttributes = ({
+  themes,
+  defaultTheme,
+}: {
+  themes: Record<string, [string, string]>;
+  defaultTheme: string;
+}) => {
   initializeThemeState(Object.keys(themes), defaultTheme);
 
   return (storyFn, context) => {
