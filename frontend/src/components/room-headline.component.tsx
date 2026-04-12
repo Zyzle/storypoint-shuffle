@@ -19,9 +19,9 @@ function RoomHeadline({
   exitRoom: () => void;
 }) {
   return (
-    <AppBar classes="preset-glass-neutral !py-2 !px-1 md:!py-4 md:!px-2">
-      <AppBar.Toolbar classes="">
-        <AppBar.ToolbarLead>
+    <AppBar className="preset-glass-neutral py-2! px-1! md:py-4! md:px-2!">
+      <AppBar.Toolbar className="grid-cols-[auto_1fr_auto]">
+        <AppBar.Lead>
           <Tooltip>
             <TooltipTrigger asChild>
               <button
@@ -34,9 +34,9 @@ function RoomHeadline({
             </TooltipTrigger>
             <TooltipContent>Leave Room</TooltipContent>
           </Tooltip>
-        </AppBar.ToolbarLead>
-        <AppBar.ToolbarCenter>
-          <h2 className="truncate h4 inline-block md:block max-w-[120px]  md:max-w-full">
+        </AppBar.Lead>
+        <AppBar.Headline>
+          <h2 className="truncate h4 inline-block md:block max-w-30  md:max-w-full">
             Room:{' '}
             <span className="">
               {roomId === '' ? 'XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX' : roomId}
@@ -54,8 +54,8 @@ function RoomHeadline({
             </span>
             )
           </p>
-        </AppBar.ToolbarCenter>
-        <AppBar.ToolbarTrail>
+        </AppBar.Headline>
+        <AppBar.Trail>
           <Lightswitch className="btn pl-2 pr-0 py-1 md:pl-4 md:py-2" />
           <Tooltip>
             <TooltipTrigger asChild>
@@ -74,7 +74,7 @@ function RoomHeadline({
             </TooltipTrigger>
             <TooltipContent>Copy Room Link</TooltipContent>
           </Tooltip>
-        </AppBar.ToolbarTrail>
+        </AppBar.Trail>
       </AppBar.Toolbar>
     </AppBar>
   );

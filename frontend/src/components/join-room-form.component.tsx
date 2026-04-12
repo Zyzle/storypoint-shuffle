@@ -1,4 +1,4 @@
-import { Segment } from '@skeletonlabs/skeleton-react';
+import { SegmentedControl } from '@skeletonlabs/skeleton-react';
 import { useForm } from '@tanstack/react-form';
 import { ArrowRight, Binoculars, Gamepad2 } from 'lucide-react';
 import { z } from 'zod';
@@ -79,23 +79,38 @@ function JoinRoomForm({
         <joinForm.Field
           name="playerType"
           children={(field) => (
-            <label className="label">
+            <div className="label">
               <span className="label-text">Join as player or spectator</span>
-              <Segment
+              <SegmentedControl
                 name={field.name}
                 value={field.state.value}
                 onValueChange={(e) => field.handleChange(e.value!)}
               >
-                <Segment.Item value="player">
-                  <label className="sr-only">Player</label>
-                  <Gamepad2 />
-                </Segment.Item>
-                <Segment.Item value="spectator">
-                  <label className="sr-only">Spectator</label>
-                  <Binoculars />
-                </Segment.Item>
-              </Segment>
-            </label>
+                <SegmentedControl.Control>
+                  <SegmentedControl.Indicator />
+                  <SegmentedControl.Item
+                    value="player"
+                    title="player"
+                    aria-label="player"
+                  >
+                    <SegmentedControl.ItemHiddenInput />
+                    <SegmentedControl.ItemText>
+                      <Gamepad2 />
+                    </SegmentedControl.ItemText>
+                  </SegmentedControl.Item>
+                  <SegmentedControl.Item
+                    value="spectator"
+                    title="spectator"
+                    aria-label="spectator"
+                  >
+                    <SegmentedControl.ItemHiddenInput />
+                    <SegmentedControl.ItemText>
+                      <Binoculars />
+                    </SegmentedControl.ItemText>
+                  </SegmentedControl.Item>
+                </SegmentedControl.Control>
+              </SegmentedControl>
+            </div>
           )}
         />
         <joinForm.Subscribe

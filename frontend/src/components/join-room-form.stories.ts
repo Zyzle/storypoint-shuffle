@@ -21,6 +21,7 @@ const meta = {
   },
   async afterEach(context) {
     context.userEvent.clear(context.canvas.getByLabelText('Player name'));
+    context.userEvent.click(context.canvas.getByTitle('player'));
   },
 } satisfies Meta<typeof JoinRoomForm>;
 
@@ -48,8 +49,19 @@ export const Default: Story = {
         'Alice',
         false,
       );
-      await userEvent.clear(canvas.getByLabelText('Room ID'));
     });
+    await step('Test alternate options', async () => {
+      await userEvent.clear(canvas.getByLabelText('Player name'));
+      await userEvent.type(canvas.getByLabelText('Player name'), 'Bob');
+      await userEvent.click(canvas.getByTitle('spectator'));
+      await userEvent.click(canvas.getByText('Join Room'));
+      await expect(args.onJoin).toHaveBeenCalledWith(
+        '07fcd101-ffbc-41b6-8284-20e5a1a3cacb',
+        'Bob',
+        true,
+      );
+    });
+    await userEvent.clear(canvas.getByLabelText('Room ID'));
   },
 };
 
@@ -73,6 +85,17 @@ export const RoomPrePopulated: Story = {
         '07fcd101-ffbc-41b6-8284-20e5a1a3cacb',
         'Alice',
         false,
+      );
+    });
+    await step('Test alternate options', async () => {
+      await userEvent.clear(canvas.getByLabelText('Player name'));
+      await userEvent.type(canvas.getByLabelText('Player name'), 'Colin');
+      await userEvent.click(canvas.getByTitle('spectator'));
+      await userEvent.click(canvas.getByText('Join Room'));
+      await expect(args.onJoin).toHaveBeenCalledWith(
+        '07fcd101-ffbc-41b6-8284-20e5a1a3cacb',
+        'Colin',
+        true,
       );
     });
   },

@@ -1,4 +1,4 @@
-import { Segment } from '@skeletonlabs/skeleton-react';
+import { SegmentedControl } from '@skeletonlabs/skeleton-react';
 import { useForm } from '@tanstack/react-form';
 import { ArrowRight, Binoculars, Gamepad2, Shirt } from 'lucide-react';
 import { z } from 'zod';
@@ -64,46 +64,76 @@ function CreateRoomForm({
           <createForm.Field
             name="playerType"
             children={(field) => (
-              <label className="label">
+              <div className="label">
                 <span className="label-text">Join as player or spectator</span>
-                <Segment
+                <SegmentedControl
                   name={field.name}
                   value={field.state.value}
                   onValueChange={(e) => field.handleChange(e.value!)}
                 >
-                  <Segment.Item value="player">
-                    <label className="sr-only">Player</label>
-                    <Gamepad2 />
-                  </Segment.Item>
-                  <Segment.Item value="spectator">
-                    <label className="sr-only">Spectator</label>
-                    <Binoculars />
-                  </Segment.Item>
-                </Segment>
-              </label>
+                  <SegmentedControl.Control>
+                    <SegmentedControl.Indicator />
+                    <SegmentedControl.Item
+                      value="player"
+                      title="player"
+                      aria-label="player"
+                    >
+                      <SegmentedControl.ItemHiddenInput />
+                      <SegmentedControl.ItemText>
+                        <Gamepad2 />
+                      </SegmentedControl.ItemText>
+                    </SegmentedControl.Item>
+                    <SegmentedControl.Item
+                      value="spectator"
+                      title="spectator"
+                      aria-label="spectator"
+                    >
+                      <SegmentedControl.ItemHiddenInput />
+                      <SegmentedControl.ItemText>
+                        <Binoculars />
+                      </SegmentedControl.ItemText>
+                    </SegmentedControl.Item>
+                  </SegmentedControl.Control>
+                </SegmentedControl>
+              </div>
             )}
           />
-          <span className="vr pr-12 border-l-2"></span>
+          <span className="vr mx-6 border-l-2"></span>
           <createForm.Field
             name="cardSet"
             children={(field) => (
-              <label className="label">
+              <div className="label">
                 <span className="label-text">Room card set</span>
-                <Segment
+                <SegmentedControl
                   name={field.name}
                   value={field.state.value}
                   onValueChange={(e) => field.handleChange(e.value!)}
                 >
-                  <Segment.Item value="fibonacci">
-                    <label className="sr-only">Fibonacci</label>
-                    <Fibonacci />
-                  </Segment.Item>
-                  <Segment.Item value="tshirt">
-                    <label className="sr-only">T-Shirt</label>
-                    <Shirt />
-                  </Segment.Item>
-                </Segment>
-              </label>
+                  <SegmentedControl.Control>
+                    <SegmentedControl.Indicator />
+                    <SegmentedControl.Item
+                      value="fibonacci"
+                      title="fibonacci"
+                      aria-label="fibonacci"
+                    >
+                      <SegmentedControl.ItemHiddenInput />
+                      <SegmentedControl.ItemText>
+                        <Fibonacci />
+                      </SegmentedControl.ItemText>
+                    </SegmentedControl.Item>
+                    <SegmentedControl.Item
+                      value="tshirt"
+                      title="tshirt"
+                      aria-label="tshirt"
+                    >
+                      <SegmentedControl.ItemHiddenInput />
+                      <SegmentedControl.ItemText>
+                        <Shirt />
+                      </SegmentedControl.ItemText>
+                    </SegmentedControl.Item>
+                  </SegmentedControl.Control>
+                </SegmentedControl>
+              </div>
             )}
           />
         </div>

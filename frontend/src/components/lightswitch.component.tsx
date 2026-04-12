@@ -20,13 +20,19 @@ function Lightswitch(props: { className?: string }) {
 
   return (
     <Switch
-      classes={`m-0 ${props.className}`}
+      className={`m-0 ${props.className}`}
       checked={checked}
       onCheckedChange={onCheckedChanged}
-      inactiveChild={<Moon size="14" />}
-      activeChild={<Sun size="14" />}
     >
+      <Switch.Control>
+        <Switch.Thumb>
+          <Switch.Context>
+            {(checked) => (checked ? <Sun size="14" /> : <Moon size="14" />)}
+          </Switch.Context>
+        </Switch.Thumb>
+      </Switch.Control>
       <span className="sr-only">Toggle light/dark mode</span>
+      <Switch.HiddenInput />
     </Switch>
   );
 }

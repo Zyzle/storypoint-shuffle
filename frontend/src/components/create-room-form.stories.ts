@@ -21,6 +21,8 @@ const meta = {
   },
   async afterEach(context) {
     context.userEvent.clear(context.canvas.getByLabelText('Player name'));
+    context.userEvent.click(context.canvas.getByTitle('player'));
+    context.userEvent.click(context.canvas.getByTitle('fibonacci'));
   },
 } satisfies Meta<typeof CreateRoomFormComponent>;
 
@@ -45,6 +47,14 @@ export const CreateRoomForm: Story = {
         false,
         'fibonacci',
       );
+    });
+    await step('Test alternate options', async () => {
+      await userEvent.clear(canvas.getByLabelText('Player name'));
+      await userEvent.type(canvas.getByLabelText('Player name'), 'Alice');
+      await userEvent.click(canvas.getByTitle('spectator'));
+      await userEvent.click(canvas.getByTitle('tshirt'));
+      await userEvent.click(canvas.getByText('Create Room'));
+      await expect(args.onCreate).toHaveBeenCalledWith('Alice', true, 'tshirt');
     });
   },
 };

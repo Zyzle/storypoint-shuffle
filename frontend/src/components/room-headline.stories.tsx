@@ -1,4 +1,4 @@
-import { Toaster } from '@skeletonlabs/skeleton-react';
+import { Toast } from '@skeletonlabs/skeleton-react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { fn } from 'storybook/test';
 
@@ -24,7 +24,17 @@ const meta: Meta<typeof RoomHeadline> = {
   decorators: [
     (Story) => (
       <>
-        <Toaster toaster={toaster} />
+        <Toast.Group toaster={toaster}>
+          {(toast) => (
+            <Toast toast={toast} key={toast.id}>
+              <Toast.Message>
+                <Toast.Title>{toast.title}</Toast.Title>
+                <Toast.Description>{toast.description}</Toast.Description>
+              </Toast.Message>
+              <Toast.CloseTrigger />
+            </Toast>
+          )}
+        </Toast.Group>
         <Story />
       </>
     ),
