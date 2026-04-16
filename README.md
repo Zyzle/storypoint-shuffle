@@ -17,21 +17,19 @@ A collaborative story point voting app built with Rust (Axum, Socketioxide) and 
 
 1. Install Rust: https://rustup.rs
 2. Install Bun: https://bun.sh
-3. Install frontend dependencies:
+3. Install Vite+: https://viteplus.dev/guide/#install-vp
+4. Install frontend dependencies:
    ```sh
    cd frontend
-   bun install
+   vp install
    ```
-4. Create a `.env` file in the `frontend` directory with the following content (change as needed for your setup)
-   ```
-   VITE_SITE_URL=http://localhost:5173
-   VITE_SOCKET_URL=http://localhost:3333
-   ```
+5. Copy the `.env.example` file in the project root to `.env`
+6. Copy the `.env.example` to `.env` in the `frontend` directory, change as needed for your setup
 
 ## Development
 
 - Start the backend: `cargo run`
-- Start the frontend (from the `frontend` directory): `bun run dev`
+- Start the frontend (from the `frontend` directory): `vp dev`
 
 ## License
 

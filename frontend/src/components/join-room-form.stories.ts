@@ -1,13 +1,14 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
-import { expect, fn } from 'storybook/test';
+import type { Meta, StoryObj } from "@storybook/react-vite";
+import { expect, fn } from "storybook/test";
 
-import { allModes } from '../../.storybook/modes';
+import { allModes } from "../../.storybook/modes";
 
-import { JoinRoomForm } from './join-room-form.component';
+import { JoinRoomForm } from "./join-room-form.component";
 
 const meta = {
-  title: 'Components/Forms/JoinRoomForm',
+  title: "Components/Forms/JoinRoomForm",
   component: JoinRoomForm,
+  tags: ["autodocs"],
   parameters: {
     chromatic: {
       modes: {
@@ -20,8 +21,8 @@ const meta = {
     },
   },
   async afterEach(context) {
-    context.userEvent.clear(context.canvas.getByLabelText('Player name'));
-    context.userEvent.click(context.canvas.getByTitle('player'));
+    await context.userEvent.clear(context.canvas.getByLabelText("Player name"));
+    await context.userEvent.click(context.canvas.getByTitle("player"));
   },
 } satisfies Meta<typeof JoinRoomForm>;
 
@@ -30,71 +31,71 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    room: '',
+    room: "",
     onJoin: fn(),
   },
   play: async ({ args, canvas, userEvent, step }) => {
-    await step('Button disabled by default', async () => {
-      expect(canvas.getByRole('button', { name: 'Join Room' })).toBeDisabled();
+    await step("Button disabled by default", async () => {
+      await expect(canvas.getByRole("button", { name: "Join Room" })).toBeDisabled();
     });
-    await step('Fill the form', async () => {
+    await step("Fill the form", async () => {
       await userEvent.type(
-        canvas.getByLabelText('Room ID'),
-        '07fcd101-ffbc-41b6-8284-20e5a1a3cacb',
+        canvas.getByLabelText("Room ID"),
+        "07fcd101-ffbc-41b6-8284-20e5a1a3cacb",
       );
-      await userEvent.type(canvas.getByLabelText('Player name'), 'Alice');
-      await userEvent.click(canvas.getByText('Join Room'));
+      await userEvent.type(canvas.getByLabelText("Player name"), "Alice");
+      await userEvent.click(canvas.getByText("Join Room"));
       await expect(args.onJoin).toHaveBeenCalledWith(
-        '07fcd101-ffbc-41b6-8284-20e5a1a3cacb',
-        'Alice',
+        "07fcd101-ffbc-41b6-8284-20e5a1a3cacb",
+        "Alice",
         false,
       );
     });
-    await step('Test alternate options', async () => {
-      await userEvent.clear(canvas.getByLabelText('Player name'));
-      await userEvent.type(canvas.getByLabelText('Player name'), 'Bob');
-      await userEvent.click(canvas.getByTitle('spectator'));
-      await userEvent.click(canvas.getByText('Join Room'));
+    await step("Test alternate options", async () => {
+      await userEvent.clear(canvas.getByLabelText("Player name"));
+      await userEvent.type(canvas.getByLabelText("Player name"), "Bob");
+      await userEvent.click(canvas.getByTitle("spectator"));
+      await userEvent.click(canvas.getByText("Join Room"));
       await expect(args.onJoin).toHaveBeenCalledWith(
-        '07fcd101-ffbc-41b6-8284-20e5a1a3cacb',
-        'Bob',
+        "07fcd101-ffbc-41b6-8284-20e5a1a3cacb",
+        "Bob",
         true,
       );
     });
-    await userEvent.clear(canvas.getByLabelText('Room ID'));
+    await userEvent.clear(canvas.getByLabelText("Room ID"));
   },
 };
 
 export const RoomPrePopulated: Story = {
   args: {
-    room: '07fcd101-ffbc-41b6-8284-20e5a1a3cacb',
+    room: "07fcd101-ffbc-41b6-8284-20e5a1a3cacb",
     onJoin: fn(),
   },
   play: async ({ args, canvas, userEvent, step }) => {
-    await step('Button disabled by default', async () => {
-      expect(canvas.getByLabelText('Room ID')).toBeDisabled();
-      expect(canvas.getByLabelText('Room ID')).toHaveValue(
-        '07fcd101-ffbc-41b6-8284-20e5a1a3cacb',
+    await step("Button disabled by default", async () => {
+      await expect(canvas.getByLabelText("Room ID")).toBeDisabled();
+      await expect(canvas.getByLabelText("Room ID")).toHaveValue(
+        "07fcd101-ffbc-41b6-8284-20e5a1a3cacb",
       );
-      expect(canvas.getByRole('button', { name: 'Join Room' })).toBeDisabled();
+      await expect(canvas.getByRole("button", { name: "Join Room" })).toBeDisabled();
     });
-    await step('Fill the form', async () => {
-      await userEvent.type(canvas.getByLabelText('Player name'), 'Alice');
-      await userEvent.click(canvas.getByText('Join Room'));
+    await step("Fill the form", async () => {
+      await userEvent.type(canvas.getByLabelText("Player name"), "Alice");
+      await userEvent.click(canvas.getByText("Join Room"));
       await expect(args.onJoin).toHaveBeenCalledWith(
-        '07fcd101-ffbc-41b6-8284-20e5a1a3cacb',
-        'Alice',
+        "07fcd101-ffbc-41b6-8284-20e5a1a3cacb",
+        "Alice",
         false,
       );
     });
-    await step('Test alternate options', async () => {
-      await userEvent.clear(canvas.getByLabelText('Player name'));
-      await userEvent.type(canvas.getByLabelText('Player name'), 'Colin');
-      await userEvent.click(canvas.getByTitle('spectator'));
-      await userEvent.click(canvas.getByText('Join Room'));
+    await step("Test alternate options", async () => {
+      await userEvent.clear(canvas.getByLabelText("Player name"));
+      await userEvent.type(canvas.getByLabelText("Player name"), "Colin");
+      await userEvent.click(canvas.getByTitle("spectator"));
+      await userEvent.click(canvas.getByText("Join Room"));
       await expect(args.onJoin).toHaveBeenCalledWith(
-        '07fcd101-ffbc-41b6-8284-20e5a1a3cacb',
-        'Colin',
+        "07fcd101-ffbc-41b6-8284-20e5a1a3cacb",
+        "Colin",
         true,
       );
     });

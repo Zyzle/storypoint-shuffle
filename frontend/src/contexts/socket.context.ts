@@ -1,6 +1,6 @@
-import { createContext } from 'react';
+import { createContext } from "react";
 
-import type { AppState } from '../types';
+import type { AppState } from "../types";
 
 const SocketContext = createContext<AppState | undefined>(undefined);
 

@@ -1,12 +1,12 @@
-import { SegmentedControl } from '@skeletonlabs/skeleton-react';
-import { useForm } from '@tanstack/react-form';
-import { ArrowRight, Binoculars, Gamepad2 } from 'lucide-react';
-import { z } from 'zod';
+import { SegmentedControl } from "@skeletonlabs/skeleton-react";
+import { useForm } from "@tanstack/react-form";
+import { ArrowRight, Binoculars, Gamepad2 } from "lucide-react";
+import { z } from "zod";
 
 const nameRoomSchema = z.object({
   name: z.string().min(3).max(100).trim().nonempty(),
   room: z.uuidv4().nonempty(),
-  playerType: z.enum(['player', 'spectator']),
+  playerType: z.enum(["player", "spectator"]),
 });
 
 function JoinRoomForm({
@@ -18,16 +18,12 @@ function JoinRoomForm({
 }) {
   const joinForm = useForm({
     defaultValues: {
-      name: '',
-      room: room ?? '',
-      playerType: 'player',
+      name: "",
+      room: room ?? "",
+      playerType: "player",
     },
     onSubmit: (values) => {
-      onJoin(
-        values.value.room,
-        values.value.name,
-        values.value.playerType === 'spectator',
-      );
+      onJoin(values.value.room, values.value.name, values.value.playerType === "spectator");
     },
     validators: {
       onChange: nameRoomSchema,
@@ -39,10 +35,10 @@ function JoinRoomForm({
       <h2 className="h3 text-shadow-lg">Join a Room</h2>
       <form
         className="space-y-4"
-        onSubmit={(e) => {
+        onSubmit={async (e) => {
           e.preventDefault();
           e.stopPropagation();
-          joinForm.handleSubmit();
+          await joinForm.handleSubmit();
         }}
       >
         <joinForm.Field
@@ -76,43 +72,41 @@ function JoinRoomForm({
             </label>
           )}
         />
-        <joinForm.Field
-          name="playerType"
-          children={(field) => (
-            <div className="label">
-              <span className="label-text">Join as player or spectator</span>
-              <SegmentedControl
-                name={field.name}
-                value={field.state.value}
-                onValueChange={(e) => field.handleChange(e.value!)}
-              >
-                <SegmentedControl.Control>
-                  <SegmentedControl.Indicator />
-                  <SegmentedControl.Item
-                    value="player"
-                    title="player"
-                    aria-label="player"
-                  >
-                    <SegmentedControl.ItemHiddenInput />
-                    <SegmentedControl.ItemText>
-                      <Gamepad2 />
-                    </SegmentedControl.ItemText>
-                  </SegmentedControl.Item>
-                  <SegmentedControl.Item
-                    value="spectator"
-                    title="spectator"
-                    aria-label="spectator"
-                  >
-                    <SegmentedControl.ItemHiddenInput />
-                    <SegmentedControl.ItemText>
-                      <Binoculars />
-                    </SegmentedControl.ItemText>
-                  </SegmentedControl.Item>
-                </SegmentedControl.Control>
-              </SegmentedControl>
-            </div>
-          )}
-        />
+        <div className="grid grid-cols-[1fr_auto_1fr] place-items-center">
+          <joinForm.Field
+            name="playerType"
+            children={(field) => (
+              <div className="label">
+                <span className="label-text">Join as player or spectator</span>
+                <SegmentedControl
+                  name={field.name}
+                  value={field.state.value}
+                  onValueChange={(e) => field.handleChange(e.value!)}
+                >
+                  <SegmentedControl.Control>
+                    <SegmentedControl.Indicator />
+                    <SegmentedControl.Item value="player" title="player" aria-label="player">
+                      <SegmentedControl.ItemHiddenInput />
+                      <SegmentedControl.ItemText>
+                        <Gamepad2 />
+                      </SegmentedControl.ItemText>
+                    </SegmentedControl.Item>
+                    <SegmentedControl.Item
+                      value="spectator"
+                      title="spectator"
+                      aria-label="spectator"
+                    >
+                      <SegmentedControl.ItemHiddenInput />
+                      <SegmentedControl.ItemText>
+                        <Binoculars />
+                      </SegmentedControl.ItemText>
+                    </SegmentedControl.Item>
+                  </SegmentedControl.Control>
+                </SegmentedControl>
+              </div>
+            )}
+          />
+        </div>
         <joinForm.Subscribe
           selector={(state) => [state.canSubmit, state.isPristine]}
           children={([canSubmit, isPristine]) => (

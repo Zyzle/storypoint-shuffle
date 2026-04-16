@@ -1,14 +1,14 @@
-@import 'tailwindcss';
+@import "tailwindcss";
 @plugin '@tailwindcss/forms';
 
-@import '@skeletonlabs/skeleton';
-@import '@skeletonlabs/skeleton-react';
+@import "@skeletonlabs/skeleton";
+@import "@skeletonlabs/skeleton-react";
 
-@import './storypoint-shuffle.css';
+@import "./storypoint-shuffle.css";
 
 @custom-variant dark (&:where([data-mode="dark"], [data-mode="dark"] *));
 
-[data-theme='storypointshuffle'][data-mode='light'] body {
+[data-theme="storypointshuffle"][data-mode="light"] body {
   background-image:
     radial-gradient(at 4% 5%, var(--color-primary-100) 0px, transparent 50%),
     radial-gradient(at 95% 7%, var(--color-secondary-100) 0px, transparent 50%),
@@ -22,7 +22,7 @@
   background-size: cover;
 }
 
-[data-theme='storypointshuffle'][data-mode='dark'] body {
+[data-theme="storypointshuffle"][data-mode="dark"] body {
   background-image:
     radial-gradient(at 4% 5%, var(--color-primary-950) 0px, transparent 50%),
     radial-gradient(at 95% 7%, var(--color-secondary-950) 0px, transparent 50%),
@@ -48,97 +48,56 @@
 
 .preset-glass-neutral {
   background: color-mix(in oklab, var(--color-surface-50-950) 30%, transparent);
-  box-shadow: 0 0px 30px
-    color-mix(in oklab, var(--color-surface-50-950) 30%, transparent) inset;
+  box-shadow: 0 0px 30px color-mix(in oklab, var(--color-surface-50-950) 30%, transparent) inset;
   backdrop-filter: blur(16px);
 }
 
 .preset-gradient-pt {
-  background-image: linear-gradient(
-    45deg,
-    var(--color-primary-500),
-    var(--color-tertiary-500)
-  );
+  background-image: linear-gradient(45deg, var(--color-primary-500), var(--color-tertiary-500));
   color: var(--color-primary-contrast-500);
 }
 
 .player-gradient-1 {
-  background-image: linear-gradient(
-    45deg,
-    var(--color-primary-200),
-    var(--color-primary-400)
-  );
+  background-image: linear-gradient(45deg, var(--color-primary-200), var(--color-primary-400));
   color: var(--color-primary-contrast-200);
 }
 
 .player-gradient-2 {
-  background-image: linear-gradient(
-    45deg,
-    var(--color-secondary-200),
-    var(--color-secondary-400)
-  );
+  background-image: linear-gradient(45deg, var(--color-secondary-200), var(--color-secondary-400));
   color: var(--color-secondary-contrast-200);
 }
 
 .player-gradient-3 {
-  background-image: linear-gradient(
-    45deg,
-    var(--color-tertiary-200),
-    var(--color-tertiary-400)
-  );
+  background-image: linear-gradient(45deg, var(--color-tertiary-200), var(--color-tertiary-400));
   color: var(--color-tertiary-contrast-200);
 }
 
 .player-gradient-4 {
-  background-image: linear-gradient(
-    45deg,
-    var(--color-success-200),
-    var(--color-success-400)
-  );
+  background-image: linear-gradient(45deg, var(--color-success-200), var(--color-success-400));
   color: var(--color-success-contrast-200);
 }
 
 .player-gradient-5 {
-  background-image: linear-gradient(
-    45deg,
-    var(--color-warning-200),
-    var(--color-warning-400)
-  );
+  background-image: linear-gradient(45deg, var(--color-warning-200), var(--color-warning-400));
   color: var(--color-warning-contrast-200);
 }
 
 .player-gradient-6 {
-  background-image: linear-gradient(
-    45deg,
-    var(--color-error-200),
-    var(--color-error-400)
-  );
+  background-image: linear-gradient(45deg, var(--color-error-200), var(--color-error-400));
   color: var(--color-error-contrast-200);
 }
 
 .card-gradient-unselected {
-  background-image: linear-gradient(
-    45deg,
-    var(--color-surface-50),
-    var(--color-surface-200)
-  );
+  background-image: linear-gradient(45deg, var(--color-surface-50), var(--color-surface-200));
   color: var(--color-surface-contrast-50);
 }
 
 .card-gradient-unselected:hover {
-  background-image: linear-gradient(
-    45deg,
-    var(--color-surface-200),
-    var(--color-surface-50)
-  );
+  background-image: linear-gradient(45deg, var(--color-surface-200), var(--color-surface-50));
   color: var(--color-primary-contrast-50);
 }
 
 .card-gradient-selected {
-  background-image: linear-gradient(
-    45deg,
-    var(--color-success-100),
-    var(--color-success-300)
-  );
+  background-image: linear-gradient(45deg, var(--color-success-100), var(--color-success-300));
   color: var(--color-success-contrast-100);
 }

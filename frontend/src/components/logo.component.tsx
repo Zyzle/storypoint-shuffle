@@ -1,16 +1,10 @@
-import type { SVGProps } from 'react';
+import type { SVGProps } from "react";
 
 function Logo(props: SVGProps<SVGSVGElement>) {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" {...props}>
       <g>
-        <rect
-          width="60"
-          height="90"
-          fill="#02a0bb"
-          rx="8"
-          transform="rotate(-20 142.165 20.34)"
-        />
+        <rect width="60" height="90" fill="#02a0bb" rx="8" transform="rotate(-20 142.165 20.34)" />
         <rect
           width="60"
           height="90"
@@ -25,20 +19,8 @@ function Logo(props: SVGProps<SVGSVGElement>) {
           rx="8"
           transform="rotate(10 -129.785 481.366)"
         />
-        <rect
-          width="60"
-          height="90"
-          fill="#02a0bb"
-          rx="8"
-          transform="rotate(20 -90.548 313.073)"
-        />
-        <rect
-          width="60"
-          height="90"
-          fill="#094651"
-          rx="8"
-          transform="translate(51.617 9.85)"
-        />
+        <rect width="60" height="90" fill="#02a0bb" rx="8" transform="rotate(20 -90.548 313.073)" />
+        <rect width="60" height="90" fill="#094651" rx="8" transform="translate(51.617 9.85)" />
       </g>
     </svg>
   );

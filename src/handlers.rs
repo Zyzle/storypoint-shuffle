@@ -66,6 +66,10 @@ fn get_room_mut<'a>(
     }
 }
 
+/// Elects a new host for the room if the current host disconnects or exits.
+/// - Selects the first player in the room as the new host.
+/// - Emits a "newHostElected" event to the room with the new host's ID.
+/// - Returns an error if the room is empty after the host leaves.
 async fn elect_new_host(room: &mut Room, socket: &SocketRef) -> Result<(), RoomEmptyError> {
     if let Some(new_host) = room.players.values().next() {
         room.host_id.clone_from(&new_host.id);
@@ -76,6 +80,33 @@ async fn elect_new_host(room: &mut Room, socket: &SocketRef) -> Result<(), RoomE
         Ok(())
     } else {
         Err(RoomEmptyError)
+    }
+}
+
+// If the room has a plan, apply the votes for the current ticket
+// by calculating the mode of the votes and setting it as the vote
+// for the current ticket
+fn apply_votes_to_plan(room: &mut Room) {
+    let vote_counts: HashMap<u8, u8> =
+        room.players
+            .values()
+            .fold(HashMap::new(), |mut acc, player| {
+                if let Some(vote) = player.vote {
+                    *acc.entry(vote).or_insert(0) += 1;
+                }
+                acc
+            });
+
+    let mode_vote: u8 = vote_counts
+        .iter()
+        .max_by_key(|entry| entry.1)
+        .map_or(0, |(vote, _)| *vote);
+
+    if let Some(plan) = &mut room.plan {
+        plan.tickets[plan.current_ticket_index].vote = Some(mode_vote);
+        if plan.current_ticket_index < plan.tickets.len() - 1 {
+            plan.current_ticket_index += 1;
+        }
     }
 }
 
@@ -106,6 +137,7 @@ pub async fn handle_create_room(
         players,
         cards_revealed: false,
         card_set: payload.card_set.clone(),
+        plan: payload.room_plan.clone(),
     };
 
     app_state.rooms.lock().await.insert(room_id, room.clone());
@@ -199,6 +231,8 @@ pub async fn handle_vote(
                 room.cards_revealed = true;
                 info!("All players voted in room {}", room.id);
 
+                apply_votes_to_plan(room);
+
                 emit_event_broadcast::<CardsRevealedEvent>(&socket, room.id.to_string(), room)
                     .await;
             }
@@ -229,6 +263,8 @@ pub async fn handle_reveal_cards(
             if room.host_id == socket.id.to_string() && all_voted {
                 room.cards_revealed = true;
                 info!("Cards revealed in room {}", room.id);
+
+                apply_votes_to_plan(room);
 
                 emit_event_broadcast::<CardsRevealedEvent>(&socket, room.id.to_string(), room)
                     .await;
@@ -309,6 +345,11 @@ pub async fn handle_disconnect(socket: SocketRef, app_state: SocketState<Arc<App
     }
 }
 
+/// Handles a player exiting a room voluntarily.
+/// - Removes the player from the room.
+/// - Emits "playerDisconnected" event.
+/// - Elects a new host if the exiting player was the host and notifies the room.
+/// - Removes the room if it becomes empty after the player exits.
 pub async fn handle_player_exit(
     socket: SocketRef,
     Data(payload): Data<PlayerExitEvent>,

@@ -1,14 +1,15 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
-import { fn } from 'storybook/test';
+import type { Meta, StoryObj } from "@storybook/react-vite";
+import { fn } from "storybook/test";
 
-import { allModes } from '../../.storybook/modes';
+import { allModes } from "../../.storybook/modes";
 
-import { CentralCard } from './central-card.component';
-import { CardSet } from '../types';
+import { CentralCard } from "./central-card.component";
+import { CardSet } from "../types";
 
 const meta: Meta<typeof CentralCard> = {
-  title: 'Components/CentralCard',
+  title: "Components/CentralCard",
   component: CentralCard,
+  tags: ["autodocs"],
   parameters: {
     chromatic: {
       modes: {
@@ -52,6 +53,40 @@ export const HiddenWithHostControls: Story = {
     votes: [],
     hasSomeVoted: false,
     cardSet: CardSet.fibonacci,
+    onVotesRevealed: fn(),
+    onVotesReset: fn(),
+  },
+};
+
+export const WithRoomPlan: Story = {
+  args: {
+    isRevealed: false,
+    showHostControls: false,
+    votes: [],
+    hasSomeVoted: false,
+    cardSet: CardSet.fibonacci,
+    roomPlan: {
+      current_ticket_index: 1,
+      tickets: [
+        {
+          name: "Ticket 1",
+          description: "This is the first ticket.",
+          vote: 3,
+        },
+        {
+          name: "Ticket 2",
+          description: "This is the second ticket.",
+        },
+        {
+          name: "Ticket 3",
+          description: "This is the third ticket.",
+        },
+        {
+          name: "Ticket 4",
+          description: "This is the fourth ticket.",
+        },
+      ],
+    },
     onVotesRevealed: fn(),
     onVotesReset: fn(),
   },
@@ -101,13 +136,13 @@ export const AllPlayersPass: Story = {
     hasSomeVoted: true,
 
     cardSet: {
-      '1': 1,
-      '2': 2,
-      '3': 3,
-      '5': 5,
-      '8': 8,
-      '13': 13,
-      '?': 0,
+      "1": 1,
+      "2": 2,
+      "3": 3,
+      "5": 5,
+      "8": 8,
+      "13": 13,
+      "?": 0,
     },
   },
 };

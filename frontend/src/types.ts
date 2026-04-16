@@ -1,6 +1,6 @@
-import { type Dispatch, type SetStateAction } from 'react';
+import { type Dispatch, type SetStateAction } from "react";
 
-import type { Placement } from '@floating-ui/react';
+import type { Placement } from "@floating-ui/react";
 
 export interface DialogOptions {
   initialOpen?: boolean;
@@ -29,6 +29,20 @@ export interface Room {
   players: { [key: string]: Player };
   cards_revealed: boolean;
   card_set: string;
+  plan?: RoomPlan;
+}
+
+export interface RoomPlan {
+  current_ticket_index: number;
+  tickets: {
+    name: string;
+    description: string;
+    vote?: number;
+  }[];
+}
+
+export interface RoomPlanFile extends Omit<RoomPlan, "current_ticket_index"> {
+  card_set: "fibonacci" | "t-shirt";
 }
 
 export interface ServerToClientEvents {
@@ -51,10 +65,12 @@ export interface ClientToServerEvents {
     name,
     is_spectator,
     card_set,
+    room_plan,
   }: {
     name: string;
     is_spectator: boolean;
     card_set: string;
+    room_plan?: RoomPlan;
   }) => void;
   joinRoom: ({
     room_id,
@@ -79,15 +95,15 @@ export interface AppState {
   setError: Dispatch<SetStateAction<string | undefined>>;
   joinRoom: (roomId: string, name: string, isSpectator: boolean) => void;
   exitRoom: (roomId: string) => void;
-  createRoom: (name: string, isSpectator: boolean, cardSet: string) => void;
+  createRoom: (name: string, isSpectator: boolean, cardSet: string, roomPlan?: RoomPlan) => void;
   revealCards: (roomId: string) => void;
   resetVotes: (roomId: string) => void;
   vote: (roomId: string, vote: number) => void;
 }
 
 export const CardSet: Record<string, Record<string, number>> = {
-  fibonacci: { '?': 0, '1': 1, '2': 2, '3': 3, '5': 5, '8': 8, '13': 13 },
-  tshirt: { '?': 0, XS: 1, S: 2, M: 3, L: 4, XL: 5, '2XL': 6 },
+  fibonacci: { "?": 0, "1": 1, "2": 2, "3": 3, "5": 5, "8": 8, "13": 13 },
+  "t-shirt": { "?": 0, XS: 1, S: 2, M: 3, L: 4, XL: 5, "2XL": 6 },
 };
 
 export const Breakpoints = {

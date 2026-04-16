@@ -1,24 +1,24 @@
-import { useEffect, useMemo, useState } from 'react';
-import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import Confetti from 'react-confetti';
+import { useEffect, useMemo, useState } from "react";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import Confetti from "react-confetti";
 
-import { useSocket } from '../hooks/socket.hook';
-import { CentralCard } from '../components/central-card.component';
-import { PlayerCard } from '../components/player-card.component';
-import { CardSelector } from '../components/card-selector.component';
-import { RoomHeadline } from '../components/room-headline.component';
-import { JoinRoomDialog } from '../components/join-room-dialog.component';
-import { Breakpoints, CardSet } from '../types';
-import { useBreakpoints } from '../hooks/breakpoints.hook';
-import { useElementCenter } from '../hooks/container.hook';
+import { useSocket } from "../hooks/socket.hook";
+import { CentralCard } from "../components/central-card.component";
+import { PlayerCard } from "../components/player-card.component";
+import { CardSelector } from "../components/card-selector.component";
+import { RoomHeadline } from "../components/room-headline.component";
+import { JoinRoomDialog } from "../components/join-room-dialog.component";
+import { Breakpoints, CardSet } from "../types";
+import { useBreakpoints } from "../hooks/breakpoints.hook";
+import { useElementCenter } from "../hooks/container.hook";
 
 const COLORS = [
-  'player-gradient-1',
-  'player-gradient-2',
-  'player-gradient-3',
-  'player-gradient-4',
-  'player-gradient-5',
-  'player-gradient-6',
+  "player-gradient-1",
+  "player-gradient-2",
+  "player-gradient-3",
+  "player-gradient-4",
+  "player-gradient-5",
+  "player-gradient-6",
 ];
 
 function hash(str: string): number {
@@ -30,13 +30,12 @@ function hash(str: string): number {
   return hash;
 }
 
-export const Route = createFileRoute('/room/$roomId')({
+export const Route = createFileRoute("/room/$roomId")({
   component: Room,
 });
 
 function Room() {
-  const { room, me, setMe, revealCards, resetVotes, vote, joinRoom, exitRoom } =
-    useSocket();
+  const { room, me, setMe, revealCards, resetVotes, vote, joinRoom, exitRoom } = useSocket();
   const { roomId } = Route.useParams();
   const navigate = useNavigate();
   const isHost = useMemo(() => me?.id === room?.host_id, [me, room]);
@@ -48,10 +47,7 @@ function Room() {
           .map((p) => p.vote ?? 0)
       : [];
   }, [room]);
-  const isRevealed = useMemo(
-    () => room?.cards_revealed ?? false,
-    [room?.cards_revealed],
-  );
+  const isRevealed = useMemo(() => room?.cards_revealed ?? false, [room?.cards_revealed]);
   const hasSomeVoted = useMemo(
     () =>
       room?.players
@@ -81,9 +77,7 @@ function Room() {
           filteredPlayers.every(
             (p) =>
               p.vote ===
-              Object.values(room.players).find(
-                (p) => !p.is_spectator && p.vote !== 0,
-              )?.vote,
+              Object.values(room.players).find((p) => !p.is_spectator && p.vote !== 0)?.vote,
           )
         : false;
     setShowConfetti(agreement);
@@ -101,13 +95,13 @@ function Room() {
       <div className="flex flex-col items-center justify-between h-screen w-full gap-4">
         <RoomHeadline
           playerName={me?.name}
-          roomId={room?.id ?? ''}
+          roomId={room?.id ?? ""}
           isHost={isHost}
           isSpectator={me?.is_spectator ?? false}
-          exitRoom={() => {
+          exitRoom={async () => {
             if (room && me) {
               exitRoom(room.id);
-              navigate({ to: '/' });
+              await navigate({ to: "/" });
             }
           }}
         />
@@ -125,8 +119,9 @@ function Room() {
             votes={votes}
             hasSomeVoted={hasSomeVoted}
             cardSet={cardSet}
-            onVotesRevealed={() => revealCards(room?.id ?? '')}
-            onVotesReset={() => resetVotes(room?.id ?? '')}
+            roomPlan={room?.plan}
+            onVotesRevealed={() => revealCards(room?.id ?? "")}
+            onVotesReset={() => resetVotes(room?.id ?? "")}
           />
           {/* Player Cards positioned in a circle */}
           {players.map((player, index) => {
@@ -148,9 +143,7 @@ function Room() {
                   left: size > Breakpoints.MD ? `${xOffset + x}px` : undefined,
                   top: size > Breakpoints.MD ? `${yOffset + y}px` : undefined,
                 }}
-                vote={Object.keys(cardSet).find(
-                  (key) => cardSet[key] === player.vote,
-                )}
+                vote={Object.keys(cardSet).find((key) => cardSet[key] === player.vote)}
                 color={COLORS[Math.abs(hash(player.id)) % COLORS.length]}
                 isSpectator={player.is_spectator}
               />
@@ -170,7 +163,7 @@ function Room() {
                 }
                 return prevMe;
               });
-              vote(room?.id ?? '', selectedVote);
+              vote(room?.id ?? "", selectedVote);
             }}
           />
         ) : (

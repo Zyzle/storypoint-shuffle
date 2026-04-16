@@ -1,6 +1,6 @@
-import { createContext } from 'react';
+import { createContext } from "react";
 
-import type { useTooltip } from '../hooks/tooltip.hook';
+import type { useTooltip } from "../hooks/tooltip.hook";
 
 type ContextType = ReturnType<typeof useTooltip> | null;
 

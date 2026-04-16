@@ -1,6 +1,6 @@
-import { createContext, type Dispatch, type SetStateAction } from 'react';
+import { createContext, type Dispatch, type SetStateAction } from "react";
 
-import type { useDialog } from '../hooks/dialog.hook';
+import type { useDialog } from "../hooks/dialog.hook";
 
 type ContextType =
   | (ReturnType<typeof useDialog> & {

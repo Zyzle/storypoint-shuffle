@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef, useState } from 'react';
+import { useLayoutEffect, useRef, useState } from "react";
 
 function useElementCenter() {
   const ref = useRef<HTMLDivElement | null>(null);
@@ -15,8 +15,8 @@ function useElementCenter() {
       }
     }
     updateCenter();
-    window.addEventListener('resize', updateCenter);
-    return () => window.removeEventListener('resize', updateCenter);
+    window.addEventListener("resize", updateCenter);
+    return () => window.removeEventListener("resize", updateCenter);
   }, []);
 
   return [ref, center] as const;

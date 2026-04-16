@@ -1,9 +1,9 @@
-import { AppBar } from '@skeletonlabs/skeleton-react';
-import { ArrowLeft, ClipboardCopy } from 'lucide-react';
+import { AppBar } from "@skeletonlabs/skeleton-react";
+import { ArrowLeft, ClipboardCopy } from "lucide-react";
 
-import { toaster } from '../contexts/toaster.context';
-import { Lightswitch } from './lightswitch.component';
-import { Tooltip, TooltipContent, TooltipTrigger } from './tooltip.component';
+import { toaster } from "../contexts/toaster.context";
+import { Lightswitch } from "./lightswitch.component";
+import { Tooltip, TooltipContent, TooltipTrigger } from "./tooltip.component";
 
 function RoomHeadline({
   roomId,
@@ -37,20 +37,15 @@ function RoomHeadline({
         </AppBar.Lead>
         <AppBar.Headline>
           <h2 className="truncate h4 inline-block md:block max-w-30  md:max-w-full">
-            Room:{' '}
+            Room:{" "}
             <span className="">
-              {roomId === '' ? 'XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX' : roomId}
+              {roomId === "" ? "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX" : roomId}
             </span>
           </h2>
           <p className="text-xs md:text-base">
-            You are logged in as{' '}
-            <span className="font-semibold">{playerName}</span>&nbsp;(
-            <span
-              className={
-                isHost ? 'text-success-700-300' : 'text-primary-800-200'
-              }
-            >
-              {isHost ? 'host' : isSpectator ? 'spectator' : 'player'}
+            You are logged in as <span className="font-semibold">{playerName}</span>&nbsp;(
+            <span className={isHost ? "text-success-700-300" : "text-primary-800-200"}>
+              {isHost ? "host" : isSpectator ? "spectator" : "player"}
             </span>
             )
           </p>
@@ -62,11 +57,11 @@ function RoomHeadline({
               <button
                 aria-label="Copy room link"
                 className="btn px-2 py-1 md:px-4 md:py-2"
-                onClick={() => {
-                  navigator.clipboard.writeText(
+                onClick={async () => {
+                  await navigator.clipboard.writeText(
                     `${import.meta.env.VITE_SITE_URL}/room/${roomId}`,
                   );
-                  toaster.success({ title: 'Room link copied to clipboard' });
+                  toaster.success({ title: "Room link copied to clipboard" });
                 }}
               >
                 <ClipboardCopy size={20} />

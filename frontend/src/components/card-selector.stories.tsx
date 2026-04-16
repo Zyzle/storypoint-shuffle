@@ -1,15 +1,16 @@
-import { useState } from 'react';
-import type { Meta, StoryObj } from '@storybook/react-vite';
-import { fn } from 'storybook/test';
+import { useState } from "react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
+import { fn } from "storybook/test";
 
-import { allModes } from '../../.storybook/modes';
+import { allModes } from "../../.storybook/modes";
 
-import { CardSelector } from './card-selector.component';
-import { CardSet } from '../types';
+import { CardSelector } from "./card-selector.component";
+import { CardSet } from "../types";
 
 const meta: Meta<typeof CardSelector> = {
-  title: 'Components/CardSelector',
+  title: "Components/CardSelector",
   component: CardSelector,
+  tags: ["autodocs"],
   parameters: {
     chromatic: {
       modes: {

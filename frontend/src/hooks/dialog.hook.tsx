@@ -1,21 +1,15 @@
-import { useContext, useMemo, useState } from 'react';
+import { useContext, useMemo, useState } from "react";
 
-import {
-  useClick,
-  useDismiss,
-  useFloating,
-  useInteractions,
-  useRole,
-} from '@floating-ui/react';
+import { useClick, useDismiss, useFloating, useInteractions, useRole } from "@floating-ui/react";
 
-import type { DialogOptions } from '../types';
-import { DialogContext } from '../contexts/dialog.context';
+import type { DialogOptions } from "../types";
+import { DialogContext } from "../contexts/dialog.context";
 
 const useDialogContext = () => {
   const context = useContext(DialogContext);
 
   if (context === null) {
-    throw new Error('Dialog components must be wrapped in <Dialog />');
+    throw new Error("Dialog components must be wrapped in <Dialog />");
   }
 
   return context;
@@ -40,7 +34,7 @@ function useDialog({
   const click = useClick(context, {
     enabled: controlledOpen == null,
   });
-  const dismiss = useDismiss(context, { outsidePressEvent: 'mousedown' });
+  const dismiss = useDismiss(context, { outsidePressEvent: "mousedown" });
   const role = useRole(context);
   const interactions = useInteractions([click, dismiss, role]);
 
@@ -55,16 +49,7 @@ function useDialog({
       setLabelId,
       setDescriptionId,
     }),
-    [
-      open,
-      setOpen,
-      interactions,
-      data,
-      labelId,
-      descriptionId,
-      setLabelId,
-      setDescriptionId,
-    ],
+    [open, setOpen, interactions, data, labelId, descriptionId, setLabelId, setDescriptionId],
   );
 }
 

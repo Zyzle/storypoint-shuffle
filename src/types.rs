@@ -22,6 +22,20 @@ pub struct Player {
     pub is_spectator: bool,
 }
 
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct Ticket {
+    pub name: String,
+    pub description: String,
+    pub vote: Option<u8>,
+}
+
+/// `RoomPlan` represents the plan for a room, which includes a list of tickets and the index of the current ticket
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct RoomPlan {
+    pub tickets: Vec<Ticket>,
+    pub current_ticket_index: usize,
+}
+
 /// `Room` represents a game room
 /// It contains the room ID, host ID, and a list of players
 /// and whether the cards have been revealed
@@ -37,6 +51,8 @@ pub struct Room {
     pub players: HashMap<String, Player>,
     /// Which card set is being used in the frontend
     pub card_set: String,
+    // the room's plan, if any
+    pub plan: Option<RoomPlan>,
 }
 
 /// `AppState` holds the global application state
@@ -58,6 +74,8 @@ pub struct CreateRoomEvent {
     pub is_spectator: bool,
     // the cardset used in the room
     pub card_set: String,
+    // the room plan, if any
+    pub room_plan: Option<RoomPlan>,
 }
 
 /// Join room event
