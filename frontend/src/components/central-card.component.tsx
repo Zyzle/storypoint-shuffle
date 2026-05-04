@@ -1,4 +1,6 @@
-import { Agreement } from './agreement.component';
+import type { RoomPlan } from "../types";
+import { Agreement } from "./agreement.component";
+import { RoomPlanPanel } from "./room-plan-panel.component";
 
 function CentralCard({
   isRevealed,
@@ -6,6 +8,7 @@ function CentralCard({
   votes,
   hasSomeVoted,
   cardSet,
+  roomPlan,
   classes,
   onVotesRevealed,
   onVotesReset,
@@ -15,6 +18,7 @@ function CentralCard({
   votes: number[];
   hasSomeVoted: boolean;
   cardSet: { [key: string]: number };
+  roomPlan?: RoomPlan;
   classes?: string;
   onVotesRevealed: () => void;
   onVotesReset: () => void;
@@ -35,15 +39,22 @@ function CentralCard({
     { vote: -1, count: 0 },
   );
 
-  const modePercentage = Math.round(
-    (modeVote.count / votes.filter((v) => v !== 0).length) * 100,
-  );
+  const modePercentage = Math.round((modeVote.count / votes.filter((v) => v !== 0).length) * 100);
 
   return (
     <div
       className={`card preset-gradient-pt text-primary-contrast-500 min-w-xs shadow-xl ${classes}`}
     >
       <div className="flex flex-col items-center justify-center p-3 lg:p-6 gap-2 lg:gap-4">
+        {roomPlan && (
+          <div className="grid grid-cols-[1fr_auto] gap-x-4 ">
+            <span className="text-2xl font-semibold">
+              {roomPlan.tickets[roomPlan.current_ticket_index].name}
+            </span>
+            <RoomPlanPanel roomPlan={roomPlan} cardSet={cardSet} />
+          </div>
+        )}
+
         <span className="text-xl font-bold">Results</span>
         {isRevealed ? (
           <div className="grid grid-cols-2 gap-x-4 lg:gap-x-8 gap-y-1 lg:gap-y-2 place-items-center">
@@ -51,10 +62,8 @@ function CentralCard({
             <span className="text-xl">Agreement:</span>
             <span className="text-4xl font-bold">
               {modeVote.vote !== -1
-                ? Object.keys(cardSet).find(
-                    (key) => cardSet[key] === modeVote.vote,
-                  )
-                : '--'}
+                ? Object.keys(cardSet).find((key) => cardSet[key] === modeVote.vote)
+                : "--"}
             </span>
             {modeVote.vote !== -1 ? (
               <Agreement modeVotePct={modePercentage} />
@@ -76,10 +85,7 @@ function CentralCard({
           >
             Reveal Cards
           </button>
-          <button
-            onClick={onVotesReset}
-            className="btn preset-filled-error-500 shadow-md"
-          >
+          <button onClick={onVotesReset} className="btn preset-filled-error-500 shadow-md">
             Reset Round
           </button>
         </footer>

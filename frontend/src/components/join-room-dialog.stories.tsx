@@ -1,13 +1,14 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
-import { fn } from 'storybook/test';
+import type { Meta, StoryObj } from "@storybook/react-vite";
+import { fn } from "storybook/test";
 
-import { allModes } from '../../.storybook/modes';
+import { allModes } from "../../.storybook/modes";
 
-import { JoinRoomDialog as JoinRoomDialogComponent } from './join-room-dialog.component';
+import { JoinRoomDialog as JoinRoomDialogComponent } from "./join-room-dialog.component";
 
 const meta = {
-  title: 'Components/Dialogs/JoinRoomDialog',
+  title: "Components/Dialogs/JoinRoomDialog",
   component: JoinRoomDialogComponent,
+  tags: ["autodocs"],
   parameters: {
     chromatic: {
       modes: {
@@ -27,7 +28,7 @@ type Story = StoryObj<typeof meta>;
 export const JoinRoomDialog: Story = {
   args: {
     open: true,
-    roomId: '07fcd101-ffbc-41b6-8284-20e5a1a3cacb',
+    roomId: "07fcd101-ffbc-41b6-8284-20e5a1a3cacb",
     onJoin: fn(),
   },
   decorators: [

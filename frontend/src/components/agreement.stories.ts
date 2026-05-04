@@ -1,12 +1,13 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
+import type { Meta, StoryObj } from "@storybook/react-vite";
 
-import { allModes } from '../../.storybook/modes';
+import { allModes } from "../../.storybook/modes";
 
-import { Agreement } from './agreement.component';
+import { Agreement } from "./agreement.component";
 
 const meta: Meta<typeof Agreement> = {
-  title: 'Components/Agreement',
+  title: "Components/Agreement",
   component: Agreement,
+  tags: ["autodocs"],
   parameters: {
     chromatic: {
       modes: {

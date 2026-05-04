@@ -1,0 +1,13 @@
+{
+  "card_set": "fibonacci",
+  "tickets": [
+    {
+      "name": "Ticket 1",
+      "description": "This is the first ticket."
+    },
+    {
+      "name": "Ticket 2",
+      "description": "This is the second ticket."
+    }
+  ]
+}

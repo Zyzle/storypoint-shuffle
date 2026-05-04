@@ -1,22 +1,16 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from "react";
 
-import { useNavigate } from '@tanstack/react-router';
-import { io, type Socket } from 'socket.io-client';
+import { useNavigate } from "@tanstack/react-router";
+import { io, type Socket } from "socket.io-client";
 
-import type {
-  ClientToServerEvents,
-  Player,
-  Room,
-  ServerToClientEvents,
-} from '../types';
-import { SocketContext } from '../contexts/socket.context';
+import type { ClientToServerEvents, Player, Room, RoomPlan, ServerToClientEvents } from "../types";
+import { SocketContext } from "../contexts/socket.context";
 
 function SocketProvider({ children }: Readonly<{ children: React.ReactNode }>) {
   const navigate = useNavigate();
-  const [socket, setSocket] = useState<Socket<
-    ServerToClientEvents,
-    ClientToServerEvents
-  > | null>(null);
+  const [socket, setSocket] = useState<Socket<ServerToClientEvents, ClientToServerEvents> | null>(
+    null,
+  );
 
   const [room, setRoom] = useState<Room | undefined>(undefined);
   const [me, setMe] = useState<Player | undefined>(undefined);
@@ -25,13 +19,13 @@ function SocketProvider({ children }: Readonly<{ children: React.ReactNode }>) {
     (roomId: string, name: string, isSpectator: boolean) => {
       if (socket) {
         setMe({
-          id: socket.id ?? '',
+          id: socket.id ?? "",
           name,
           vote: null,
           has_voted: false,
           is_spectator: isSpectator,
         });
-        socket.emit('joinRoom', {
+        socket.emit("joinRoom", {
           room_id: roomId,
           name,
           is_spectator: isSpectator,
@@ -41,19 +35,20 @@ function SocketProvider({ children }: Readonly<{ children: React.ReactNode }>) {
     [socket],
   );
   const createRoom = useCallback(
-    (name: string, isSpectator: boolean, cardSet: string) => {
+    (name: string, isSpectator: boolean, cardSet: string, roomPlan?: RoomPlan) => {
       if (socket) {
         setMe({
-          id: socket.id ?? '',
+          id: socket.id ?? "",
           name,
           vote: null,
           has_voted: false,
           is_spectator: isSpectator,
         });
-        socket.emit('createRoom', {
+        socket.emit("createRoom", {
           name,
           is_spectator: isSpectator,
           card_set: cardSet,
+          room_plan: roomPlan,
         });
       }
     },
@@ -62,7 +57,7 @@ function SocketProvider({ children }: Readonly<{ children: React.ReactNode }>) {
   const revealCards = useCallback(
     (roomId: string) => {
       if (socket) {
-        socket.emit('revealCards', { room_id: roomId });
+        socket.emit("revealCards", { room_id: roomId });
       }
     },
     [socket],
@@ -70,7 +65,7 @@ function SocketProvider({ children }: Readonly<{ children: React.ReactNode }>) {
   const resetVotes = useCallback(
     (roomId: string) => {
       if (socket) {
-        socket.emit('resetVotes', { room_id: roomId });
+        socket.emit("resetVotes", { room_id: roomId });
       }
     },
     [socket],
@@ -78,7 +73,7 @@ function SocketProvider({ children }: Readonly<{ children: React.ReactNode }>) {
   const vote = useCallback(
     (roomId: string, vote: number) => {
       if (socket) {
-        socket.emit('vote', { room_id: roomId, vote });
+        socket.emit("vote", { room_id: roomId, vote });
       }
     },
     [socket],
@@ -86,7 +81,7 @@ function SocketProvider({ children }: Readonly<{ children: React.ReactNode }>) {
   const exitRoom = useCallback(
     (roomId: string) => {
       if (socket) {
-        socket.emit('exitRoom', { room_id: roomId });
+        socket.emit("exitRoom", { room_id: roomId });
       }
     },
     [socket],
@@ -127,39 +122,39 @@ function SocketProvider({ children }: Readonly<{ children: React.ReactNode }>) {
     );
     setSocket(socket);
 
-    socket.on('connect', () => {
-      console.log('Connected to server with ID:', socket.id);
+    socket.on("connect", () => {
+      console.log("Connected to server with ID:", socket.id);
     });
 
-    socket.on('roomCreated', (room) => {
+    socket.on("roomCreated", async (room) => {
       setRoom(room);
-      navigate({
-        to: '/room/$roomId',
+      await navigate({
+        to: "/room/$roomId",
         params: { roomId: room.id },
       });
     });
 
-    socket.on('playerJoined', (room) => {
+    socket.on("playerJoined", (room) => {
       setRoom(room);
     });
 
-    socket.on('roomState', (room) => {
+    socket.on("roomState", async (room) => {
       setRoom(room);
-      navigate({
-        to: '/room/$roomId',
+      await navigate({
+        to: "/room/$roomId",
         params: { roomId: room.id },
       });
     });
 
-    socket.on('playerVoted', (room) => {
+    socket.on("playerVoted", (room) => {
       setRoom(room);
     });
 
-    socket.on('cardsRevealed', (room) => {
+    socket.on("cardsRevealed", (room) => {
       setRoom(room);
     });
 
-    socket.on('votesReset', (room) => {
+    socket.on("votesReset", (room) => {
       setMe((prevMe) => {
         if (prevMe) {
           return { ...prevMe, vote: null, has_voted: false };
@@ -169,7 +164,7 @@ function SocketProvider({ children }: Readonly<{ children: React.ReactNode }>) {
       setRoom(room);
     });
 
-    socket.on('newHostElected', (newHostId) => {
+    socket.on("newHostElected", (newHostId) => {
       setMe((prevMe) => {
         if (prevMe && prevMe.id === newHostId) {
           return { ...prevMe, isHost: true };
@@ -184,18 +179,18 @@ function SocketProvider({ children }: Readonly<{ children: React.ReactNode }>) {
       });
     });
 
-    socket.on('roomNotFound', () => {
-      setError('Sorry, that room does not exist');
-      navigate({ to: '/' });
+    socket.on("roomNotFound", async () => {
+      setError("Sorry, that room does not exist");
+      await navigate({ to: "/" });
     });
 
-    socket.on('playerDisconnected', (room) => {
+    socket.on("playerDisconnected", (room) => {
       setRoom(room);
     });
 
-    socket.on('moveToRoom', (roomId) => {
-      navigate({
-        to: '/room/$roomId',
+    socket.on("moveToRoom", async (roomId) => {
+      await navigate({
+        to: "/room/$roomId",
         params: { roomId },
       });
     });
@@ -205,9 +200,7 @@ function SocketProvider({ children }: Readonly<{ children: React.ReactNode }>) {
     };
   }, [navigate]);
 
-  return (
-    <SocketContext.Provider value={value}>{children}</SocketContext.Provider>
-  );
+  return <SocketContext.Provider value={value}>{children}</SocketContext.Provider>;
 }
 
 export { SocketProvider };

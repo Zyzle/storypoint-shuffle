@@ -1,15 +1,16 @@
-import { Toast } from '@skeletonlabs/skeleton-react';
-import type { Meta, StoryObj } from '@storybook/react-vite';
-import { fn } from 'storybook/test';
+import { Toast } from "@skeletonlabs/skeleton-react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
+import { fn } from "storybook/test";
 
-import { allModes } from '../../.storybook/modes';
+import { allModes } from "../../.storybook/modes";
 
-import { RoomHeadline } from './room-headline.component';
-import { toaster } from '../contexts/toaster.context';
+import { RoomHeadline } from "./room-headline.component";
+import { toaster } from "../contexts/toaster.context";
 
 const meta: Meta<typeof RoomHeadline> = {
-  title: 'Components/RoomHeadline',
+  title: "Components/RoomHeadline",
   component: RoomHeadline,
+  tags: ["autodocs"],
   parameters: {
     chromatic: {
       modes: {
@@ -47,38 +48,38 @@ type Story = StoryObj<typeof RoomHeadline>;
 
 export const IsPlayer: Story = {
   args: {
-    roomId: '07fcd101-ffbc-41b6-8284-20e5a1a3cacb',
+    roomId: "07fcd101-ffbc-41b6-8284-20e5a1a3cacb",
     isHost: false,
     isSpectator: false,
-    playerName: 'Bob',
+    playerName: "Bob",
     exitRoom: fn(),
   },
 };
 
 export const IsHost: Story = {
   args: {
-    roomId: '07fcd101-ffbc-41b6-8284-20e5a1a3cacb',
+    roomId: "07fcd101-ffbc-41b6-8284-20e5a1a3cacb",
     isHost: true,
     isSpectator: false,
-    playerName: 'Alice',
+    playerName: "Alice",
     exitRoom: fn(),
   },
 };
 
 export const EmptyRoomId: Story = {
   args: {
-    roomId: '',
+    roomId: "",
     isHost: true,
     isSpectator: false,
-    playerName: 'Alice',
+    playerName: "Alice",
   },
 };
 
 export const IsSpectator: Story = {
   args: {
-    roomId: '07fcd101-ffbc-41b6-8284-20e5a1a3cacb',
+    roomId: "07fcd101-ffbc-41b6-8284-20e5a1a3cacb",
     isHost: false,
     isSpectator: true,
-    playerName: 'Bob',
+    playerName: "Bob",
   },
 };

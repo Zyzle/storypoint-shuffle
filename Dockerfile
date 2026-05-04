@@ -6,6 +6,7 @@ COPY . .
 
 WORKDIR /app/frontend
 RUN curl -fsSL https://bun.sh/install | bash
+RUN curl -fsSL https://vite.plus | bash
 ENV PATH="/root/.bun/bin:$PATH"
 # should probably get these from the workflow or something
 ENV VITE_SITE_URL="https://storypoint-shuffle.zyzle.dev"

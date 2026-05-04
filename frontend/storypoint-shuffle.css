@@ -1,10 +1,10 @@
 /* This is a modified version of the rocket theme provided by skeleton-ui */
 
-[data-theme='storypointshuffle'] {
+[data-theme="storypointshuffle"] {
   --text-scaling: 1.067;
   --base-font-color: var(--color-surface-950);
   --base-font-color-dark: var(--color-surface-50);
-  --base-font-family: 'Noto Sans', Arial, sans-serif;
+  --base-font-family: "Noto Sans", Arial, sans-serif;
   --base-font-size: inherit;
   --base-line-height: inherit;
   --base-font-weight: normal;
@@ -12,7 +12,7 @@
   --base-letter-spacing: 0em;
   --heading-font-color: inherit;
   --heading-font-color-dark: inherit;
-  --heading-font-family: 'Saira Condensed', sans-serif;
+  --heading-font-family: "Saira Condensed", sans-serif;
   --heading-font-weight: 300;
   --heading-font-style: normal;
   --heading-letter-spacing: inherit;

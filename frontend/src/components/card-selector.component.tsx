@@ -15,8 +15,8 @@ function CardSelector({
           className={`card flex justify-center items-center w-12 h-18 md:w-20 md:h-28 rounded-xl cursor-pointer transition-all duration-200
                                 ${
                                   selectedVote === value
-                                    ? 'card-gradient-selected shadow-xl scale-110'
-                                    : 'card-gradient-unselected shadow-md hover:bg-surface-100'
+                                    ? "card-gradient-selected shadow-xl scale-110"
+                                    : "card-gradient-unselected shadow-md hover:bg-surface-100"
                                 }
                                 `}
           onClick={() => {

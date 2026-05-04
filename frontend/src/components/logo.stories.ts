@@ -1,12 +1,13 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
+import type { Meta, StoryObj } from "@storybook/react-vite";
 
-import { allModes } from '../../.storybook/modes';
+import { allModes } from "../../.storybook/modes";
 
-import { Logo as LogoComponent } from './logo.component';
+import { Logo as LogoComponent } from "./logo.component";
 
 const meta = {
-  title: 'Components/Logo',
+  title: "Components/Logo",
   component: LogoComponent,
+  tags: ["autodocs"],
   parameters: {
     chromatic: {
       modes: {

@@ -1,4 +1,4 @@
-import { createToaster } from '@skeletonlabs/skeleton-react';
+import { createToaster } from "@skeletonlabs/skeleton-react";
 
 const toaster = createToaster();
 

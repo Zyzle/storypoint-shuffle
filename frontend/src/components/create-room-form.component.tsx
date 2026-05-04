@@ -1,14 +1,14 @@
-import { SegmentedControl } from '@skeletonlabs/skeleton-react';
-import { useForm } from '@tanstack/react-form';
-import { ArrowRight, Binoculars, Gamepad2, Shirt } from 'lucide-react';
-import { z } from 'zod';
+import { SegmentedControl } from "@skeletonlabs/skeleton-react";
+import { useForm } from "@tanstack/react-form";
+import { ArrowRight, Binoculars, Gamepad2, Shirt } from "lucide-react";
+import { z } from "zod";
 
-import { Fibonacci } from './fibonacci.component';
+import { Fibonacci } from "./fibonacci.component";
 
 const createRoomSchema = z.object({
   name: z.string().min(3).max(100).trim().nonempty(),
-  playerType: z.enum(['player', 'spectator']),
-  cardSet: z.enum(['fibonacci', 'tshirt']),
+  playerType: z.enum(["player", "spectator"]),
+  cardSet: z.enum(["fibonacci", "t-shirt"]),
 });
 
 function CreateRoomForm({
@@ -18,16 +18,12 @@ function CreateRoomForm({
 }) {
   const createForm = useForm({
     defaultValues: {
-      name: '',
-      playerType: 'player',
-      cardSet: 'fibonacci',
+      name: "",
+      playerType: "player",
+      cardSet: "fibonacci",
     },
     onSubmit: (values) => {
-      onCreate(
-        values.value.name,
-        values.value.playerType === 'spectator',
-        values.value.cardSet,
-      );
+      onCreate(values.value.name, values.value.playerType === "spectator", values.value.cardSet);
     },
     validators: {
       onChange: createRoomSchema,
@@ -39,10 +35,10 @@ function CreateRoomForm({
       <h2 className="h3 text-shadow-lg">Create a Room</h2>
       <form
         className="space-y-4"
-        onSubmit={(e) => {
+        onSubmit={async (e) => {
           e.preventDefault();
           e.stopPropagation();
-          createForm.handleSubmit();
+          await createForm.handleSubmit();
         }}
       >
         <createForm.Field
@@ -73,11 +69,7 @@ function CreateRoomForm({
                 >
                   <SegmentedControl.Control>
                     <SegmentedControl.Indicator />
-                    <SegmentedControl.Item
-                      value="player"
-                      title="player"
-                      aria-label="player"
-                    >
+                    <SegmentedControl.Item value="player" title="player" aria-label="player">
                       <SegmentedControl.ItemHiddenInput />
                       <SegmentedControl.ItemText>
                         <Gamepad2 />
@@ -121,11 +113,7 @@ function CreateRoomForm({
                         <Fibonacci />
                       </SegmentedControl.ItemText>
                     </SegmentedControl.Item>
-                    <SegmentedControl.Item
-                      value="tshirt"
-                      title="tshirt"
-                      aria-label="tshirt"
-                    >
+                    <SegmentedControl.Item value="t-shirt" title="t-shirt" aria-label="t-shirt">
                       <SegmentedControl.ItemHiddenInput />
                       <SegmentedControl.ItemText>
                         <Shirt />

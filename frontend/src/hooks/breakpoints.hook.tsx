@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 
-import { Breakpoints } from '../types';
+import { Breakpoints } from "../types";
 
 function useBreakpoints() {
   const [breakpoint, setBreakpoint] = useState<Breakpoints>(Breakpoints.SM);
@@ -18,11 +18,11 @@ function useBreakpoints() {
       }
     };
 
-    window.addEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
     handleResize();
 
     return () => {
-      window.removeEventListener('resize', handleResize);
+      window.removeEventListener("resize", handleResize);
     };
   }, []);
 

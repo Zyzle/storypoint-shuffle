@@ -1,37 +1,34 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 
-import { Tabs } from '@skeletonlabs/skeleton-react';
-import { createFileRoute } from '@tanstack/react-router';
-import { HandHeart } from 'lucide-react';
+import { Tabs } from "@skeletonlabs/skeleton-react";
+import { createFileRoute } from "@tanstack/react-router";
+import { HandHeart } from "lucide-react";
 
-import { useSocket } from '../hooks/socket.hook';
-import { Logo } from '../components/logo.component';
-import { JoinRoomForm } from '../components/join-room-form.component';
-import { CreateRoomForm } from '../components/create-room-form.component';
-import { toaster } from '../contexts/toaster.context';
-import { Lightswitch } from '../components/lightswitch.component';
+import { useSocket } from "../hooks/socket.hook";
+import { Logo } from "../components/logo.component";
+import { JoinRoomForm } from "../components/join-room-form.component";
+import { CreateRoomForm } from "../components/create-room-form.component";
+import { PlanRoomForm } from "../components/plan-room-form.component";
+import { toaster } from "../contexts/toaster.context";
+import { Lightswitch } from "../components/lightswitch.component";
 
-import Github from '../components/Github.svg?react';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from '../components/tooltip.component';
+import Github from "../components/Github.svg?react";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../components/tooltip.component";
 
-export const Route = createFileRoute('/')({
+export const Route = createFileRoute("/")({
   component: Index,
 });
 
 function Index() {
   const { error, joinRoom, createRoom, setError } = useSocket();
 
-  const [createJoin, setCreateJoin] = useState('create');
+  const [createJoin, setCreateJoin] = useState("create");
 
   useEffect(() => {
     if (error) {
       setTimeout(() => {
-        toaster.error({ title: 'Error', description: error });
-        setError('');
+        toaster.error({ title: "Error", description: error });
+        setError("");
       }, 0);
     }
   }, [error, setError]);
@@ -50,17 +47,11 @@ function Index() {
               <HandHeart />
             </a>
           </TooltipTrigger>
-          <TooltipContent>
-            If you like this project consider sponsoring me on GitHub
-          </TooltipContent>
+          <TooltipContent>If you like this project consider sponsoring me on GitHub</TooltipContent>
         </Tooltip>
         <Tooltip>
           <TooltipTrigger asChild>
-            <a
-              href="https://github.com/Zyzle/storypoint-shuffle"
-              className="mr-4"
-              target="_blank"
-            >
+            <a href="https://github.com/Zyzle/storypoint-shuffle" className="mr-4" target="_blank">
               <Github height="24px" width="24px" />
             </a>
           </TooltipTrigger>
@@ -69,11 +60,7 @@ function Index() {
       </div>
       <div className="flex flex-col items-center justify-center p-8 space-y-4">
         <div className="flex flex-row items-center relative h-50">
-          <Logo
-            width={200}
-            height={200}
-            className="absolute -left-16 md:-left-24 -z-10"
-          />
+          <Logo width={200} height={200} className="absolute -left-16 md:-left-24 -z-10" />
           <h1 className="h1 text-shadow-lg">Storypoint Shuffle</h1>
         </div>
         <p className="">Create a new room or join an existing one.</p>
@@ -83,16 +70,23 @@ function Index() {
             <Tabs.Trigger value="create" className="flex-1">
               Create Room
             </Tabs.Trigger>
+            <Tabs.Trigger value="plan" className="flex-1">
+              Plan Room <sup className="text-success-500">New!</sup>
+            </Tabs.Trigger>
             <Tabs.Trigger value="join" className="flex-1">
               Join Room
             </Tabs.Trigger>
+            <Tabs.Indicator />
           </Tabs.List>
+
           <Tabs.Content value="join" className="flex justify-center">
             <JoinRoomForm onJoin={joinRoom} />
           </Tabs.Content>
-
           <Tabs.Content value="create" className="flex justify-center">
             <CreateRoomForm onCreate={createRoom} />
+          </Tabs.Content>
+          <Tabs.Content value="plan" className="flex justify-center">
+            <PlanRoomForm onPlan={createRoom} />
           </Tabs.Content>
         </Tabs>
       </div>

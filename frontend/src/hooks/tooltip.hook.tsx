@@ -1,4 +1,4 @@
-import { useContext, useMemo, useState } from 'react';
+import { useContext, useMemo, useState } from "react";
 
 import {
   autoUpdate,
@@ -11,14 +11,14 @@ import {
   useHover,
   useInteractions,
   useRole,
-} from '@floating-ui/react';
+} from "@floating-ui/react";
 
-import type { TooltipOptions } from '../types';
-import { TooltipContext } from '../contexts/tooltip.context';
+import type { TooltipOptions } from "../types";
+import { TooltipContext } from "../contexts/tooltip.context";
 
 function useTooltip({
   initialOpen = false,
-  placement = 'top',
+  placement = "top",
   open: controlledOpen,
   onOpenChange: setControlledOpen,
 }: TooltipOptions = {}) {
@@ -35,8 +35,8 @@ function useTooltip({
     middleware: [
       offset(0.1),
       flip({
-        crossAxis: placement.includes('-'),
-        fallbackAxisSideDirection: 'start',
+        crossAxis: placement.includes("-"),
+        fallbackAxisSideDirection: "start",
         padding: 0.1,
       }),
       shift({ padding: 0.1 }),
@@ -53,7 +53,7 @@ function useTooltip({
     enabled: controlledOpen == null,
   });
   const dismiss = useDismiss(context);
-  const role = useRole(context, { role: 'tooltip' });
+  const role = useRole(context, { role: "tooltip" });
 
   const interactions = useInteractions([hover, focus, dismiss, role]);
 
@@ -72,7 +72,7 @@ const useTooltipContext = () => {
   const context = useContext(TooltipContext);
 
   if (context == null) {
-    throw new Error('Tooltip components must be wrapped in <Tooltip />');
+    throw new Error("Tooltip components must be wrapped in <Tooltip />");
   }
 
   return context;

@@ -1,9 +1,9 @@
-import { createRootRoute, Outlet } from '@tanstack/react-router';
-import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
-import { Toast } from '@skeletonlabs/skeleton-react';
+import { createRootRoute, Outlet } from "@tanstack/react-router";
+import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
+import { Toast } from "@skeletonlabs/skeleton-react";
 
-import { SocketProvider } from '../providers/socket.provider';
-import { toaster } from '../contexts/toaster.context';
+import { SocketProvider } from "../providers/socket.provider";
+import { toaster } from "../contexts/toaster.context";
 
 export const Route = createRootRoute({
   component: () => (

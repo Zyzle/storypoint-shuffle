@@ -1,5 +1,5 @@
-import { Dialog, DialogContent, DialogHeading } from './dialog.component';
-import { JoinRoomForm } from './join-room-form.component';
+import { Dialog, DialogContent, DialogHeading } from "./dialog.component";
+import { JoinRoomForm } from "./join-room-form.component";
 
 function JoinRoomDialog({
   open,

@@ -1,84 +1,52 @@
-/// <reference types="vitest/config" />
-import { defineConfig, loadEnv } from 'vite';
-import react from '@vitejs/plugin-react-swc';
-import tailwindcss from '@tailwindcss/vite';
-import { tanstackRouter } from '@tanstack/router-plugin/vite';
-import { analyzer } from 'vite-bundle-analyzer';
-import webfontDownload from 'vite-plugin-webfont-dl';
-import Sitemap from 'vite-plugin-sitemap';
-import svgr from 'vite-plugin-svgr';
+import { defineConfig } from "vite-plus";
+import react from "@vitejs/plugin-react";
+import tailwindcss from "@tailwindcss/vite";
+import { tanstackRouter } from "@tanstack/router-plugin/vite";
+import { analyzer } from "vite-bundle-analyzer";
+import webfontDownload from "vite-plugin-webfont-dl";
+// import Sitemap from 'vite-plugin-sitemap';
+import svgr from "vite-plugin-svgr";
 
-// https://vite.dev/config/
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
-import { storybookTest } from '@storybook/addon-vitest/vitest-plugin';
-const dirname =
-  typeof __dirname !== 'undefined'
-    ? __dirname
-    : path.dirname(fileURLToPath(import.meta.url));
+const plugins = [
+  tailwindcss(),
+  tanstackRouter({
+    target: "react",
+    autoCodeSplitting: true,
+  }),
+  react(),
+  svgr(),
+  analyzer({
+    analyzerMode: "server",
+    analyzerPort: "auto",
+    enabled: false,
+  }),
+  webfontDownload(),
+];
 
-// More info at: https://storybook.js.org/docs/next/writing-tests/integrations/vitest-addon
-export default defineConfig(({ mode }) => {
-  const env = loadEnv(mode, process.cwd());
+// TODO: not sure what to do about this, looks like there isn't a simple way to include
+// this plugin configuration with vite+ in the same was as old vite since it bypasses buns
+// auto config loading
+// if (process.env.VITE_DISABLE_SITEMAP !== 'true') {
+//   plugins.push(
+//     Sitemap({
+//       hostname: process.env.VITE_SITE_URL,
+//       outDir: '../dist',
+//     }),
+//   );
+// }
 
-  const plugins = [
-    tailwindcss(),
-    tanstackRouter({
-      target: 'react',
-      autoCodeSplitting: true,
-    }),
-    react(),
-    svgr(),
-    analyzer({
-      analyzerMode: 'server',
-      analyzerPort: 'auto',
-      enabled: false,
-    }),
-    webfontDownload(),
-  ];
-
-  if (env.VITE_DISABLE_SITEMAP !== 'true') {
-    plugins.push(
-      Sitemap({
-        hostname: env.VITE_SITE_URL,
-        outDir: '../dist',
-      }),
-    );
-  }
-
-  return {
-    plugins,
-    build: {
-      outDir: '../dist',
-      emptyOutDir: true,
-    },
-    test: {
-      projects: [
-        {
-          extends: true,
-          plugins: [
-            // The plugin will run tests for the stories defined in your Storybook config
-            // See options at: https://storybook.js.org/docs/next/writing-tests/integrations/vitest-addon#storybooktest
-            storybookTest({
-              configDir: path.join(dirname, '.storybook'),
-            }),
-          ],
-          test: {
-            name: 'storybook',
-            browser: {
-              enabled: true,
-              headless: true,
-              provider: 'playwright',
-              instances: [
-                {
-                  browser: 'chromium',
-                },
-              ],
-            },
-            setupFiles: ['.storybook/vitest.setup.ts'],
-          },
-        },
-      ],
-    },
-  };
+export default defineConfig({
+  fmt: {
+    ignorePatterns: ["*.gen.ts"],
+  },
+  lint: {
+    jsPlugins: ["eslint-plugin-storybook", "eslint-plugin-react-refresh"],
+    options: { typeAware: true, typeCheck: true },
+    ignorePatterns: ["*.gen.ts", "**/.storybook/*"],
+  },
+  plugins,
+  build: {
+    outDir: "../dist",
+    emptyOutDir: true,
+  },
 });
