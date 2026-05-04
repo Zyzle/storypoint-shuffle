@@ -42,7 +42,7 @@ jobs:
           cache: true
           working-directory: frontend
 
-      - run: vp install && vp run dev:setup
+      - run: vp install
         working-directory: frontend
       - run: vp check
         working-directory: frontend
