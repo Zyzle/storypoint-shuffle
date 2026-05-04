@@ -47,9 +47,9 @@ export const CreateRoomForm: Story = {
       await userEvent.clear(canvas.getByLabelText("Player name"));
       await userEvent.type(canvas.getByLabelText("Player name"), "Alice");
       await userEvent.click(canvas.getByTitle("spectator"));
-      await userEvent.click(canvas.getByTitle("tshirt"));
+      await userEvent.click(canvas.getByTitle("t-shirt"));
       await userEvent.click(canvas.getByText("Create Room"));
-      await expect(args.onCreate).toHaveBeenCalledWith("Alice", true, "tshirt");
+      await expect(args.onCreate).toHaveBeenCalledWith("Alice", true, "t-shirt");
     });
   },
 };

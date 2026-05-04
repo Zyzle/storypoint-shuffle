@@ -51,6 +51,6 @@ export const Download: Story = {
         },
       ],
     },
-    cardSet: CardSet.Fibonacci,
+    cardSet: CardSet.fibonacci,
   },
 };

@@ -87,18 +87,20 @@ async fn elect_new_host(room: &mut Room, socket: &SocketRef) -> Result<(), RoomE
 // by calculating the mode of the votes and setting it as the vote
 // for the current ticket
 fn apply_votes_to_plan(room: &mut Room) {
-    let vote_counts: HashMap<u8, u8> =
-        room.players
-            .values()
-            .fold(HashMap::new(), |mut acc, player| {
-                if let Some(vote) = player.vote {
-                    *acc.entry(vote).or_insert(0) += 1;
-                }
-                acc
-            });
+    let vote_counts: HashMap<u8, u8> = room
+        .players
+        .values()
+        .filter(|player| !player.is_spectator)
+        .fold(HashMap::new(), |mut acc, player| {
+            if let Some(vote) = player.vote {
+                *acc.entry(vote).or_insert(0) += 1;
+            }
+            acc
+        });
 
     let mode_vote: u8 = vote_counts
         .iter()
+        .filter(|vote| !matches!(vote.0, 0)) // filter out abstain votes
         .max_by_key(|entry| entry.1)
         .map_or(0, |(vote, _)| *vote);
 

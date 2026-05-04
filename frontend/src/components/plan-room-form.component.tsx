@@ -14,7 +14,7 @@ const planRoomSchema = z.object({
   roomPlan: z.object(
     {
       card_set: z.enum(["fibonacci", "t-shirt"]),
-      tickets: z.array(z.object({ name: z.string(), description: z.string() })),
+      tickets: z.array(z.object({ name: z.string(), description: z.string() })).nonempty(),
     },
     { message: 'Check the formatting of your "tickets" array' },
   ) satisfies z.ZodType<RoomPlanFile | null>,

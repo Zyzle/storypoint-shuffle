@@ -1,5 +1,5 @@
 # This example file shows how to configure a roomplan instance using the TOML format.
-card_set = "fibonacci" # one of fibbonacci or t-shirt
+card_set = "fibonacci" # one of fibonacci or t-shirt
 
 # create a list of tickets you want to estimate for this session
 [[tickets]]

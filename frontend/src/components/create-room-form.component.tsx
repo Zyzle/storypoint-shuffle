@@ -8,7 +8,7 @@ import { Fibonacci } from "./fibonacci.component";
 const createRoomSchema = z.object({
   name: z.string().min(3).max(100).trim().nonempty(),
   playerType: z.enum(["player", "spectator"]),
-  cardSet: z.enum(["fibonacci", "tshirt"]),
+  cardSet: z.enum(["fibonacci", "t-shirt"]),
 });
 
 function CreateRoomForm({
@@ -113,7 +113,7 @@ function CreateRoomForm({
                         <Fibonacci />
                       </SegmentedControl.ItemText>
                     </SegmentedControl.Item>
-                    <SegmentedControl.Item value="tshirt" title="tshirt" aria-label="tshirt">
+                    <SegmentedControl.Item value="t-shirt" title="t-shirt" aria-label="t-shirt">
                       <SegmentedControl.ItemHiddenInput />
                       <SegmentedControl.ItemText>
                         <Shirt />

@@ -27,8 +27,6 @@ const vitestConfig = defineConfig({
             headless: true,
             instances: [{ browser: "chromium" }],
           },
-          // TODO: there seems to be an issue here right now with compatibility between Storybook and Vite+s Vitest plugin, where the setup file is not being properly loaded.
-          // for the moment `vp test` is broken
           setupFiles: ["./.storybook/vitest.setup.ts"],
         },
       },

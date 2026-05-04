@@ -25,7 +25,9 @@ const handleDownload = (type: string, roomPlan: RoomPlan, cardSet: { [key: strin
     const csvData = [
       csvHeaders.join(","),
       ...transformedTickets.map((row: { [key: string]: any }) =>
-        csvHeaders.map((header: string) => row[header]).join(","),
+        csvHeaders
+          .map((header: string) => `"${String(row[header]).replace(/"/g, '""')}"`)
+          .join(","),
       ),
     ].join("\n");
     blobData = new Blob([csvData], { type: "text/csv" });
