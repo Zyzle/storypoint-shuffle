@@ -20,7 +20,11 @@ function RoomPlanPanel({
       size={size}
       onSizeChange={(details) => setSize(details.size)}
     >
-      <FloatingPanel.Trigger className="btn-icon">
+      <FloatingPanel.Trigger
+        className="btn-icon"
+        aria-label="Open Room Plan"
+        title="Open Room Plan"
+      >
         <Timeline size={18} />
       </FloatingPanel.Trigger>
       <Portal>

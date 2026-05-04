@@ -21,7 +21,7 @@ function RoomHeadline({
   return (
     <AppBar className="preset-glass-neutral py-2! px-1! md:py-4! md:px-2!">
       <AppBar.Toolbar className="grid-cols-[auto_1fr_auto]">
-        <AppBar.Lead>
+        <AppBar.Lead aria-label="Leave room">
           <Tooltip>
             <TooltipTrigger asChild>
               <button

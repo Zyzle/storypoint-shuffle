@@ -8,7 +8,11 @@ function PlanInfoPanel() {
 
   return (
     <FloatingPanel size={{ width: 800, height: 400 }}>
-      <FloatingPanel.Trigger className="btn-icon">
+      <FloatingPanel.Trigger
+        className="btn-icon"
+        aria-label="Room Plan Info"
+        title="Room Plan Info"
+      >
         <Info size={18} />
       </FloatingPanel.Trigger>
       <Portal>
