@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "@floating-ui/react": "^0.27.19",
-    "@tailwindcss/vite": "^4.2.4",
+    "@tailwindcss/vite": "^4.3.0",
     "@tanstack/react-form": "^1.29.1",
     "@tanstack/react-router": "^1.169.1",
     "@tanstack/react-router-devtools": "^1.166.13",
